@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Analytics - HiveMind AR</title>
+  <link rel="stylesheet" crossorigin href="/assets/main-BNvkHC9H.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header"><h2>HiveMind AR</h2><span>Sales Agent</span></div>
+ <nav class="sidebar-nav">
+ <a href="/pages/sales-agent/dashboard.html">Dashboard</a>
+ <a href="/pages/sales-agent/analytics.html" class="active">Analytics</a>
+ <a href="/pages/sales-agent/mini-crm.html">Mini CRM</a>
+ <a href="/pages/sales-agent/contact-us.html">Contact Us</a>
+ <a href="/pages/sales-agent/gallery.html">Gallery Showcase</a>
+ <a href="/pages/sales-agent/about-us.html">About Us</a>
+ <a href="/pages/sales-agent/ordering.html">Ordering / Reservation</a>
+ </nav>
+ <div class="sidebar-footer"><a href="#" class="logout-btn" onclick="logout()">Logout</a></div>
+ </aside>
+ <main class="main-content">
+ <header class="header"><button class="menu-toggle">☰</button><h1>Analytics</h1><div></div></header>
+ <div class="page-content">
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title">My Reports</h3>
+ <div class="btn-group">
+ <button class="btn btn-primary" onclick="exportData('PDF')">Export PDF</button>
+ <button class="btn btn-secondary" onclick="exportData('CSV')">Export CSV</button>
+ </div>
+ </div>
+ <div class="table-container">
+ <table>
+ <thead><tr><th>Report</th><th>Type</th><th>Period</th><th>Actions</th></tr></thead>
+ <tbody>
+ <tr><td>My Sales Report</td><td>Sales</td><td>This Month</td><td><button class="btn btn-sm btn-primary">View</button></td></tr>
+ <tr><td>Lead Conversion</td><td>CRM</td><td>Last 30 Days</td><td><button class="btn btn-sm btn-primary">View</button></td></tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ <div class="stats-grid">
+ <div class="stat-card"><h3>Conversion Rate</h3><div class="value">42.8%</div></div>
+ <div class="stat-card"><h3>Avg Deal Size</h3><div class="value">$354</div></div>
+ </div>
+ </div>
+ <footer class="footer"><p>&copy; 2024 HiveMind AR. All rights reserved.</p></footer>
+ </main>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>

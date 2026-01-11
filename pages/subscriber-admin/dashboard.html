@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Subscriber Admin Dashboard - HiveMind AR</title>
+ <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header">
+ <h2>HiveMind AR</h2>
+ <span>Subscriber Admin</span>
+ </div>
+ <nav class="sidebar-nav">
+ <a href="/pages/subscriber-admin/dashboard.html" class="active">Dashboard</a>
+ <a href="/pages/subscriber-admin/users.html">Users/Accounts</a>
+ <a href="/pages/subscriber-admin/analytics.html">Analytics</a>
+ <a href="/pages/subscriber-admin/mini-crm.html">Mini CRM</a>
+ <a href="/pages/subscriber-admin/payments.html">Payments</a>
+ <a href="/pages/subscriber-admin/contact-us.html">Contact Us</a>
+ <a href="/pages/subscriber-admin/gallery.html">Gallery Showcase</a>
+ <a href="/pages/subscriber-admin/about-us.html">About Us</a>
+ <a href="/pages/subscriber-admin/augmented-reality.html">Augmented Reality</a>
+ </nav>
+ <div class="sidebar-footer">
+ <a href="#" class="logout-btn" onclick="logout()">Logout</a>
+ </div>
+ </aside>
+ <main class="main-content">
+ <header class="header">
+ <button class="menu-toggle">☰</button>
+ <h1>Dashboard</h1>
+ <div></div>
+ </header>
+ <div class="page-content">
+ <div class="stats-grid">
+ <div class="stat-card">
+ <h3>My Users</h3>
+ <div class="value">156</div>
+ </div>
+ <div class="stat-card">
+ <h3>Active Leads</h3>
+ <div class="value">42</div>
+ </div>
+ <div class="stat-card">
+ <h3>Monthly Revenue</h3>
+ <div class="value">$8,450</div>
+ </div>
+ <div class="stat-card">
+ <h3>AR Sessions</h3>
+ <div class="value">2,341</div>
+ </div>
+ </div>
+ <div class="grid-2">
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title">Recent Leads</h3>
+ <a href="/pages/subscriber-admin/mini-crm.html" class="btn btn-sm btn-primary">View All</a>
+ </div>
+ <div class="lead-item">
+ <div class="lead-info">
+ <h4>Michael Johnson</h4>
+ <p>michael@email.com</p>
+ </div>
+ <span class="badge badge-success">Hot</span>
+ </div>
+ <div class="lead-item">
+ <div class="lead-info">
+ <h4>Sarah Williams</h4>
+ <p>sarah@email.com</p>
+ </div>
+ <span class="badge badge-warning">Warm</span>
+ </div>
+ <div class="lead-item">
+ <div class="lead-info">
+ <h4>David Lee</h4>
+ <p>david@email.com</p>
+ </div>
+ <span class="badge badge-danger">Cold</span>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title">Recent Messages</h3>
+ <a href="/pages/subscriber-admin/contact-us.html" class="btn btn-sm btn-primary">View All</a>
+ </div>
+ <div class="message-item">
+ <div class="message-header">
+ <span class="message-sender">New inquiry</span>
+ <span class="message-date">30 min ago</span>
+ </div>
+ </div>
+ <div class="message-item">
+ <div class="message-header">
+ <span class="message-sender">Support request</span>
+ <span class="message-date">2 hours ago</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <footer class="footer">
+ <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
+ </footer>
+ </main>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Client Dashboard - HiveMind AR</title>
+ <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header"><h2>HiveMind AR</h2><span>Client</span></div>
+ <nav class="sidebar-nav">
+ <a href="/pages/client/dashboard.html" class="active">Dashboard</a>
+ <a href="/pages/client/gallery.html">Gallery Showcase</a>
+ <a href="/pages/client/about-us.html">About Us</a>
+ <a href="/pages/client/contact-us.html">Contact Us</a>
+ <a href="/pages/client/ordering.html">Ordering / Reservation</a>
+ </nav>
+ <div class="sidebar-footer"><a href="#" class="logout-btn" onclick="logout()">Logout</a></div>
+ </aside>
+ <main class="main-content">
+ <header class="header"><button class="menu-toggle">☰</button><h1>Welcome Back!</h1><div></div></header>
+ <div class="page-content">
+ <div class="stats-grid">
+ <div class="stat-card"><h3>My Orders</h3><div class="value">5</div></div>
+ <div class="stat-card"><h3>AR Sessions</h3><div class="value">23</div></div>
+ <div class="stat-card"><h3>Reservations</h3><div class="value">2</div></div>
+ </div>
+ <div class="grid-2">
+ <div class="card">
+ <div class="card-header"><h3 class="card-title">Recent Orders</h3></div>
+ <div class="message-item">
+ <div class="message-header"><span class="message-sender">Order #1234</span><span class="message-date">Processing</span></div>
+ </div>
+ <div class="message-item">
+ <div class="message-header"><span class="message-sender">Order #1230</span><span class="message-date">Delivered</span></div>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-header"><h3 class="card-title">Featured AR Experiences</h3></div>
+ <p>Explore our latest AR products and try them virtually before you buy!</p>
+ <a href="/pages/client/gallery.html" class="btn btn-primary" style="margin-top:1rem">Browse Gallery</a>
+ </div>
+ </div>
+ </div>
+ <footer class="footer"><p>&copy; 2024 HiveMind AR. All rights reserved.</p></footer>
+ </main>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>

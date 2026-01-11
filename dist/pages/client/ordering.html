@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Ordering - HiveMind AR</title>
+  <link rel="stylesheet" crossorigin href="/assets/main-BNvkHC9H.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header"><h2>HiveMind AR</h2><span>Client</span></div>
+ <nav class="sidebar-nav">
+ <a href="/pages/client/dashboard.html">Dashboard</a>
+ <a href="/pages/client/gallery.html">Gallery Showcase</a>
+ <a href="/pages/client/about-us.html">About Us</a>
+ <a href="/pages/client/contact-us.html">Contact Us</a>
+ <a href="/pages/client/ordering.html" class="active">Ordering / Reservation</a>
+ </nav>
+ <div class="sidebar-footer"><a href="#" class="logout-btn" onclick="logout()">Logout</a></div>
+ </aside>
+ <main class="main-content">
+ <header class="header"><button class="menu-toggle">☰</button><h1>My Orders & Reservations</h1><div></div></header>
+ <div class="page-content">
+ <div class="card">
+ <div class="card-header"><h3 class="card-title">My Orders</h3></div>
+ <div class="table-container">
+ <table>
+ <thead><tr><th>Order ID</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+ <tbody>
+ <tr><td>#ORD-1234</td><td>Smart Watch AR</td><td>$245.00</td><td><span class="badge badge-warning">Processing</span></td><td>2024-01-15</td></tr>
+ <tr><td>#ORD-1230</td><td>Home Decor Set</td><td>$189.00</td><td><span class="badge badge-success">Delivered</span></td><td>2024-01-10</td></tr>
+ <tr><td>#ORD-1225</td><td>Fashion Item</td><td>$79.00</td><td><span class="badge badge-success">Delivered</span></td><td>2024-01-05</td></tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-header"><h3 class="card-title">My Reservations</h3><button class="btn btn-primary" onclick="showCreateModal()">+ New Reservation</button></div>
+ <div class="table-container">
+ <table>
+ <thead><tr><th>ID</th><th>Service</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+ <tbody>
+ <tr><td>#RES-101</td><td>AR Demo Session</td><td>2024-01-20</td><td>2:00 PM</td><td><span class="badge badge-success">Confirmed</span></td></tr>
+ <tr><td>#RES-100</td><td>Product Consultation</td><td>2024-01-18</td><td>11:00 AM</td><td><span class="badge badge-success">Completed</span></td></tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-header"><h3 class="card-title">Track Delivery</h3></div>
+ <div class="form-group"><label>Enter Order ID</label><input type="text" class="form-control" placeholder="e.g., ORD-1234"></div>
+ <button class="btn btn-primary" onclick="alert('Tracking info (placeholder)')">Track Order</button>
+ </div>
+ </div>
+ <footer class="footer"><p>&copy; 2024 HiveMind AR. All rights reserved.</p></footer>
+ </main>
+ </div>
+ <div class="modal-overlay" id="createModal">
+ <div class="modal">
+ <div class="modal-header"><h3>New Reservation</h3><button class="modal-close">&times;</button></div>
+ <form id="createForm">
+ <div class="form-group"><label>Service</label><select class="form-control"><option>AR Demo Session</option><option>Product Consultation</option><option>Virtual Try-On</option></select></div>
+ <div class="form-group"><label>Date</label><input type="date" class="form-control"></div>
+ <div class="form-group"><label>Time</label><select class="form-control"><option>9:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>2:00 PM</option><option>3:00 PM</option><option>4:00 PM</option></select></div>
+ <div class="form-group"><label>Notes</label><textarea class="form-control" placeholder="Any special requests..."></textarea></div>
+ <button type="button" class="btn btn-primary" onclick="submitForm('createForm')">Book Reservation</button>
+ </form>
+ </div>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>

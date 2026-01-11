@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Gallery - HiveMind AR</title>
+ <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header"><h2>HiveMind AR</h2><span>Client</span></div>
+ <nav class="sidebar-nav">
+ <a href="/pages/client/dashboard.html">Dashboard</a>
+ <a href="/pages/client/gallery.html" class="active">Gallery Showcase</a>
+ <a href="/pages/client/about-us.html">About Us</a>
+ <a href="/pages/client/contact-us.html">Contact Us</a>
+ <a href="/pages/client/ordering.html">Ordering / Reservation</a>
+ </nav>
+ <div class="sidebar-footer"><a href="#" class="logout-btn" onclick="logout()">Logout</a></div>
+ </aside>
+ <main class="main-content">
+ <header class="header"><button class="menu-toggle">☰</button><h1>Gallery Showcase</h1><div></div></header>
+ <div class="page-content">
+ <div class="card">
+ <div class="card-header"><h3 class="card-title">AR Products</h3></div>
+ <div class="gallery-grid">
+ <div class="gallery-item">
+ <div style="background:#e2e8f0;height:150px;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;">Product 1</div>
+ <p style="margin-top:0.5rem">Smart Watch AR</p>
+ <button class="btn btn-sm btn-primary" style="margin-top:0.5rem">View in AR</button>
+ </div>
+ <div class="gallery-item">
+ <div style="background:#e2e8f0;height:150px;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;">Product 2</div>
+ <p style="margin-top:0.5rem">Furniture Set</p>
+ <button class="btn btn-sm btn-primary" style="margin-top:0.5rem">View in AR</button>
+ </div>
+ <div class="gallery-item">
+ <div style="background:#e2e8f0;height:150px;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;">Product 3</div>
+ <p style="margin-top:0.5rem">Fashion Item</p>
+ <button class="btn btn-sm btn-primary" style="margin-top:0.5rem">Try On</button>
+ </div>
+ <div class="gallery-item">
+ <div style="background:#e2e8f0;height:150px;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;">Product 4</div>
+ <p style="margin-top:0.5rem">Home Decor</p>
+ <button class="btn btn-sm btn-primary" style="margin-top:0.5rem">View in AR</button>
+ </div>
+ </div>
+ </div>
+ </div>
+ <footer class="footer"><p>&copy; 2024 HiveMind AR. All rights reserved.</p></footer>
+ </main>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>

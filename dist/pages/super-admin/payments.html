@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Payments - HiveMind AR</title>
+  <link rel="stylesheet" crossorigin href="/assets/main-BNvkHC9H.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header">
+ <h2>HiveMind AR</h2>
+ <span>Super Admin</span>
+ </div>
+ <nav class="sidebar-nav">
+ <a href="/pages/super-admin/dashboard.html">Dashboard</a>
+ <a href="/pages/super-admin/users.html">Users/Accounts</a>
+ <a href="/pages/super-admin/analytics.html">Analytics</a>
+ <a href="/pages/super-admin/payments.html" class="active">Payments</a>
+ <a href="/pages/super-admin/contact-us.html">Contact Us</a>
+ <a href="/pages/super-admin/gallery.html">Gallery Showcase</a>
+ <a href="/pages/super-admin/about-us.html">About Us</a>
+ <a href="/pages/super-admin/augmented-reality.html">Augmented Reality</a>
+ </nav>
+ <div class="sidebar-footer">
+ <a href="#" class="logout-btn" onclick="logout()">Logout</a>
+ </div>
+ </aside>
+ <main class="main-content">
+ <header class="header">
+ <button class="menu-toggle">☰</button>
+ <h1>Payments</h1>
+ <div></div>
+ </header>
+ <div class="page-content">
+ <div class="stats-grid">
+ <div class="stat-card">
+ <h3>Total Balance</h3>
+ <div class="value">$152,450</div>
+ </div>
+ <div class="stat-card">
+ <h3>This Month</h3>
+ <div class="value">$12,340</div>
+ </div>
+ <div class="stat-card">
+ <h3>Pending</h3>
+ <div class="value">$3,200</div>
+ </div>
+ <div class="stat-card">
+ <h3>Refunds</h3>
+ <div class="value">$450</div>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title">Transaction History</h3>
+ <button class="btn btn-primary" onclick="exportData('CSV')">Export</button>
+ </div>
+ <div class="table-container">
+ <table>
+ <thead>
+ <tr>
+ <th>Transaction ID</th>
+ <th>User</th>
+ <th>Amount</th>
+ <th>Type</th>
+ <th>Status</th>
+ <th>Date</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>TXN-001234</td>
+ <td>John Smith</td>
+ <td>$299.00</td>
+ <td>Subscription</td>
+ <td><span class="badge badge-success">Completed</span></td>
+ <td>2024-01-15</td>
+ </tr>
+ <tr>
+ <td>TXN-001233</td>
+ <td>Jane Doe</td>
+ <td>$149.00</td>
+ <td>Subscription</td>
+ <td><span class="badge badge-success">Completed</span></td>
+ <td>2024-01-14</td>
+ </tr>
+ <tr>
+ <td>TXN-001232</td>
+ <td>Bob Wilson</td>
+ <td>$50.00</td>
+ <td>AR Feature</td>
+ <td><span class="badge badge-warning">Pending</span></td>
+ <td>2024-01-14</td>
+ </tr>
+ <tr>
+ <td>TXN-001231</td>
+ <td>Alice Brown</td>
+ <td>-$25.00</td>
+ <td>Refund</td>
+ <td><span class="badge badge-danger">Refunded</span></td>
+ <td>2024-01-13</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ <footer class="footer">
+ <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
+ </footer>
+ </main>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>

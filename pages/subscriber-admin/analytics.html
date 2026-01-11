@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Analytics - HiveMind AR</title>
+ <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header">
+ <h2>HiveMind AR</h2>
+ <span>Subscriber Admin</span>
+ </div>
+ <nav class="sidebar-nav">
+ <a href="/pages/subscriber-admin/dashboard.html">Dashboard</a>
+ <a href="/pages/subscriber-admin/users.html">Users/Accounts</a>
+ <a href="/pages/subscriber-admin/analytics.html" class="active">Analytics</a>
+ <a href="/pages/subscriber-admin/mini-crm.html">Mini CRM</a>
+ <a href="/pages/subscriber-admin/payments.html">Payments</a>
+ <a href="/pages/subscriber-admin/contact-us.html">Contact Us</a>
+ <a href="/pages/subscriber-admin/gallery.html">Gallery Showcase</a>
+ <a href="/pages/subscriber-admin/about-us.html">About Us</a>
+ <a href="/pages/subscriber-admin/augmented-reality.html">Augmented Reality</a>
+ </nav>
+ <div class="sidebar-footer">
+ <a href="#" class="logout-btn" onclick="logout()">Logout</a>
+ </div>
+ </aside>
+ <main class="main-content">
+ <header class="header">
+ <button class="menu-toggle">☰</button>
+ <h1>Analytics</h1>
+ <div></div>
+ </header>
+ <div class="page-content">
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title">My Reports</h3>
+ <div class="btn-group">
+ <button class="btn btn-primary" onclick="exportData('PDF')">Export PDF</button>
+ <button class="btn btn-secondary" onclick="exportData('CSV')">Export CSV</button>
+ </div>
+ </div>
+ <div class="table-container">
+ <table>
+ <thead>
+ <tr>
+ <th>Report Name</th>
+ <th>Type</th>
+ <th>Date Range</th>
+ <th>Actions</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Lead Conversion Report</td>
+ <td>CRM</td>
+ <td>Last 30 days</td>
+ <td><button class="btn btn-sm btn-primary">View</button></td>
+ </tr>
+ <tr>
+ <td>AR Engagement Stats</td>
+ <td>Feature</td>
+ <td>Last 7 days</td>
+ <td><button class="btn btn-sm btn-primary">View</button></td>
+ </tr>
+ <tr>
+ <td>Sales Performance</td>
+ <td>Sales</td>
+ <td>This Month</td>
+ <td><button class="btn btn-sm btn-primary">View</button></td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ <div class="stats-grid">
+ <div class="stat-card">
+ <h3>Lead Conversion</h3>
+ <div class="value">24.5%</div>
+ </div>
+ <div class="stat-card">
+ <h3>AR Views</h3>
+ <div class="value">8,234</div>
+ </div>
+ <div class="stat-card">
+ <h3>Avg Order Value</h3>
+ <div class="value">$125</div>
+ </div>
+ </div>
+ </div>
+ <footer class="footer">
+ <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
+ </footer>
+ </main>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>

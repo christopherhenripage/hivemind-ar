@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Users/Accounts - HiveMind AR</title>
+  <link rel="stylesheet" crossorigin href="/assets/main-BNvkHC9H.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header">
+ <h2>HiveMind AR</h2>
+ <span>Super Admin</span>
+ </div>
+ <nav class="sidebar-nav">
+ <a href="/pages/super-admin/dashboard.html">Dashboard</a>
+ <a href="/pages/super-admin/users.html" class="active">Users/Accounts</a>
+ <a href="/pages/super-admin/analytics.html">Analytics</a>
+ <a href="/pages/super-admin/payments.html">Payments</a>
+ <a href="/pages/super-admin/contact-us.html">Contact Us</a>
+ <a href="/pages/super-admin/gallery.html">Gallery Showcase</a>
+ <a href="/pages/super-admin/about-us.html">About Us</a>
+ <a href="/pages/super-admin/augmented-reality.html">Augmented Reality</a>
+ </nav>
+ <div class="sidebar-footer">
+ <a href="#" class="logout-btn" onclick="logout()">Logout</a>
+ </div>
+ </aside>
+ <main class="main-content">
+ <header class="header">
+ <button class="menu-toggle">☰</button>
+ <h1>Users/Accounts</h1>
+ <div></div>
+ </header>
+ <div class="page-content">
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title">All Users</h3>
+ <button class="btn btn-primary" onclick="showCreateModal()">+ Add User</button>
+ </div>
+ <div class="table-container">
+ <table>
+ <thead>
+ <tr>
+ <th>ID</th>
+ <th>Name</th>
+ <th>Email</th>
+ <th>Role</th>
+ <th>Status</th>
+ <th>Actions</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>1</td>
+ <td>John Smith</td>
+ <td>john@example.com</td>
+ <td>Subscriber Admin</td>
+ <td><span class="badge badge-success">Active</span></td>
+ <td>
+ <div class="btn-group">
+ <button class="btn btn-sm btn-primary" onclick="showEditModal(1)">Edit</button>
+ <button class="btn btn-sm btn-warning" onclick="toggleStatus(1)">Deactivate</button>
+ <button class="btn btn-sm btn-danger" onclick="deleteItem(1)">Delete</button>
+ </div>
+ </td>
+ </tr>
+ <tr>
+ <td>2</td>
+ <td>Jane Doe</td>
+ <td>jane@example.com</td>
+ <td>Sales Agent</td>
+ <td><span class="badge badge-success">Active</span></td>
+ <td>
+ <div class="btn-group">
+ <button class="btn btn-sm btn-primary" onclick="showEditModal(2)">Edit</button>
+ <button class="btn btn-sm btn-warning" onclick="toggleStatus(2)">Deactivate</button>
+ <button class="btn btn-sm btn-danger" onclick="deleteItem(2)">Delete</button>
+ </div>
+ </td>
+ </tr>
+ <tr>
+ <td>3</td>
+ <td>Bob Wilson</td>
+ <td>bob@example.com</td>
+ <td>Client</td>
+ <td><span class="badge badge-danger">Inactive</span></td>
+ <td>
+ <div class="btn-group">
+ <button class="btn btn-sm btn-primary" onclick="showEditModal(3)">Edit</button>
+ <button class="btn btn-sm btn-secondary" onclick="toggleStatus(3)">Activate</button>
+ <button class="btn btn-sm btn-danger" onclick="deleteItem(3)">Delete</button>
+ </div>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ <footer class="footer">
+ <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
+ </footer>
+ </main>
+ </div>
+
+ <div class="modal-overlay" id="createModal">
+ <div class="modal">
+ <div class="modal-header">
+ <h3>Add New User</h3>
+ <button class="modal-close">&times;</button>
+ </div>
+ <form id="createForm">
+ <div class="form-group">
+ <label>Full Name</label>
+ <input type="text" class="form-control" placeholder="Enter full name">
+ </div>
+ <div class="form-group">
+ <label>Email</label>
+ <input type="email" class="form-control" placeholder="Enter email">
+ </div>
+ <div class="form-group">
+ <label>Role</label>
+ <select class="form-control">
+ <option>Subscriber Admin</option>
+ <option>Sales Agent</option>
+ <option>Client</option>
+ </select>
+ </div>
+ <div class="form-group">
+ <label>Password</label>
+ <input type="password" class="form-control" placeholder="Enter password">
+ </div>
+ <button type="button" class="btn btn-primary" onclick="submitForm('createForm')">Create User</button>
+ </form>
+ </div>
+ </div>
+
+ <div class="modal-overlay" id="editModal">
+ <div class="modal">
+ <div class="modal-header">
+ <h3>Edit User</h3>
+ <button class="modal-close">&times;</button>
+ </div>
+ <form id="editForm">
+ <div class="form-group">
+ <label>Full Name</label>
+ <input type="text" class="form-control" value="John Smith">
+ </div>
+ <div class="form-group">
+ <label>Email</label>
+ <input type="email" class="form-control" value="john@example.com">
+ </div>
+ <div class="form-group">
+ <label>Role</label>
+ <select class="form-control">
+ <option selected>Subscriber Admin</option>
+ <option>Sales Agent</option>
+ <option>Client</option>
+ </select>
+ </div>
+ <div class="form-group">
+ <label>New Password (leave blank to keep current)</label>
+ <input type="password" class="form-control" placeholder="Enter new password">
+ </div>
+ <button type="button" class="btn btn-primary" onclick="submitForm('editForm')">Save Changes</button>
+ </form>
+ </div>
+ </div>
+
+ <script src="/src/main.js"></script>
+</body>
+</html>

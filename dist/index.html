@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>HiveMind AR - Login</title>
+  <link rel="stylesheet" crossorigin href="/assets/main-BNvkHC9H.css">
+</head>
+<body>
+ <div class="login-container">
+ <div class="login-box">
+ <h1>HiveMind AR</h1>
+ <p>Select your role to continue</p>
+ <div class="role-buttons">
+ <button class="role-btn" onclick="loginAs('super-admin')">Super Admin</button>
+ <button class="role-btn" onclick="loginAs('subscriber-admin')">Subscriber Admin</button>
+ <button class="role-btn" onclick="loginAs('sales-agent')">Sales Agent</button>
+ <button class="role-btn" onclick="loginAs('client')">Client</button>
+ </div>
+ </div>
+ </div>
+ <script>
+ function loginAs(role) {
+ localStorage.setItem('hivemind_role', role);
+ window.location.href = '/pages/' + role + '/dashboard.html';
+ }
+ </script>
+</body>
+</html>

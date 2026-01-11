@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Gallery - HiveMind AR</title>
+ <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header"><h2>HiveMind AR</h2><span>Sales Agent</span></div>
+ <nav class="sidebar-nav">
+ <a href="/pages/sales-agent/dashboard.html">Dashboard</a>
+ <a href="/pages/sales-agent/analytics.html">Analytics</a>
+ <a href="/pages/sales-agent/mini-crm.html">Mini CRM</a>
+ <a href="/pages/sales-agent/contact-us.html">Contact Us</a>
+ <a href="/pages/sales-agent/gallery.html" class="active">Gallery Showcase</a>
+ <a href="/pages/sales-agent/about-us.html">About Us</a>
+ <a href="/pages/sales-agent/ordering.html">Ordering / Reservation</a>
+ </nav>
+ <div class="sidebar-footer"><a href="#" class="logout-btn" onclick="logout()">Logout</a></div>
+ </aside>
+ <main class="main-content">
+ <header class="header"><button class="menu-toggle">☰</button><h1>Gallery Showcase</h1><div></div></header>
+ <div class="page-content">
+ <div class="card">
+ <div class="card-header"><h3 class="card-title">Product Gallery</h3></div>
+ <div class="gallery-grid">
+ <div class="gallery-item">
+ <div style="background:#e2e8f0;height:150px;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;">Product 1</div>
+ <p style="margin-top:0.5rem">AR Product View</p>
+ <span class="badge badge-success">Featured</span>
+ </div>
+ <div class="gallery-item">
+ <div style="background:#e2e8f0;height:150px;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;">Product 2</div>
+ <p style="margin-top:0.5rem">Virtual Demo</p>
+ </div>
+ <div class="gallery-item">
+ <div style="background:#e2e8f0;height:150px;border-radius:0.375rem;display:flex;align-items:center;justify-content:center;">Product 3</div>
+ <p style="margin-top:0.5rem">3D Model</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ <footer class="footer"><p>&copy; 2024 HiveMind AR. All rights reserved.</p></footer>
+ </main>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>

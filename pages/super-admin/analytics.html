@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Analytics - HiveMind AR</title>
+ <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+ <div class="sidebar-overlay"></div>
+ <div class="app-layout">
+ <aside class="sidebar">
+ <div class="sidebar-header">
+ <h2>HiveMind AR</h2>
+ <span>Super Admin</span>
+ </div>
+ <nav class="sidebar-nav">
+ <a href="/pages/super-admin/dashboard.html">Dashboard</a>
+ <a href="/pages/super-admin/users.html">Users/Accounts</a>
+ <a href="/pages/super-admin/analytics.html" class="active">Analytics</a>
+ <a href="/pages/super-admin/payments.html">Payments</a>
+ <a href="/pages/super-admin/contact-us.html">Contact Us</a>
+ <a href="/pages/super-admin/gallery.html">Gallery Showcase</a>
+ <a href="/pages/super-admin/about-us.html">About Us</a>
+ <a href="/pages/super-admin/augmented-reality.html">Augmented Reality</a>
+ </nav>
+ <div class="sidebar-footer">
+ <a href="#" class="logout-btn" onclick="logout()">Logout</a>
+ </div>
+ </aside>
+ <main class="main-content">
+ <header class="header">
+ <button class="menu-toggle">☰</button>
+ <h1>Analytics</h1>
+ <div></div>
+ </header>
+ <div class="page-content">
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title">Reports</h3>
+ <div class="btn-group">
+ <button class="btn btn-primary" onclick="exportData('PDF')">Export PDF</button>
+ <button class="btn btn-secondary" onclick="exportData('CSV')">Export CSV</button>
+ <button class="btn btn-warning" onclick="exportData('Excel')">Export Excel</button>
+ </div>
+ </div>
+ <div class="table-container">
+ <table>
+ <thead>
+ <tr>
+ <th>Report Name</th>
+ <th>Type</th>
+ <th>Date Range</th>
+ <th>Generated</th>
+ <th>Actions</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>User Growth Report</td>
+ <td>Users</td>
+ <td>Jan 2024 - Dec 2024</td>
+ <td>2024-01-15</td>
+ <td><button class="btn btn-sm btn-primary">View</button></td>
+ </tr>
+ <tr>
+ <td>Revenue Summary</td>
+ <td>Financial</td>
+ <td>Q4 2024</td>
+ <td>2024-01-10</td>
+ <td><button class="btn btn-sm btn-primary">View</button></td>
+ </tr>
+ <tr>
+ <td>AR Usage Statistics</td>
+ <td>Feature</td>
+ <td>Last 30 days</td>
+ <td>2024-01-14</td>
+ <td><button class="btn btn-sm btn-primary">View</button></td>
+ </tr>
+ <tr>
+ <td>Subscriber Retention</td>
+ <td>Users</td>
+ <td>2024</td>
+ <td>2024-01-12</td>
+ <td><button class="btn btn-sm btn-primary">View</button></td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+ </div>
+ <div class="stats-grid">
+ <div class="stat-card">
+ <h3>Page Views (30d)</h3>
+ <div class="value">124,521</div>
+ </div>
+ <div class="stat-card">
+ <h3>Unique Visitors</h3>
+ <div class="value">45,230</div>
+ </div>
+ <div class="stat-card">
+ <h3>Avg Session</h3>
+ <div class="value">4m 32s</div>
+ </div>
+ <div class="stat-card">
+ <h3>Bounce Rate</h3>
+ <div class="value">32.5%</div>
+ </div>
+ </div>
+ </div>
+ <footer class="footer">
+ <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
+ </footer>
+ </main>
+ </div>
+ <script src="/src/main.js"></script>
+</body>
+</html>
