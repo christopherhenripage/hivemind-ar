@@ -23,12 +23,29 @@
       opacity: 0.4;
       pointer-events: none;
       z-index: 0;
+      animation: logoGlow 4s ease-in-out infinite;
     }
     .hero-logo-bg img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      filter: drop-shadow(0 0 30px rgba(201, 162, 39, 0.3));
     }
+
+    /* Logo Glow Animation */
+    @keyframes logoGlow {
+      0%, 100% {
+        opacity: 0.35;
+        transform: translate(-50%, -50%) scale(1);
+        filter: drop-shadow(0 0 20px rgba(201, 162, 39, 0.2));
+      }
+      50% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1.02);
+        filter: drop-shadow(0 0 40px rgba(201, 162, 39, 0.4));
+      }
+    }
+
     .hero-content {
       position: relative;
       z-index: 1;
@@ -39,6 +56,51 @@
         height: 400px;
         opacity: 0.3;
       }
+    }
+
+    /* Gradient Accent Lines */
+    .gradient-accent {
+      position: relative;
+    }
+    .gradient-accent::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 3px;
+      background: linear-gradient(90deg, #C9A227 0%, #764ba2 50%, #667eea 100%);
+      border-radius: 2px;
+    }
+
+    /* Scroll Animations */
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-in-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-in-up:nth-child(1) { transition-delay: 0s; }
+    .fade-in-up:nth-child(2) { transition-delay: 0.15s; }
+    .fade-in-up:nth-child(3) { transition-delay: 0.3s; }
+
+    /* Feature Card Hover Effects */
+    .feature-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    .feature-card img {
+      transition: transform 0.3s ease;
+    }
+    .feature-card:hover img {
+      transform: scale(1.03);
     }
 
     .testimonial-section {
@@ -104,15 +166,33 @@
       color: var(--hm-dark);
       padding: 1rem 2rem;
       font-size: 1rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .cta-section .btn:hover {
       background: var(--hm-light-gray);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
     }
 
     @media (max-width: 768px) {
       .testimonial-card {
         grid-template-columns: 1fr;
+      }
+    }
+
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-logo-bg {
+        animation: none;
+      }
+      .fade-in-up {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .feature-card, .feature-card img, .cta-section .btn {
+        transition: none;
       }
     }
   </style>
@@ -146,19 +226,19 @@
   </section>
 
   <!-- Features Section -->
-  <section class="features-section">
+  <section class="features-section gradient-accent">
     <div class="features-grid">
-      <div class="feature-card">
+      <div class="feature-card fade-in-up">
         <img src="/images/illustrations/02_create_gallery.svg" alt="Create Your Gallery">
         <h3>Create Your Gallery</h3>
         <p>Subscribe for free and create your profile. Provide some biographical details, and select from three different subscription levels. Upload your artwork images with their descriptions using our intuitive customization interface.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card fade-in-up">
         <img src="/images/illustrations/04_share_work.svg" alt="Share Your Work">
         <h3>Share Your Work</h3>
         <p>Share your gallery links with potential buyers worldwide. Visitors can view your art in augmented reality directly in their browser - no app download required.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card fade-in-up">
         <img src="https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=600&h=400&fit=crop" alt="Sell to Anyone">
         <h3>Sell to Anyone</h3>
         <p>Viewers can connect with you directly through the messaging portal to inquire about your artwork and negotiate purchases. Sell your art to anyone, anywhere in the world.</p>
@@ -166,42 +246,20 @@
     </div>
   </section>
 
-  <!-- How It Works -->
-  <section class="how-it-works">
-    <h2>How It Works</h2>
-    <div class="steps-grid">
-      <div class="step">
-        <div class="step-number">1</div>
-        <h3>Subscribe</h3>
-        <p>Create your free account and choose a subscription tier based on how many artworks you want to showcase.</p>
-      </div>
-      <div class="step">
-        <div class="step-number">2</div>
-        <h3>Upload</h3>
-        <p>Upload your artwork images with dimensions for true-scale AR viewing. Add descriptions, pricing, and details.</p>
-      </div>
-      <div class="step">
-        <div class="step-number">3</div>
-        <h3>Share</h3>
-        <p>Share your gallery link or QR code. Buyers view your art in AR at true scale in their own space.</p>
-      </div>
-    </div>
-  </section>
-
   <!-- Key Features -->
-  <section class="features-section">
+  <section class="features-section gradient-accent">
     <div class="features-grid">
-      <div class="feature-card">
+      <div class="feature-card fade-in-up">
         <img src="/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR">
         <h3>True Scale AR</h3>
         <p>HVM AR ensures precise image scaling, representing the true size of art unlike many other AR solutions. Buyers see exactly how your artwork will look in their space.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card fade-in-up">
         <img src="/images/illustrations/05_analytics.svg" alt="Analytics">
         <h3>Analytics Dashboard</h3>
         <p>Gain valuable insights into customer behavior, such as views and engagement, to make informed decisions about inventory and pricing strategies.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card fade-in-up">
         <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop" alt="Social Sharing">
         <h3>Social Sharing</h3>
         <p>Easily share your virtual galleries across social media platforms to expand your reach and attract new interest in your artwork.</p>
@@ -248,6 +306,27 @@
       const navLinks = document.getElementById('navLinks');
       navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
     }
+
+    // Scroll-triggered animations
+    document.addEventListener('DOMContentLoaded', function() {
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.fade-in-up').forEach(el => {
+        observer.observe(el);
+      });
+    });
   </script>
 </body>
 </html>
