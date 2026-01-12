@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="goldGlow4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGrad4" x1="50%" y1="50%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a" />
+      <stop offset="100%" style="stop-color:#080808" />
+    </linearGradient>
+    <radialGradient id="centerGlow4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0" />
+    </radialGradient>
+    <filter id="glow4">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow4">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="500" fill="url(#bgGrad4)"/>
+  
+  <!-- Central glow -->
+  <ellipse cx="400" cy="280" rx="300" ry="250" fill="url(#centerGlow4)"/>
+  
+  <!-- Connection lines radiating outward -->
+  <g stroke="url(#goldGlow4)" fill="none" filter="url(#softGlow4)">
+    <!-- Main connection lines to edges -->
+    <path d="M 400 200 Q 300 100 100 50" stroke-width="1.5" opacity="0.6"/>
+    <path d="M 400 200 Q 500 80 750 30" stroke-width="1.5" opacity="0.6"/>
+    <path d="M 400 200 Q 200 150 30 200" stroke-width="1.2" opacity="0.5"/>
+    <path d="M 400 200 Q 600 150 780 180" stroke-width="1.2" opacity="0.5"/>
+    <path d="M 400 200 Q 250 250 50 350" stroke-width="1" opacity="0.4"/>
+    <path d="M 400 200 Q 550 250 770 320" stroke-width="1" opacity="0.4"/>
+    <path d="M 400 200 Q 300 300 100 450" stroke-width="0.8" opacity="0.3"/>
+    <path d="M 400 200 Q 500 300 720 470" stroke-width="0.8" opacity="0.3"/>
+  </g>
+  
+  <!-- Network nodes at line ends - distant silhouettes implied -->
+  <g filter="url(#glow4)">
+    <circle cx="100" cy="50" r="8" fill="#D4AF37" opacity="0.4"/>
+    <circle cx="750" cy="30" r="6" fill="#D4AF37" opacity="0.35"/>
+    <circle cx="30" cy="200" r="5" fill="#D4AF37" opacity="0.3"/>
+    <circle cx="780" cy="180" r="7" fill="#D4AF37" opacity="0.35"/>
+    <circle cx="50" cy="350" r="4" fill="#D4AF37" opacity="0.25"/>
+    <circle cx="770" cy="320" r="5" fill="#D4AF37" opacity="0.3"/>
+    <circle cx="100" cy="450" r="3" fill="#D4AF37" opacity="0.2"/>
+    <circle cx="720" cy="470" r="4" fill="#D4AF37" opacity="0.25"/>
+  </g>
+  
+  <!-- Faint secondary silhouettes in distance -->
+  <g fill="#111" opacity="0.4">
+    <ellipse cx="95" cy="65" rx="12" ry="15"/>
+    <ellipse cx="745" cy="45" rx="10" ry="12"/>
+    <ellipse cx="60" cy="365" rx="8" ry="10"/>
+    <ellipse cx="760" cy="335" rx="9" ry="11"/>
+  </g>
+  
+  <!-- Central AR artwork being shared -->
+  <g filter="url(#glow4)">
+    <rect x="320" y="80" width="160" height="120" fill="none" stroke="url(#goldGlow4)" stroke-width="2.5" rx="2"/>
+    <!-- Abstract content -->
+    <circle cx="400" cy="130" r="25" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.6"/>
+    <rect x="360" y="150" width="80" height="30" fill="none" stroke="#FFD700" stroke-width="0.8" opacity="0.4"/>
+  </g>
+  
+  <!-- Main person silhouette - viewing the artwork -->
+  <g fill="#0a0a0a">
+    <!-- Base -->
+    <ellipse cx="400" cy="480" rx="45" ry="15"/>
+    <!-- Body -->
+    <path d="M 360 320 Q 355 400 370 480 L 430 480 Q 445 400 440 320 Z"/>
+    <!-- Head - looking up at artwork -->
+    <circle cx="400" cy="290" r="30"/>
+    <!-- Arms slightly raised -->
+    <path d="M 360 340 Q 320 350 300 330" stroke="#0a0a0a" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M 440 340 Q 480 350 500 330" stroke="#0a0a0a" stroke-width="16" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Pulse rings from center -->
+  <g stroke="#D4AF37" fill="none" opacity="0.2">
+    <circle cx="400" cy="200" r="80"/>
+    <circle cx="400" cy="200" r="140"/>
+    <circle cx="400" cy="200" r="220"/>
+    <circle cx="400" cy="200" r="320"/>
+  </g>
+  
+  <!-- Small data/share particles along lines -->
+  <g fill="#FFD700" opacity="0.5">
+    <circle cx="250" cy="125" r="2"/>
+    <circle cx="550" cy="110" r="2"/>
+    <circle cx="180" cy="180" r="1.5"/>
+    <circle cx="620" cy="165" r="1.5"/>
+    <circle cx="150" cy="280" r="1.5"/>
+    <circle cx="650" cy="260" r="1.5"/>
+  </g>
+</svg>

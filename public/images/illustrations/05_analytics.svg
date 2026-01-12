@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="goldGlow5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#121212" />
+      <stop offset="100%" style="stop-color:#0a0a0a" />
+    </linearGradient>
+    <radialGradient id="orbGlow5" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.6" />
+      <stop offset="70%" style="stop-color:#D4AF37;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0" />
+    </radialGradient>
+    <filter id="glow5">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow5">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="500" fill="url(#bgGrad5)"/>
+  
+  <!-- Abstract data visualization - floating orbs -->
+  <g filter="url(#softGlow5)">
+    <!-- Large central orb -->
+    <circle cx="500" cy="180" r="60" fill="url(#orbGlow5)"/>
+    <circle cx="500" cy="180" r="60" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.7"/>
+    
+    <!-- Medium orbs -->
+    <circle cx="380" cy="120" r="35" fill="url(#orbGlow5)" opacity="0.7"/>
+    <circle cx="380" cy="120" r="35" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.5"/>
+    
+    <circle cx="620" cy="140" r="40" fill="url(#orbGlow5)" opacity="0.6"/>
+    <circle cx="620" cy="140" r="40" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.5"/>
+    
+    <circle cx="450" cy="280" r="30" fill="url(#orbGlow5)" opacity="0.5"/>
+    <circle cx="450" cy="280" r="30" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.4"/>
+    
+    <!-- Small orbs -->
+    <circle cx="320" cy="200" r="18" fill="url(#orbGlow5)" opacity="0.4"/>
+    <circle cx="580" cy="250" r="22" fill="url(#orbGlow5)" opacity="0.45"/>
+    <circle cx="680" cy="220" r="15" fill="url(#orbGlow5)" opacity="0.35"/>
+    <circle cx="550" cy="320" r="20" fill="url(#orbGlow5)" opacity="0.3"/>
+  </g>
+  
+  <!-- Flowing wave lines - data streams -->
+  <g stroke="#D4AF37" fill="none" filter="url(#glow5)">
+    <path d="M 280 150 Q 350 120 420 150 Q 490 180 560 140 Q 630 100 700 130" stroke-width="1.5" opacity="0.5"/>
+    <path d="M 300 220 Q 380 190 450 230 Q 520 270 600 220 Q 680 170 750 200" stroke-width="1.2" opacity="0.4"/>
+    <path d="M 320 300 Q 400 260 480 300 Q 560 340 640 290" stroke-width="1" opacity="0.3"/>
+  </g>
+  
+  <!-- Layered geometry - translucent planes -->
+  <g filter="url(#glow5)">
+    <polygon points="400,80 550,120 530,220 380,180" fill="none" stroke="#FFD700" stroke-width="0.8" opacity="0.3"/>
+    <polygon points="480,150 620,180 600,280 460,250" fill="none" stroke="#D4AF37" stroke-width="0.8" opacity="0.25"/>
+    <polygon points="350,180 480,200 470,300 340,280" fill="none" stroke="#FFD700" stroke-width="0.6" opacity="0.2"/>
+  </g>
+  
+  <!-- Connection lines between orbs -->
+  <g stroke="#D4AF37" stroke-width="0.5" opacity="0.3">
+    <line x1="380" y1="120" x2="500" y2="180"/>
+    <line x1="500" y1="180" x2="620" y2="140"/>
+    <line x1="500" y1="180" x2="450" y2="280"/>
+    <line x1="450" y1="280" x2="580" y2="250"/>
+    <line x1="320" y1="200" x2="380" y2="120"/>
+    <line x1="580" y1="250" x2="680" y2="220"/>
+  </g>
+  
+  <!-- Tiny data particles -->
+  <g fill="#FFD700" filter="url(#glow5)">
+    <circle cx="420" cy="100" r="3" opacity="0.6"/>
+    <circle cx="540" cy="160" r="2.5" opacity="0.5"/>
+    <circle cx="360" cy="170" r="2" opacity="0.4"/>
+    <circle cx="600" cy="200" r="2.5" opacity="0.5"/>
+    <circle cx="500" cy="250" r="2" opacity="0.4"/>
+    <circle cx="650" cy="280" r="2" opacity="0.35"/>
+  </g>
+  
+  <!-- Person silhouette - contemplating the data -->
+  <g fill="#080808">
+    <!-- Base -->
+    <ellipse cx="180" cy="480" rx="45" ry="15"/>
+    <!-- Body -->
+    <path d="M 140 310 Q 130 400 150 480 L 210 480 Q 230 400 220 310 Z"/>
+    <!-- Head - looking at visualization -->
+    <circle cx="180" cy="275" r="32"/>
+    <!-- Arm extended toward data -->
+    <path d="M 220 330 Q 280 300 320 280" stroke="#080808" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <!-- Other arm relaxed -->
+    <path d="M 140 330 Q 110 370 115 400" stroke="#080808" stroke-width="14" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Touch point indicator -->
+  <g filter="url(#glow5)">
+    <circle cx="320" cy="278" r="8" fill="#D4AF37" opacity="0.6"/>
+    <circle cx="320" cy="278" r="12" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.4"/>
+  </g>
+  
+  <!-- Ambient particles -->
+  <g fill="#D4AF37" opacity="0.25">
+    <circle cx="100" cy="100" r="1.5"/>
+    <circle cx="750" cy="350" r="1"/>
+    <circle cx="50" cy="300" r="1"/>
+    <circle cx="700" cy="420" r="1.5"/>
+  </g>
+</svg>
