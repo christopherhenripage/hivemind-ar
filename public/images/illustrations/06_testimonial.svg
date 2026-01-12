@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <defs>
+    <linearGradient id="goldGlow6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGrad6" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#141414" />
+      <stop offset="100%" style="stop-color:#0a0a0a" />
+    </linearGradient>
+    <radialGradient id="spotlight6" cx="30%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0" />
+    </radialGradient>
+    <filter id="glow6">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow6">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="400" fill="url(#bgGrad6)"/>
+
+  <!-- Spotlight effect -->
+  <ellipse cx="200" cy="180" rx="250" ry="200" fill="url(#spotlight6)"/>
+
+  <!-- Gallery wall lines -->
+  <g stroke="#333" stroke-width="0.5" opacity="0.3">
+    <line x1="0" y1="350" x2="600" y2="350"/>
+    <line x1="0" y1="50" x2="600" y2="50"/>
+  </g>
+
+  <!-- Large artwork on wall with AR glow -->
+  <g filter="url(#softGlow6)">
+    <rect x="80" y="80" width="180" height="140" fill="none" stroke="url(#goldGlow6)" stroke-width="3" rx="2"/>
+
+    <!-- Abstract art inside frame -->
+    <circle cx="170" cy="130" r="35" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.6"/>
+    <circle cx="170" cy="130" r="20" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.4"/>
+    <rect x="120" y="160" width="100" height="40" fill="none" stroke="#D4AF37" stroke-width="1" opacity="0.4" rx="2"/>
+  </g>
+
+  <!-- AR indicator elements around artwork -->
+  <g stroke="#FFD700" stroke-width="1.5" fill="none" filter="url(#glow6)" opacity="0.7">
+    <!-- Corner brackets -->
+    <path d="M 70 70 L 70 90 M 70 70 L 90 70"/>
+    <path d="M 270 70 L 270 90 M 270 70 L 250 70"/>
+    <path d="M 70 230 L 70 210 M 70 230 L 90 230"/>
+    <path d="M 270 230 L 270 210 M 270 230 L 250 230"/>
+  </g>
+
+  <!-- Measurement lines -->
+  <g stroke="#D4AF37" stroke-width="1" opacity="0.5" stroke-dasharray="4,4">
+    <line x1="60" y1="80" x2="60" y2="220"/>
+    <line x1="80" y1="240" x2="260" y2="240"/>
+  </g>
+
+  <!-- Artist silhouette - standing proudly by their work -->
+  <g fill="#9A7B5B">
+    <!-- Base/feet -->
+    <ellipse cx="420" cy="348" rx="35" ry="10"/>
+    <!-- Legs -->
+    <rect x="400" y="280" width="16" height="70" rx="4"/>
+    <rect x="424" y="280" width="16" height="70" rx="4"/>
+    <!-- Body -->
+    <path d="M 395 200 Q 390 240 400 280 L 440 280 Q 450 240 445 200 Z"/>
+    <!-- Head -->
+    <circle cx="420" cy="175" r="25"/>
+    <!-- Arm gesturing toward artwork -->
+    <path d="M 395 215 Q 340 200 300 180" stroke="#9A7B5B" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <!-- Other arm relaxed -->
+    <path d="M 445 220 Q 470 250 475 280" stroke="#9A7B5B" stroke-width="12" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Connection line from artist to artwork -->
+  <g stroke="#D4AF37" stroke-width="1" opacity="0.3" filter="url(#glow6)">
+    <path d="M 300 180 Q 270 170 270 150" fill="none"/>
+  </g>
+
+  <!-- Floating phone/device showing AR -->
+  <g filter="url(#glow6)">
+    <rect x="480" y="120" width="70" height="110" fill="#1a1a1a" stroke="url(#goldGlow6)" stroke-width="1.5" rx="6"/>
+    <!-- Screen content - mini artwork -->
+    <rect x="488" y="135" width="54" height="80" fill="#0f0f0f" rx="2"/>
+    <rect x="495" y="145" width="40" height="30" fill="none" stroke="#D4AF37" stroke-width="0.8" opacity="0.6"/>
+    <circle cx="515" cy="160" r="8" fill="none" stroke="#FFD700" stroke-width="0.5" opacity="0.5"/>
+    <!-- AR badge on phone -->
+    <rect x="495" y="185" width="20" height="10" fill="#D4AF37" opacity="0.4" rx="2"/>
+  </g>
+
+  <!-- Signal waves from phone -->
+  <g stroke="#D4AF37" fill="none" opacity="0.3">
+    <path d="M 470 175 Q 450 175 440 160" stroke-width="1"/>
+    <path d="M 465 185 Q 440 185 425 165" stroke-width="0.8"/>
+  </g>
+
+  <!-- Quote marks decorative -->
+  <g fill="#D4AF37" opacity="0.2" filter="url(#glow6)">
+    <text x="350" y="320" font-size="60" font-family="Georgia, serif">"</text>
+  </g>
+
+  <!-- Ambient particles -->
+  <g fill="#D4AF37" opacity="0.3">
+    <circle cx="50" cy="300" r="1.5"/>
+    <circle cx="550" cy="80" r="1"/>
+    <circle cx="320" cy="60" r="1.5"/>
+    <circle cx="500" cy="300" r="1"/>
+    <circle cx="150" cy="320" r="1"/>
+  </g>
+</svg>
