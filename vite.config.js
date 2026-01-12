@@ -40,8 +40,27 @@ export default defineConfig({
  'client-gallery': resolve(__dirname, 'pages/client/gallery.html'),
  'client-contact-us': resolve(__dirname, 'pages/client/contact-us.html'),
  'client-ordering': resolve(__dirname, 'pages/client/ordering.html'),
- 'ar-target': resolve(__dirname, 'pages/ar-target.html')
- }
- }
- }
+ 'ar-target': resolve(__dirname, 'pages/ar-target.html'),
+        // Auth pages
+        'auth-login': resolve(__dirname, 'pages/auth/login.html'),
+        'auth-signup': resolve(__dirname, 'pages/auth/signup.html'),
+        'auth-forgot-password': resolve(__dirname, 'pages/auth/forgot-password.html'),
+        // Public pages
+        'public-about': resolve(__dirname, 'pages/public/about.html'),
+        'public-privacy': resolve(__dirname, 'pages/public/privacy.html'),
+        'public-contact': resolve(__dirname, 'pages/public/contact.html'),
+        // Gallery
+        'gallery': resolve(__dirname, 'pages/gallery/index.html'),
+        // Subscriber pages
+        'subscriber-dashboard': resolve(__dirname, 'pages/subscriber/dashboard.html'),
+        'subscriber-profile': resolve(__dirname, 'pages/subscriber/profile.html'),
+        'subscriber-images': resolve(__dirname, 'pages/subscriber/images.html'),
+        'subscriber-images-create': resolve(__dirname, 'pages/subscriber/images-create.html'),
+        'subscriber-messages': resolve(__dirname, 'pages/subscriber/messages.html'),
+        'subscriber-support': resolve(__dirname, 'pages/subscriber/support.html'),
+        'subscriber-upgrade': resolve(__dirname, 'pages/subscriber/upgrade.html'),
+        'subscriber-transactions': resolve(__dirname, 'pages/subscriber/transactions.html')
+      }
+    }
+  }
 });
