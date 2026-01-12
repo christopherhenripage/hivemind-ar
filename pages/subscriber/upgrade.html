@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upgrade Your Plan - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    .subscription-hero {
+      background-image: url('https://media.hivemindar.com/images/client/hivemind-site-lg.jpg');
+      background-size: cover;
+      background-position: center;
+      padding: 3rem 2rem;
+      color: white;
+      text-align: center;
+      position: relative;
+    }
+    .subscription-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+    }
+    .subscription-hero h1 {
+      position: relative;
+      z-index: 1;
+      font-size: 2rem;
+      font-weight: 400;
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
+        <span class="logo-text">HiveMind AR</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber/upgrade.html" class="active">
+          <span class="nav-icon">🏆</span>
+          <span class="nav-text">Upgrade</span>
+        </a>
+        <a href="/pages/subscriber/profile.html">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/pages/subscriber/messages.html">
+          <span class="nav-icon">✉️</span>
+          <span class="nav-text">Messages</span>
+        </a>
+        <a href="/pages/subscriber/images.html">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">Images</span>
+        </a>
+        <a href="/pages/subscriber/transactions.html">
+          <span class="nav-icon">💲</span>
+          <span class="nav-text">Transactions</span>
+        </a>
+        <a href="/pages/subscriber/support.html">
+          <span class="nav-icon">🎧</span>
+          <span class="nav-text">Support</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" onclick="handleLogout()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <!-- Hero -->
+      <div class="subscription-hero">
+        <h1>Upgrade Your Plan</h1>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="subscription-grid">
+          <!-- Free/Trial -->
+          <div class="subscription-card" data-tier="free" onclick="selectTier('free')">
+            <div class="checkmark">✓</div>
+            <div class="tier-name">Free</div>
+            <div class="tier-price">Free</div>
+            <div class="tier-limit">Maximum of 1 Image</div>
+            <button class="btn btn-outline btn-block">Trial</button>
+          </div>
+
+          <!-- Bronze -->
+          <div class="subscription-card" data-tier="bronze" onclick="selectTier('bronze')">
+            <div class="checkmark">✓</div>
+            <div class="tier-name">$9.99/Month</div>
+            <div class="tier-price"></div>
+            <div class="tier-limit">Maximum of 5 Images</div>
+            <button class="btn btn-dark btn-block">Bronze</button>
+          </div>
+
+          <!-- Silver -->
+          <div class="subscription-card" data-tier="silver" onclick="selectTier('silver')">
+            <div class="checkmark">✓</div>
+            <div class="tier-name">$24.99/Month</div>
+            <div class="tier-price"></div>
+            <div class="tier-limit">Maximum of 25 Images</div>
+            <button class="btn btn-dark btn-block">Silver</button>
+          </div>
+
+          <!-- Gold -->
+          <div class="subscription-card" data-tier="gold" onclick="selectTier('gold')">
+            <div class="checkmark">✓</div>
+            <div class="tier-name">$49.99/Month</div>
+            <div class="tier-price"></div>
+            <div class="tier-limit">Maximum of 100 Images</div>
+            <button class="btn btn-paypal btn-block">
+              <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="PayPal" style="height: 20px;">
+            </button>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem; color: var(--hm-text-muted);">
+          <p>Payment processing will be available soon. Contact support for manual upgrades.</p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        &copy; 2026 by Hivemind
+      </footer>
+    </main>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let currentArtist = null;
+
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Initialize
+    async function init() {
+      const user = await checkAuth();
+      if (!user) return;
+
+      // Get artist profile
+      const { data: artist } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      currentArtist = artist;
+
+      // Highlight current tier
+      if (artist) {
+        const currentCard = document.querySelector(`[data-tier="${artist.subscription_tier}"]`);
+        if (currentCard) {
+          currentCard.classList.add('selected');
+        }
+      }
+    }
+
+    window.selectTier = function(tier) {
+      // Remove selected from all
+      document.querySelectorAll('.subscription-card').forEach(c => c.classList.remove('selected'));
+
+      // Add selected to clicked
+      document.querySelector(`[data-tier="${tier}"]`).classList.add('selected');
+
+      // For now, show message (payment integration would go here)
+      if (tier !== 'free' && tier !== currentArtist?.subscription_tier) {
+        alert('Payment integration coming soon! Please contact support to upgrade your plan.');
+      }
+    };
+
+    window.handleLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/pages/auth/login.html';
+    };
+
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    init();
+  </script>
+
+  <style>
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 101;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+    }
+  </style>
+</body>
+</html>

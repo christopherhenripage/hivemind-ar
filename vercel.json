@@ -1,0 +1,23 @@
+{
+  "rewrites": [
+    {
+      "source": "/gallery/:slug",
+      "destination": "/pages/gallery/index.html?slug=:slug"
+    },
+    {
+      "source": "/gallery/:slug/",
+      "destination": "/pages/gallery/index.html?slug=:slug"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
+      ]
+    }
+  ]
+}

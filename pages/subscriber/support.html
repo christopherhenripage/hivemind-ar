@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
+        <span class="logo-text">HiveMind AR</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber/upgrade.html">
+          <span class="nav-icon">🏆</span>
+          <span class="nav-text">Upgrade</span>
+        </a>
+        <a href="/pages/subscriber/profile.html">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/pages/subscriber/messages.html">
+          <span class="nav-icon">✉️</span>
+          <span class="nav-text">Messages</span>
+        </a>
+        <a href="/pages/subscriber/images.html">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">Images</span>
+        </a>
+        <a href="/pages/subscriber/transactions.html">
+          <span class="nav-icon">💲</span>
+          <span class="nav-text">Transactions</span>
+        </a>
+        <a href="/pages/subscriber/support.html" class="active">
+          <span class="nav-icon">🎧</span>
+          <span class="nav-text">Support</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" onclick="handleLogout()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/pages/subscriber/dashboard.html">Home</a> / <span>Support</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Support</h1>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="support-layout">
+          <!-- Support Form -->
+          <div class="support-form">
+            <h2>We would love to hear from you!</h2>
+            <p class="subtitle">Send us a message and we'll get in touch.</p>
+
+            <form id="supportForm" onsubmit="handleSupport(event)">
+              <div class="form-group">
+                <label>Subject</label>
+                <input type="text" id="subject" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label>To: Hivemind</label>
+              </div>
+
+              <div class="form-group">
+                <label>Message</label>
+                <textarea id="message" class="form-control" rows="6" placeholder="Good Day. I would like to...
+
+Thank you."></textarea>
+              </div>
+
+              <div style="margin-bottom: 1rem; color: var(--hm-text-muted); font-size: 0.9rem;">
+                <p>From,</p>
+                <p id="fromName"></p>
+                <p id="fromGallery"></p>
+                <p id="fromPhone"></p>
+              </div>
+
+              <p class="error-text" id="supportError"></p>
+              <p class="success-text" id="supportSuccess" style="color: var(--hm-success);"></p>
+
+              <button type="submit" class="btn btn-dark" id="submitBtn">Send</button>
+            </form>
+          </div>
+
+          <!-- Contact Info -->
+          <div class="support-contact" style="background-image: url('https://media.hivemindar.com/images/client/contact-hivemind.jpg');">
+            <h3>CONTACT</h3>
+            <p>info@hivemindcollective.space</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        &copy; 2026 by Hivemind
+      </footer>
+    </main>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let currentArtist = null;
+
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Initialize
+    async function init() {
+      const user = await checkAuth();
+      if (!user) return;
+
+      // Get artist profile
+      const { data: artist } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      currentArtist = artist;
+
+      // Update from info
+      const nameParts = user.email.split('@')[0].split('.');
+      const displayName = nameParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+
+      document.getElementById('fromName').textContent = displayName;
+      document.getElementById('fromGallery').textContent = artist?.gallery_name || '';
+      document.getElementById('fromPhone').textContent = artist?.phone || '';
+    }
+
+    window.handleSupport = async function(event) {
+      event.preventDefault();
+
+      const subject = document.getElementById('subject').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const submitBtn = document.getElementById('submitBtn');
+      const errorEl = document.getElementById('supportError');
+      const successEl = document.getElementById('supportSuccess');
+
+      errorEl.textContent = '';
+      successEl.textContent = '';
+
+      if (!subject || !message) {
+        errorEl.textContent = 'Please fill in all fields.';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const { error } = await supabase
+          .from('support_tickets')
+          .insert({
+            artist_id: currentArtist?.id,
+            subject: subject,
+            message: message
+          });
+
+        if (error) throw error;
+
+        successEl.textContent = 'Your message has been sent. We will get back to you soon!';
+        document.getElementById('supportForm').reset();
+
+      } catch (err) {
+        console.error('Error:', err);
+        errorEl.textContent = err.message || 'An error occurred. Please try again.';
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send';
+    };
+
+    window.handleLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/pages/auth/login.html';
+    };
+
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    init();
+  </script>
+
+  <style>
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 101;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      .breadcrumb, .page-header {
+        padding-left: 4rem;
+      }
+      .support-layout {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</body>
+</html>

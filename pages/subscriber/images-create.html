@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Image - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
+        <span class="logo-text">HiveMind AR</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber/upgrade.html">
+          <span class="nav-icon">🏆</span>
+          <span class="nav-text">Upgrade</span>
+        </a>
+        <a href="/pages/subscriber/profile.html">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/pages/subscriber/messages.html">
+          <span class="nav-icon">✉️</span>
+          <span class="nav-text">Messages</span>
+        </a>
+        <a href="/pages/subscriber/images.html" class="active">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">Images</span>
+        </a>
+        <a href="/pages/subscriber/transactions.html">
+          <span class="nav-icon">💲</span>
+          <span class="nav-text">Transactions</span>
+        </a>
+        <a href="/pages/subscriber/support.html">
+          <span class="nav-icon">🎧</span>
+          <span class="nav-text">Support</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" onclick="handleLogout()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/pages/subscriber/dashboard.html">Home</a> /
+        <a href="/pages/subscriber/images.html">Painting</a> /
+        <span>Create</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Create</h1>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <!-- Wizard Steps -->
+        <div class="wizard-steps">
+          <div class="wizard-step active" data-step="1">
+            <div class="step-number">1</div>
+            <span class="step-label">INFO</span>
+          </div>
+          <div class="wizard-step" data-step="2">
+            <div class="step-number">2</div>
+            <span class="step-label">PRICING</span>
+          </div>
+          <div class="wizard-step" data-step="3">
+            <div class="step-number">3</div>
+            <span class="step-label">IMAGE</span>
+          </div>
+          <div class="wizard-step" data-step="4">
+            <div class="step-number">4</div>
+            <span class="step-label">THUMBNAIL</span>
+          </div>
+        </div>
+
+        <!-- Step 1: INFO -->
+        <div class="wizard-content" id="step1">
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="title" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Creator</label>
+            <input type="text" id="creator" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Year Painted</label>
+            <input type="text" id="yearPainted" class="form-control" placeholder="e.g. 1982">
+          </div>
+          <div class="form-group">
+            <label>Medium</label>
+            <input type="text" id="medium" class="form-control" placeholder="e.g. Oil, Watercolor, Charcoal Painting, etc.">
+          </div>
+          <div class="form-group">
+            <label>Information</label>
+            <textarea id="information" class="form-control" rows="4"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Copyright</label>
+            <input type="text" id="copyright" class="form-control" placeholder="e.g. &copy; 2012 Barbara Kruger">
+          </div>
+          <div class="wizard-actions">
+            <button class="btn btn-dark" onclick="nextStep(1)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 2: PRICING -->
+        <div class="wizard-content" id="step2" style="display: none;">
+          <div class="form-group">
+            <label>Price (USD)</label>
+            <input type="number" id="priceUsd" class="form-control" step="0.01" min="0" placeholder="e.g. 1500.00">
+          </div>
+          <div class="wizard-actions">
+            <button class="btn btn-light" onclick="prevStep(2)">Back</button>
+            <button class="btn btn-dark" onclick="nextStep(2)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 3: IMAGE -->
+        <div class="wizard-content" id="step3" style="display: none;">
+          <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase;">Physical Image Size</h3>
+          <div class="form-group">
+            <label>Width in cm</label>
+            <input type="number" id="widthCm" class="form-control" step="0.1" placeholder="e.g. 92">
+          </div>
+          <div class="form-group">
+            <label>Height in cm</label>
+            <input type="number" id="heightCm" class="form-control" step="0.1" placeholder="e.g. 122">
+          </div>
+
+          <h3 style="font-size: 0.875rem; font-weight: 600; margin: 2rem 0 1rem; text-transform: uppercase;">Image Size in Browser</h3>
+          <div class="form-group">
+            <label>Image Width in px</label>
+            <input type="number" id="widthPx" class="form-control" placeholder="e.g. 300">
+          </div>
+          <div class="form-group">
+            <label>Image Height in px</label>
+            <input type="number" id="heightPx" class="form-control" placeholder="e.g. 600">
+          </div>
+
+          <div class="form-group">
+            <label>Artwork Image</label>
+            <div class="image-upload-area" id="imageUploadArea" onclick="document.getElementById('imageInput').click()">
+              <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+              <div id="imagePreviewContainer">
+                <p style="color: var(--hm-text-muted);">Click to upload image</p>
+              </div>
+            </div>
+            <div class="image-controls" id="imageControls" style="display: none;">
+              <span>Image</span>
+              <button onclick="rotateImage(-90)">↺</button>
+              <button onclick="rotateImage(90)">↻</button>
+              <button onclick="zoomImage(-0.1)">🔍-</button>
+              <input type="range" class="zoom-slider" id="zoomSlider" min="0.5" max="2" step="0.1" value="1" onchange="setZoom(this.value)">
+              <button onclick="zoomImage(0.1)">🔍+</button>
+            </div>
+          </div>
+
+          <div class="wizard-actions">
+            <button class="btn btn-light" onclick="prevStep(3)">Back</button>
+            <button class="btn btn-dark" onclick="nextStep(3)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 4: THUMBNAIL -->
+        <div class="wizard-content" id="step4" style="display: none;">
+          <div class="form-group">
+            <label>Thumbnail</label>
+            <div class="image-upload-area" id="thumbnailUploadArea" onclick="document.getElementById('thumbnailInput').click()">
+              <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="handleThumbnailUpload(event)">
+              <div id="thumbnailPreviewContainer">
+                <p style="color: var(--hm-text-muted);">Click to upload thumbnail</p>
+              </div>
+            </div>
+            <div class="image-controls" id="thumbnailControls" style="display: none;">
+              <span>Thumbnail</span>
+              <button onclick="rotateThumbnail(-90)">↺</button>
+              <button onclick="rotateThumbnail(90)">↻</button>
+              <button onclick="zoomThumbnail(-0.1)">🔍-</button>
+              <input type="range" class="zoom-slider" id="thumbnailZoomSlider" min="0.5" max="2" step="0.1" value="1">
+              <button onclick="zoomThumbnail(0.1)">🔍+</button>
+            </div>
+            <p style="color: var(--hm-text-muted); font-size: 0.875rem; margin-top: 1rem;">
+              This will be the image that displays on your gallery page. We suggest that you use the same image as the image you are going to sell.
+            </p>
+          </div>
+
+          <p class="error-text" id="createError"></p>
+
+          <div class="wizard-actions">
+            <button class="btn btn-light" onclick="prevStep(4)">Back</button>
+            <button class="btn btn-dark" id="createBtn" onclick="createArtwork()">Create</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        &copy; 2026 by Hivemind
+      </footer>
+    </main>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let currentStep = 1;
+    let currentArtist = null;
+    let imageFile = null;
+    let thumbnailFile = null;
+    let editingId = null;
+
+    // Check if editing
+    const urlParams = new URLSearchParams(window.location.search);
+    editingId = urlParams.get('id');
+
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Initialize
+    async function init() {
+      const user = await checkAuth();
+      if (!user) return;
+
+      // Get artist profile
+      const { data: artist } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      currentArtist = artist;
+
+      if (!artist) {
+        alert('Please complete your profile first.');
+        window.location.href = '/pages/subscriber/profile.html';
+        return;
+      }
+
+      // Check image limit
+      const { count } = await supabase
+        .from('artworks')
+        .select('*', { count: 'exact', head: true })
+        .eq('artist_id', artist.id);
+
+      if (!editingId && count >= artist.max_images) {
+        alert(`You have reached your image limit (${artist.max_images}). Please upgrade your subscription.`);
+        window.location.href = '/pages/subscriber/upgrade.html';
+        return;
+      }
+
+      // Load existing artwork if editing
+      if (editingId) {
+        const { data: artwork } = await supabase
+          .from('artworks')
+          .select('*')
+          .eq('id', editingId)
+          .single();
+
+        if (artwork) {
+          document.getElementById('title').value = artwork.title || '';
+          document.getElementById('creator').value = artwork.creator || '';
+          document.getElementById('yearPainted').value = artwork.year_created || '';
+          document.getElementById('medium').value = artwork.medium || '';
+          document.getElementById('information').value = artwork.description || '';
+          document.getElementById('copyright').value = artwork.copyright || '';
+          document.getElementById('priceUsd').value = artwork.price_usd || '';
+          document.getElementById('widthCm').value = artwork.width_cm || '';
+          document.getElementById('heightCm').value = artwork.height_cm || '';
+          document.getElementById('widthPx').value = artwork.width_px || '';
+          document.getElementById('heightPx').value = artwork.height_px || '';
+
+          if (artwork.image_url) {
+            document.getElementById('imagePreviewContainer').innerHTML =
+              `<img src="${artwork.image_url}" class="image-preview" id="imagePreview">`;
+            document.getElementById('imageControls').style.display = 'flex';
+          }
+
+          if (artwork.thumbnail_url) {
+            document.getElementById('thumbnailPreviewContainer').innerHTML =
+              `<img src="${artwork.thumbnail_url}" class="image-preview" id="thumbnailPreview">`;
+            document.getElementById('thumbnailControls').style.display = 'flex';
+          }
+
+          document.getElementById('createBtn').textContent = 'Update';
+        }
+      }
+    }
+
+    function updateStepUI(step) {
+      // Update step indicators
+      document.querySelectorAll('.wizard-step').forEach((el, index) => {
+        el.classList.remove('active', 'completed');
+        if (index + 1 < step) el.classList.add('completed');
+        if (index + 1 === step) el.classList.add('active');
+      });
+
+      // Show/hide step content
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('step' + i).style.display = i === step ? 'block' : 'none';
+      }
+    }
+
+    window.nextStep = function(from) {
+      // Validate current step
+      if (from === 1) {
+        if (!document.getElementById('title').value.trim()) {
+          alert('Title is required');
+          return;
+        }
+      }
+
+      currentStep = from + 1;
+      updateStepUI(currentStep);
+    };
+
+    window.prevStep = function(from) {
+      currentStep = from - 1;
+      updateStepUI(currentStep);
+    };
+
+    window.handleImageUpload = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      imageFile = file;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('imagePreviewContainer').innerHTML =
+          `<img src="${e.target.result}" class="image-preview" id="imagePreview">`;
+        document.getElementById('imageControls').style.display = 'flex';
+        document.getElementById('imageUploadArea').classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.handleThumbnailUpload = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      thumbnailFile = file;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('thumbnailPreviewContainer').innerHTML =
+          `<img src="${e.target.result}" class="image-preview" id="thumbnailPreview">`;
+        document.getElementById('thumbnailControls').style.display = 'flex';
+        document.getElementById('thumbnailUploadArea').classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+    };
+
+    let imageRotation = 0;
+    let thumbnailRotation = 0;
+
+    window.rotateImage = function(deg) {
+      imageRotation += deg;
+      const img = document.getElementById('imagePreview');
+      if (img) img.style.transform = `rotate(${imageRotation}deg)`;
+    };
+
+    window.rotateThumbnail = function(deg) {
+      thumbnailRotation += deg;
+      const img = document.getElementById('thumbnailPreview');
+      if (img) img.style.transform = `rotate(${thumbnailRotation}deg)`;
+    };
+
+    window.zoomImage = function(delta) {
+      const slider = document.getElementById('zoomSlider');
+      slider.value = Math.max(0.5, Math.min(2, parseFloat(slider.value) + delta));
+      setZoom(slider.value);
+    };
+
+    window.setZoom = function(val) {
+      const img = document.getElementById('imagePreview');
+      if (img) img.style.scale = val;
+    };
+
+    window.createArtwork = async function() {
+      const btn = document.getElementById('createBtn');
+      const error = document.getElementById('createError');
+      error.textContent = '';
+
+      // Validate
+      const title = document.getElementById('title').value.trim();
+      if (!title) {
+        error.textContent = 'Title is required';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = editingId ? 'Updating...' : 'Creating...';
+
+      try {
+        let imageUrl = null;
+        let thumbnailUrl = null;
+
+        // Upload image if new file selected
+        if (imageFile) {
+          const imageExt = imageFile.name.split('.').pop();
+          const imagePath = `${currentArtist.id}/${Date.now()}.${imageExt}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('artworks')
+            .upload(imagePath, imageFile);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('artworks')
+            .getPublicUrl(imagePath);
+
+          imageUrl = publicUrl;
+        }
+
+        // Upload thumbnail if new file selected
+        if (thumbnailFile) {
+          const thumbExt = thumbnailFile.name.split('.').pop();
+          const thumbPath = `${currentArtist.id}/thumb_${Date.now()}.${thumbExt}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('artworks')
+            .upload(thumbPath, thumbnailFile);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('artworks')
+            .getPublicUrl(thumbPath);
+
+          thumbnailUrl = publicUrl;
+        }
+
+        // Prepare artwork data
+        const artworkData = {
+          artist_id: currentArtist.id,
+          title: title,
+          creator: document.getElementById('creator').value.trim(),
+          year_created: document.getElementById('yearPainted').value.trim(),
+          medium: document.getElementById('medium').value.trim(),
+          description: document.getElementById('information').value.trim(),
+          copyright: document.getElementById('copyright').value.trim(),
+          price_usd: parseFloat(document.getElementById('priceUsd').value) || 0,
+          width_cm: parseFloat(document.getElementById('widthCm').value) || null,
+          height_cm: parseFloat(document.getElementById('heightCm').value) || null,
+          width_px: parseInt(document.getElementById('widthPx').value) || null,
+          height_px: parseInt(document.getElementById('heightPx').value) || null
+        };
+
+        if (imageUrl) artworkData.image_url = imageUrl;
+        if (thumbnailUrl) artworkData.thumbnail_url = thumbnailUrl;
+
+        if (editingId) {
+          // Update existing artwork
+          const { error: updateError } = await supabase
+            .from('artworks')
+            .update(artworkData)
+            .eq('id', editingId);
+
+          if (updateError) throw updateError;
+        } else {
+          // Create new artwork
+          const { error: insertError } = await supabase
+            .from('artworks')
+            .insert(artworkData);
+
+          if (insertError) throw insertError;
+        }
+
+        // Success - redirect to images list
+        window.location.href = '/pages/subscriber/images.html';
+
+      } catch (err) {
+        console.error('Error:', err);
+        error.textContent = err.message || 'An error occurred';
+        btn.disabled = false;
+        btn.textContent = editingId ? 'Update' : 'Create';
+      }
+    };
+
+    window.handleLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/pages/auth/login.html';
+    };
+
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    init();
+  </script>
+
+  <style>
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 101;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      .breadcrumb, .page-header {
+        padding-left: 4rem;
+      }
+    }
+
+    .image-preview {
+      max-width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      transition: transform 0.2s;
+    }
+  </style>
+</body>
+</html>

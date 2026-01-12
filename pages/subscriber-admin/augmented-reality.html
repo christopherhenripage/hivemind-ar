@@ -471,23 +471,57 @@
             <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
             <a-entity mindar-image-target="targetIndex: 0" id="arTarget">
-              <!-- Red cube that appears on the target - positioned above target, large and bright -->
-              <a-box
-                position="0 0 0.5"
-                scale="1 1 1"
-                color="#ff0000"
-                material="shader: flat; color: #ff0000;"
-                animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear"
-              ></a-box>
-              <!-- Plane on the target for debugging - should show immediately -->
-              <a-plane
-                position="0 0 0"
-                rotation="0 0 0"
-                width="1"
-                height="1"
-                color="#00ff00"
-                material="shader: flat; color: #00ff00; opacity: 0.7;"
-              ></a-plane>
+              <!-- HiveMind branded 3D object - hexagonal prism (honeycomb/hive theme) -->
+
+              <!-- Main hexagonal structure - purple/violet brand color -->
+              <a-cylinder
+                position="0 0.3 0"
+                radius="0.4"
+                height="0.5"
+                segments-radial="6"
+                color="#6B4DE6"
+                material="shader: flat; color: #6B4DE6;"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 4000; easing: linear"
+              ></a-cylinder>
+
+              <!-- Inner hexagon ring - lighter purple -->
+              <a-cylinder
+                position="0 0.35 0"
+                radius="0.25"
+                height="0.55"
+                segments-radial="6"
+                color="#9B7EF7"
+                material="shader: flat; color: #9B7EF7;"
+                animation="property: rotation; to: 0 -360 0; loop: true; dur: 3000; easing: linear"
+              ></a-cylinder>
+
+              <!-- Center core - gold/amber accent -->
+              <a-cylinder
+                position="0 0.3 0"
+                radius="0.1"
+                height="0.6"
+                segments-radial="6"
+                color="#FFB700"
+                material="shader: flat; color: #FFB700;"
+              ></a-cylinder>
+
+              <!-- Floating particles around the hive -->
+              <a-sphere position="0.5 0.4 0" radius="0.05" color="#FFB700" material="shader: flat;"
+                animation="property: position; to: 0.5 0.6 0; dir: alternate; loop: true; dur: 1500; easing: easeInOutSine"></a-sphere>
+              <a-sphere position="-0.5 0.5 0" radius="0.04" color="#FFB700" material="shader: flat;"
+                animation="property: position; to: -0.5 0.3 0; dir: alternate; loop: true; dur: 1800; easing: easeInOutSine"></a-sphere>
+              <a-sphere position="0 0.4 0.5" radius="0.045" color="#FFB700" material="shader: flat;"
+                animation="property: position; to: 0 0.6 0.5; dir: alternate; loop: true; dur: 1600; easing: easeInOutSine"></a-sphere>
+
+              <!-- Base platform with HiveMind text indicator -->
+              <a-ring
+                position="0 0.01 0"
+                rotation="-90 0 0"
+                radius-inner="0.5"
+                radius-outer="0.6"
+                color="#6B4DE6"
+                material="shader: flat; color: #6B4DE6; opacity: 0.8;"
+              ></a-ring>
             </a-entity>
           </a-scene>
         `;

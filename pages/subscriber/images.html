@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Images - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
+        <span class="logo-text">HiveMind AR</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber/upgrade.html">
+          <span class="nav-icon">🏆</span>
+          <span class="nav-text">Upgrade</span>
+        </a>
+        <a href="/pages/subscriber/profile.html">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/pages/subscriber/messages.html">
+          <span class="nav-icon">✉️</span>
+          <span class="nav-text">Messages</span>
+        </a>
+        <a href="/pages/subscriber/images.html" class="active">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">Images</span>
+        </a>
+        <a href="/pages/subscriber/transactions.html">
+          <span class="nav-icon">💲</span>
+          <span class="nav-text">Transactions</span>
+        </a>
+        <a href="/pages/subscriber/support.html">
+          <span class="nav-icon">🎧</span>
+          <span class="nav-text">Support</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" onclick="handleLogout()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/pages/subscriber/dashboard.html">Home</a> / <span>Images</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Images</h1>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="data-table-container">
+          <div class="data-table-header">
+            <a href="/pages/subscriber/images-create.html" class="btn btn-dark">Add Image</a>
+            <span class="data-table-info" id="tableInfo">Showing 0 of 0 items.</span>
+          </div>
+
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Image</th>
+                <th>
+                  Title
+                  <input type="text" placeholder="Filter..." id="filterTitle" oninput="filterTable()">
+                </th>
+                <th>
+                  Amount Usd
+                  <input type="text" placeholder="Filter..." id="filterAmount" oninput="filterTable()">
+                </th>
+                <th>
+                  Created
+                  <input type="text" placeholder="Filter..." id="filterCreated" oninput="filterTable()">
+                </th>
+                <th style="width: 120px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="imagesTableBody">
+              <tr>
+                <td colspan="5" class="no-results">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        &copy; 2026 by Hivemind
+      </footer>
+    </main>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal" style="max-width: 400px; text-align: center;">
+      <h2 style="margin-bottom: 1rem;">Delete Artwork?</h2>
+      <p style="color: var(--hm-text-muted); margin-bottom: 1.5rem;">This action cannot be undone.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <button class="btn btn-light" onclick="hideDeleteModal()">Cancel</button>
+        <button class="btn" style="background: var(--hm-danger); color: white;" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let allArtworks = [];
+    let currentArtist = null;
+    let deleteId = null;
+
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Load images
+    async function loadImages() {
+      const user = await checkAuth();
+      if (!user) return;
+
+      // Get artist profile
+      const { data: artist } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      currentArtist = artist;
+
+      if (!artist) {
+        document.getElementById('imagesTableBody').innerHTML =
+          '<tr><td colspan="5" class="no-results">Please complete your profile first.</td></tr>';
+        return;
+      }
+
+      // Get artworks
+      const { data: artworks, error } = await supabase
+        .from('artworks')
+        .select('*')
+        .eq('artist_id', artist.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading artworks:', error);
+        return;
+      }
+
+      allArtworks = artworks || [];
+      renderTable(allArtworks);
+    }
+
+    function renderTable(artworks) {
+      const tbody = document.getElementById('imagesTableBody');
+      const info = document.getElementById('tableInfo');
+
+      info.textContent = `Showing 1-${artworks.length} of ${artworks.length} items.`;
+
+      if (artworks.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="no-results">No results found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = artworks.map(artwork => `
+        <tr>
+          <td>
+            <img src="${artwork.thumbnail_url || artwork.image_url || '/images/placeholder.png'}"
+                 alt="${artwork.title}"
+                 class="thumbnail">
+          </td>
+          <td>${artwork.title}</td>
+          <td>${artwork.price_usd ? artwork.price_usd.toFixed(2) : '0.00'}</td>
+          <td>${new Date(artwork.created_at).toLocaleDateString()}</td>
+          <td class="actions">
+            <button class="action-btn" title="View" onclick="viewArtwork('${artwork.id}')">👁️</button>
+            <button class="action-btn" title="Edit" onclick="editArtwork('${artwork.id}')">✏️</button>
+            <button class="action-btn" title="Delete" onclick="showDeleteModal('${artwork.id}')">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    window.filterTable = function() {
+      const titleFilter = document.getElementById('filterTitle').value.toLowerCase();
+      const amountFilter = document.getElementById('filterAmount').value.toLowerCase();
+      const createdFilter = document.getElementById('filterCreated').value.toLowerCase();
+
+      const filtered = allArtworks.filter(a => {
+        const matchTitle = !titleFilter || a.title.toLowerCase().includes(titleFilter);
+        const matchAmount = !amountFilter || (a.price_usd || 0).toString().includes(amountFilter);
+        const matchCreated = !createdFilter ||
+          new Date(a.created_at).toLocaleDateString().toLowerCase().includes(createdFilter);
+        return matchTitle && matchAmount && matchCreated;
+      });
+
+      renderTable(filtered);
+    };
+
+    window.viewArtwork = function(id) {
+      window.location.href = '/pages/subscriber/artwork-view.html?id=' + id;
+    };
+
+    window.editArtwork = function(id) {
+      window.location.href = '/pages/subscriber/images-create.html?id=' + id;
+    };
+
+    window.showDeleteModal = function(id) {
+      deleteId = id;
+      document.getElementById('deleteModal').classList.add('active');
+    };
+
+    window.hideDeleteModal = function() {
+      deleteId = null;
+      document.getElementById('deleteModal').classList.remove('active');
+    };
+
+    window.confirmDelete = async function() {
+      if (!deleteId) return;
+
+      const { error } = await supabase
+        .from('artworks')
+        .delete()
+        .eq('id', deleteId);
+
+      if (error) {
+        alert('Error deleting artwork: ' + error.message);
+        return;
+      }
+
+      hideDeleteModal();
+      loadImages();
+    };
+
+    window.handleLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/pages/auth/login.html';
+    };
+
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    loadImages();
+  </script>
+
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 101;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      .breadcrumb, .page-header {
+        padding-left: 4rem;
+      }
+    }
+  </style>
+</body>
+</html>

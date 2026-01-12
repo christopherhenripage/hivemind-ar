@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    .about-hero {
+      background-image: url('https://media.hivemindar.com/images/client/about-hivemind-lg.jpg');
+      min-height: 60vh;
+    }
+    .about-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+    .about-content h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      color: var(--hm-text);
+    }
+    .about-content p {
+      color: var(--hm-text-light);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="public-nav">
+    <a href="/" class="logo">
+      <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
+    </a>
+    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/privacy.html">Privacy</a>
+      <a href="/pages/public/contact.html">Contact</a>
+      <a href="/pages/auth/login.html">Subscribe</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero about-hero">
+    <div class="hero-content">
+      <h1>About HiveMind AR</h1>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <section class="about-content">
+    <h2>Our Mission</h2>
+    <p>HiveMind AR is part of a global collective of multi-disciplinary professionals who aim to combine various industry expertise with modern technology innovation.</p>
+
+    <p>Our core purpose centers on providing accessible tools to enhance the creative world and helping creatives display portfolios and network globally.</p>
+
+    <h2>What We Do</h2>
+    <p>We provide augmented reality technology for independent artists and small curators, making it affordable and accessible to showcase art in customers' environments with direct contact options to boost sales.</p>
+
+    <p>HVM AR ensures precise image scaling, representing the true size of art, unlike many other AR solutions. This allows potential buyers to visualize exactly how artwork will look in their space before making a purchase.</p>
+
+    <h2>For Artists</h2>
+    <p>Create your gallery profile, upload your artworks with physical dimensions, and share your gallery link with the world. Viewers can see your art in augmented reality at true scale, right in their own homes.</p>
+
+    <p>Gain valuable insights into customer behavior through our analytics dashboard, and connect directly with interested buyers through our messaging portal.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="public-footer">
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/privacy.html">Privacy</a>
+      <a href="/pages/public/contact.html">Contact</a>
+    </div>
+    <p class="copyright">&copy; 2026 by HiveMindAR.</p>
+  </footer>
+
+  <script>
+    function toggleMobileNav() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
+</body>
+</html>

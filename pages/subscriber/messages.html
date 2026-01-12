@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
+        <span class="logo-text">HiveMind AR</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber/upgrade.html">
+          <span class="nav-icon">🏆</span>
+          <span class="nav-text">Upgrade</span>
+        </a>
+        <a href="/pages/subscriber/profile.html">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/pages/subscriber/messages.html" class="active">
+          <span class="nav-icon">✉️</span>
+          <span class="nav-text">Messages</span>
+        </a>
+        <a href="/pages/subscriber/images.html">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">Images</span>
+        </a>
+        <a href="/pages/subscriber/transactions.html">
+          <span class="nav-icon">💲</span>
+          <span class="nav-text">Transactions</span>
+        </a>
+        <a href="/pages/subscriber/support.html">
+          <span class="nav-icon">🎧</span>
+          <span class="nav-text">Support</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" onclick="handleLogout()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/pages/subscriber/dashboard.html">Home</a> / <span>Messages</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Messages</h1>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="data-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>
+                  From
+                  <input type="text" placeholder="Filter..." id="filterFrom" oninput="filterTable()">
+                </th>
+                <th>
+                  Email
+                  <input type="text" placeholder="Filter..." id="filterEmail" oninput="filterTable()">
+                </th>
+                <th>
+                  Painting
+                  <input type="text" placeholder="Filter..." id="filterPainting" oninput="filterTable()">
+                </th>
+                <th>
+                  Subject
+                  <input type="text" placeholder="Filter..." id="filterSubject" oninput="filterTable()">
+                </th>
+                <th>
+                  Status
+                  <select id="filterStatus" onchange="filterTable()">
+                    <option value="">All</option>
+                    <option value="unread">Unread</option>
+                    <option value="read">Read</option>
+                    <option value="replied">Replied</option>
+                  </select>
+                </th>
+                <th>
+                  Sent
+                  <input type="text" placeholder="Filter..." id="filterSent" oninput="filterTable()">
+                </th>
+              </tr>
+            </thead>
+            <tbody id="messagesTableBody">
+              <tr>
+                <td colspan="6" class="no-results">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        &copy; 2026 by Hivemind
+      </footer>
+    </main>
+  </div>
+
+  <!-- View Message Modal -->
+  <div class="modal-overlay" id="messageModal">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 id="modalSubject">Message</h2>
+        <button class="modal-close" onclick="hideMessageModal()">&times;</button>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <p><strong>From:</strong> <span id="modalFrom"></span></p>
+        <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+        <p><strong>Artwork:</strong> <span id="modalArtwork"></span></p>
+        <p><strong>Sent:</strong> <span id="modalSent"></span></p>
+      </div>
+      <div style="background: var(--hm-light-gray); padding: 1rem; border-radius: 8px;">
+        <p id="modalMessage"></p>
+      </div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+        <a id="replyBtn" href="#" class="btn btn-dark">Reply via Email</a>
+        <button class="btn btn-light" onclick="hideMessageModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let allMessages = [];
+    let currentArtist = null;
+
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Load messages
+    async function loadMessages() {
+      const user = await checkAuth();
+      if (!user) return;
+
+      // Get artist profile
+      const { data: artist } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      currentArtist = artist;
+
+      if (!artist) {
+        document.getElementById('messagesTableBody').innerHTML =
+          '<tr><td colspan="6" class="no-results">Please complete your profile first.</td></tr>';
+        return;
+      }
+
+      // Get messages with artwork info
+      const { data: messages, error } = await supabase
+        .from('messages')
+        .select(`
+          *,
+          artworks (title)
+        `)
+        .eq('artist_id', artist.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading messages:', error);
+        return;
+      }
+
+      allMessages = messages || [];
+      renderTable(allMessages);
+    }
+
+    function renderTable(messages) {
+      const tbody = document.getElementById('messagesTableBody');
+
+      if (messages.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="no-results">No results found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = messages.map(msg => `
+        <tr onclick="viewMessage('${msg.id}')" style="cursor: pointer;">
+          <td>${msg.from_name}</td>
+          <td>${msg.from_email}</td>
+          <td>${msg.artworks?.title || '-'}</td>
+          <td>${msg.subject || '-'}</td>
+          <td>
+            <span class="status-badge status-${msg.status}">${msg.status}</span>
+          </td>
+          <td>${new Date(msg.created_at).toLocaleDateString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    window.filterTable = function() {
+      const fromFilter = document.getElementById('filterFrom').value.toLowerCase();
+      const emailFilter = document.getElementById('filterEmail').value.toLowerCase();
+      const paintingFilter = document.getElementById('filterPainting').value.toLowerCase();
+      const subjectFilter = document.getElementById('filterSubject').value.toLowerCase();
+      const statusFilter = document.getElementById('filterStatus').value;
+      const sentFilter = document.getElementById('filterSent').value.toLowerCase();
+
+      const filtered = allMessages.filter(m => {
+        const matchFrom = !fromFilter || m.from_name.toLowerCase().includes(fromFilter);
+        const matchEmail = !emailFilter || m.from_email.toLowerCase().includes(emailFilter);
+        const matchPainting = !paintingFilter || (m.artworks?.title || '').toLowerCase().includes(paintingFilter);
+        const matchSubject = !subjectFilter || (m.subject || '').toLowerCase().includes(subjectFilter);
+        const matchStatus = !statusFilter || m.status === statusFilter;
+        const matchSent = !sentFilter ||
+          new Date(m.created_at).toLocaleDateString().toLowerCase().includes(sentFilter);
+        return matchFrom && matchEmail && matchPainting && matchSubject && matchStatus && matchSent;
+      });
+
+      renderTable(filtered);
+    };
+
+    window.viewMessage = async function(id) {
+      const msg = allMessages.find(m => m.id === id);
+      if (!msg) return;
+
+      // Mark as read
+      if (msg.status === 'unread') {
+        await supabase
+          .from('messages')
+          .update({ status: 'read' })
+          .eq('id', id);
+        msg.status = 'read';
+        renderTable(allMessages);
+      }
+
+      document.getElementById('modalSubject').textContent = msg.subject || 'Message';
+      document.getElementById('modalFrom').textContent = msg.from_name;
+      document.getElementById('modalEmail').textContent = msg.from_email;
+      document.getElementById('modalArtwork').textContent = msg.artworks?.title || '-';
+      document.getElementById('modalSent').textContent = new Date(msg.created_at).toLocaleString();
+      document.getElementById('modalMessage').textContent = msg.message;
+      document.getElementById('replyBtn').href = `mailto:${msg.from_email}?subject=Re: ${msg.subject || 'Your inquiry'}`;
+
+      document.getElementById('messageModal').classList.add('active');
+    };
+
+    window.hideMessageModal = function() {
+      document.getElementById('messageModal').classList.remove('active');
+    };
+
+    window.handleLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/pages/auth/login.html';
+    };
+
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    loadMessages();
+  </script>
+
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--hm-text-muted);
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      text-transform: capitalize;
+    }
+    .status-unread {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .status-read {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .status-replied {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 101;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      .breadcrumb, .page-header {
+        padding-left: 4rem;
+      }
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR" style="background: #1a1a1a; padding: 10px; border-radius: 8px;">
+      </div>
+      <h1>Sign In</h1>
+      <p class="subtitle">Access your HiveMind gallery</p>
+
+      <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" class="form-control" required>
+          <p class="error-text" id="emailError"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" class="form-control" required>
+          <p class="error-text" id="passwordError"></p>
+        </div>
+
+        <p class="error-text" id="generalError"></p>
+
+        <button type="submit" class="btn-auth" id="submitBtn">Sign In</button>
+      </form>
+
+      <div class="auth-links">
+        <p><a href="/pages/auth/forgot-password.html">Forgot Password?</a></p>
+        <p style="margin-top: 1rem;">No Account Yet? <a href="/pages/auth/signup.html">Register here</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    window.handleLogin = async function(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const submitBtn = document.getElementById('submitBtn');
+      const generalError = document.getElementById('generalError');
+
+      // Clear errors
+      document.getElementById('emailError').textContent = '';
+      document.getElementById('passwordError').textContent = '';
+      generalError.textContent = '';
+
+      // Validate
+      if (!email) {
+        document.getElementById('emailError').textContent = 'Email cannot be blank.';
+        return;
+      }
+      if (!password) {
+        document.getElementById('passwordError').textContent = 'Password cannot be blank.';
+        return;
+      }
+
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing in...';
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          generalError.textContent = error.message;
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+          return;
+        }
+
+        // Success - redirect to dashboard
+        window.location.href = '/pages/subscriber/dashboard.html';
+      } catch (err) {
+        generalError.textContent = 'An error occurred. Please try again.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    };
+  </script>
+</body>
+</html>

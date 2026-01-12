@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
+        <span class="logo-text">HiveMind AR</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber/upgrade.html">
+          <span class="nav-icon">🏆</span>
+          <span class="nav-text">Upgrade</span>
+        </a>
+        <a href="/pages/subscriber/profile.html" class="active">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/pages/subscriber/messages.html">
+          <span class="nav-icon">✉️</span>
+          <span class="nav-text">Messages</span>
+        </a>
+        <a href="/pages/subscriber/images.html">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">Images</span>
+        </a>
+        <a href="/pages/subscriber/transactions.html">
+          <span class="nav-icon">💲</span>
+          <span class="nav-text">Transactions</span>
+        </a>
+        <a href="/pages/subscriber/support.html">
+          <span class="nav-icon">🎧</span>
+          <span class="nav-text">Support</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" onclick="handleLogout()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/pages/subscriber/dashboard.html">Home</a> / <span>Profile</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Profile</h1>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="profile-layout">
+          <!-- Profile Info -->
+          <div class="profile-info">
+            <h2 id="galleryName">Loading...</h2>
+            <p class="location" id="location"></p>
+
+            <div class="profile-field">
+              <label>Public Gallery Link:</label>
+              <div class="value"><a href="#" id="galleryLink" target="_blank"></a></div>
+            </div>
+
+            <div class="profile-field">
+              <label>Email:</label>
+              <div class="value" id="email"></div>
+            </div>
+
+            <div class="profile-field">
+              <label>Phone:</label>
+              <div class="value" id="phone"></div>
+            </div>
+
+            <button class="btn btn-dark" style="margin-top: 1.5rem;" onclick="showEditModal()">Update Profile</button>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">Change Password</h3>
+            <p style="color: var(--hm-text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Please follow the link below to change your password.</p>
+            <button class="btn btn-outline" onclick="changePassword()">Change Password</button>
+
+            <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">Deactivate Account</h3>
+            <p style="color: var(--hm-text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Please click the button below to deactivate your account.</p>
+            <button class="btn btn-outline" style="border-color: var(--hm-danger); color: var(--hm-danger);" onclick="deactivateAccount()">Deactivate Account</button>
+          </div>
+
+          <!-- Profile Artworks -->
+          <div class="profile-artworks" id="profileArtworks">
+            <!-- Artwork thumbnails will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        &copy; 2026 by Hivemind
+      </footer>
+    </main>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>Update Profile</h2>
+        <button class="modal-close" onclick="hideEditModal()">&times;</button>
+      </div>
+      <form id="editForm" onsubmit="handleUpdateProfile(event)">
+        <div class="form-group">
+          <label for="editGalleryName">Gallery Name</label>
+          <input type="text" id="editGalleryName" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="editLocation">Location</label>
+          <input type="text" id="editLocation" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="editPhone">Phone</label>
+          <input type="tel" id="editPhone" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="editBio">Bio</label>
+          <textarea id="editBio" class="form-control" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="editWebsite">Website</label>
+          <input type="url" id="editWebsite" class="form-control">
+        </div>
+        <p class="error-text" id="editError"></p>
+        <div style="display: flex; gap: 1rem;">
+          <button type="button" class="btn btn-light" onclick="hideEditModal()">Cancel</button>
+          <button type="submit" class="btn btn-dark" id="editSubmitBtn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let currentArtist = null;
+
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Load profile
+    async function loadProfile() {
+      const user = await checkAuth();
+      if (!user) return;
+
+      // Get artist profile
+      const { data: artist, error } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error || !artist) {
+        // Create profile if doesn't exist
+        const { data: newArtist } = await supabase
+          .from('artists')
+          .insert({
+            user_id: user.id,
+            gallery_name: user.email.split('@')[0] + ' Gallery',
+            slug: user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '-')
+          })
+          .select()
+          .single();
+
+        currentArtist = newArtist;
+      } else {
+        currentArtist = artist;
+      }
+
+      // Update UI
+      document.getElementById('galleryName').textContent = currentArtist.gallery_name;
+      document.getElementById('location').textContent = currentArtist.location || '';
+      document.getElementById('email').textContent = user.email;
+      document.getElementById('phone').textContent = currentArtist.phone || '-';
+
+      const galleryUrl = window.location.origin + '/gallery/' + currentArtist.slug;
+      const galleryLink = document.getElementById('galleryLink');
+      galleryLink.href = galleryUrl;
+      galleryLink.textContent = galleryUrl;
+
+      // Load artworks
+      const { data: artworks } = await supabase
+        .from('artworks')
+        .select('*')
+        .eq('artist_id', currentArtist.id)
+        .order('created_at', { ascending: false })
+        .limit(6);
+
+      const container = document.getElementById('profileArtworks');
+      if (artworks && artworks.length > 0) {
+        container.innerHTML = artworks.map(artwork => `
+          <div class="profile-artwork-thumb">
+            <img src="${artwork.thumbnail_url || artwork.image_url || '/images/placeholder.png'}" alt="${artwork.title}">
+          </div>
+        `).join('');
+      } else {
+        container.innerHTML = '<p style="color: var(--hm-text-muted); grid-column: span 2;">No artworks uploaded yet.</p>';
+      }
+    }
+
+    window.showEditModal = function() {
+      document.getElementById('editGalleryName').value = currentArtist.gallery_name || '';
+      document.getElementById('editLocation').value = currentArtist.location || '';
+      document.getElementById('editPhone').value = currentArtist.phone || '';
+      document.getElementById('editBio').value = currentArtist.bio || '';
+      document.getElementById('editWebsite').value = currentArtist.website || '';
+      document.getElementById('editModal').classList.add('active');
+    };
+
+    window.hideEditModal = function() {
+      document.getElementById('editModal').classList.remove('active');
+    };
+
+    window.handleUpdateProfile = async function(event) {
+      event.preventDefault();
+
+      const submitBtn = document.getElementById('editSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+
+      const { error } = await supabase
+        .from('artists')
+        .update({
+          gallery_name: document.getElementById('editGalleryName').value,
+          location: document.getElementById('editLocation').value,
+          phone: document.getElementById('editPhone').value,
+          bio: document.getElementById('editBio').value,
+          website: document.getElementById('editWebsite').value
+        })
+        .eq('id', currentArtist.id);
+
+      if (error) {
+        document.getElementById('editError').textContent = error.message;
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Changes';
+        return;
+      }
+
+      hideEditModal();
+      loadProfile();
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Save Changes';
+    };
+
+    window.changePassword = async function() {
+      const { data: { user } } = await supabase.auth.getUser();
+      await supabase.auth.resetPasswordForEmail(user.email);
+      alert('Password reset email sent!');
+    };
+
+    window.deactivateAccount = async function() {
+      if (!confirm('Are you sure you want to deactivate your account? This action cannot be undone.')) {
+        return;
+      }
+
+      await supabase
+        .from('artists')
+        .update({ is_active: false })
+        .eq('id', currentArtist.id);
+
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    };
+
+    window.handleLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/pages/auth/login.html';
+    };
+
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    loadProfile();
+  </script>
+
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: white;
+      border-radius: 8px;
+      padding: 2rem;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--hm-text-muted);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 101;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      .breadcrumb, .page-header {
+        padding-left: 4rem;
+      }
+      .profile-layout {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  </style>
+</body>
+</html>
