@@ -1,14 +1,18 @@
 // Supabase Client Module
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Trim whitespace/newlines that might come from env vars
+const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim().replace(/\/+$/, '');
+const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
 
 // Validation
 let supabase = null;
 let initError = null;
 
 function validateEnvVars() {
+  console.log('[Supabase] URL:', supabaseUrl ? supabaseUrl.substring(0, 30) + '...' : 'NOT SET');
+  console.log('[Supabase] Key:', supabaseAnonKey ? supabaseAnonKey.substring(0, 20) + '...' : 'NOT SET');
+
   if (!supabaseUrl || !supabaseAnonKey) {
     return 'Missing environment variables. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local';
   }
@@ -28,7 +32,9 @@ function validateEnvVars() {
            'Go to Supabase Dashboard > Settings > API and copy the "anon public" key.';
   }
 
-  if (!supabaseUrl.match(/^https:\/\/[a-z0-9]+\.supabase\.co$/)) {
+  // More lenient URL validation - just check it looks like a Supabase URL
+  if (!supabaseUrl.includes('.supabase.co')) {
+    console.error('[Supabase] Invalid URL:', supabaseUrl);
     return 'Invalid URL format. Expected https://<project-ref>.supabase.co';
   }
 
