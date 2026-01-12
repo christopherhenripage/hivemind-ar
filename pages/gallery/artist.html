@@ -61,6 +61,50 @@
       opacity: 1;
     }
 
+    /* Banner styles */
+    .artist-banner {
+      width: 100%;
+      height: 300px;
+      overflow: hidden;
+    }
+
+    .artist-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .artist-hero.has-banner {
+      padding-top: 4rem;
+    }
+
+    /* Social links */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .social-link:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.1);
+    }
+
     .gallery-stats {
       display: flex;
       justify-content: center;
@@ -316,6 +360,11 @@
     </div>
   </nav>
 
+  <!-- Artist Banner -->
+  <div class="artist-banner" id="artistBanner" style="display: none;">
+    <img id="bannerImage" src="" alt="Gallery Banner">
+  </div>
+
   <!-- Artist Hero -->
   <section class="artist-hero" id="artistHero">
     <img id="artistAvatar" class="artist-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23e2e8f0'/%3E%3Ccircle cx='50' cy='40' r='18' fill='%2394a3b8'/%3E%3Cellipse cx='50' cy='85' rx='30' ry='25' fill='%2394a3b8'/%3E%3C/svg%3E" alt="Artist" style="display: none;">
@@ -323,6 +372,7 @@
     <p class="artist-location" id="artistLocation"></p>
     <p class="artist-bio" id="artistBio"></p>
     <div class="artist-links" id="artistLinks"></div>
+    <div class="social-links" id="socialLinks"></div>
     <div class="gallery-stats">
       <div class="gallery-stat">
         <div class="value" id="artworkCount">0</div>
@@ -461,6 +511,25 @@
       if (artist.website) {
         linksContainer.innerHTML += `<a href="${artist.website}" target="_blank">Website</a>`;
       }
+
+      // Banner
+      if (artist.banner_url) {
+        const bannerContainer = document.getElementById('artistBanner');
+        document.getElementById('bannerImage').src = artist.banner_url;
+        bannerContainer.style.display = 'block';
+        document.getElementById('artistHero').classList.add('has-banner');
+      }
+
+      // Social links
+      const socialContainer = document.getElementById('socialLinks');
+      const socialHtml = [];
+      if (artist.instagram_url) socialHtml.push(`<a href="${artist.instagram_url}" target="_blank" class="social-link" title="Instagram">📷</a>`);
+      if (artist.facebook_url) socialHtml.push(`<a href="${artist.facebook_url}" target="_blank" class="social-link" title="Facebook">📘</a>`);
+      if (artist.twitter_url) socialHtml.push(`<a href="${artist.twitter_url}" target="_blank" class="social-link" title="Twitter/X">🐦</a>`);
+      if (artist.tiktok_url) socialHtml.push(`<a href="${artist.tiktok_url}" target="_blank" class="social-link" title="TikTok">🎵</a>`);
+      if (artist.youtube_url) socialHtml.push(`<a href="${artist.youtube_url}" target="_blank" class="social-link" title="YouTube">▶️</a>`);
+      if (artist.etsy_url) socialHtml.push(`<a href="${artist.etsy_url}" target="_blank" class="social-link" title="Etsy Shop">🛒</a>`);
+      socialContainer.innerHTML = socialHtml.join('');
 
       // Get artworks
       const { data: artworkData } = await supabase

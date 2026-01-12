@@ -68,6 +68,16 @@
 
       <!-- Page Content -->
       <div class="page-content">
+        <!-- Banner Section -->
+        <div class="profile-banner" id="bannerContainer">
+          <img id="bannerImage" src="" alt="Gallery Banner" style="display: none;">
+          <div class="banner-placeholder" id="bannerPlaceholder">
+            <span>Add a banner image to personalize your gallery</span>
+          </div>
+          <button class="banner-edit-btn" onclick="document.getElementById('bannerInput').click()">Change Banner</button>
+          <input type="file" id="bannerInput" accept="image/*" style="display: none;" onchange="handleBannerUpload(event)">
+        </div>
+
         <div class="profile-card">
           <div class="profile-header">
             <div class="profile-avatar" id="avatarContainer">
@@ -105,6 +115,13 @@
             <div class="profile-field full-width">
               <label>Bio</label>
               <div class="value" id="bio">-</div>
+            </div>
+
+            <div class="profile-field full-width">
+              <label>Social Links</label>
+              <div class="social-links-display" id="socialLinksDisplay">
+                <span style="color: var(--hm-text-muted);">No social links added</span>
+              </div>
             </div>
 
             <div class="profile-field full-width">
@@ -175,6 +192,34 @@
           <label for="editBio">Bio</label>
           <textarea id="editBio" class="form-control" rows="4" placeholder="Tell visitors about yourself and your art..."></textarea>
         </div>
+
+        <h3 style="margin: 1.5rem 0 1rem; font-size: 1rem; color: var(--hm-text-muted);">Social Links</h3>
+
+        <div class="form-group">
+          <label for="editInstagram">Instagram</label>
+          <input type="url" id="editInstagram" class="form-control" placeholder="https://instagram.com/yourusername">
+        </div>
+        <div class="form-group">
+          <label for="editFacebook">Facebook</label>
+          <input type="url" id="editFacebook" class="form-control" placeholder="https://facebook.com/yourusername">
+        </div>
+        <div class="form-group">
+          <label for="editTwitter">Twitter / X</label>
+          <input type="url" id="editTwitter" class="form-control" placeholder="https://twitter.com/yourusername">
+        </div>
+        <div class="form-group">
+          <label for="editTiktok">TikTok</label>
+          <input type="url" id="editTiktok" class="form-control" placeholder="https://tiktok.com/@yourusername">
+        </div>
+        <div class="form-group">
+          <label for="editYoutube">YouTube</label>
+          <input type="url" id="editYoutube" class="form-control" placeholder="https://youtube.com/@yourchannel">
+        </div>
+        <div class="form-group">
+          <label for="editEtsy">Etsy Shop</label>
+          <input type="url" id="editEtsy" class="form-control" placeholder="https://etsy.com/shop/yourshop">
+        </div>
+
         <p class="error-text" id="editError"></p>
         <p class="success-text" id="editSuccess" style="color: #28a745;"></p>
         <div style="display: flex; gap: 1rem; margin-top: 1rem;">
@@ -235,6 +280,29 @@
         document.getElementById('avatarImage').src = profile.avatar_url;
       }
 
+      // Banner
+      if (profile.banner_url) {
+        document.getElementById('bannerImage').src = profile.banner_url;
+        document.getElementById('bannerImage').style.display = 'block';
+        document.getElementById('bannerPlaceholder').style.display = 'none';
+      }
+
+      // Social links display
+      const socialLinks = [];
+      if (profile.instagram_url) socialLinks.push(`<a href="${profile.instagram_url}" target="_blank" class="social-icon" title="Instagram">📷</a>`);
+      if (profile.facebook_url) socialLinks.push(`<a href="${profile.facebook_url}" target="_blank" class="social-icon" title="Facebook">📘</a>`);
+      if (profile.twitter_url) socialLinks.push(`<a href="${profile.twitter_url}" target="_blank" class="social-icon" title="Twitter/X">🐦</a>`);
+      if (profile.tiktok_url) socialLinks.push(`<a href="${profile.tiktok_url}" target="_blank" class="social-icon" title="TikTok">🎵</a>`);
+      if (profile.youtube_url) socialLinks.push(`<a href="${profile.youtube_url}" target="_blank" class="social-icon" title="YouTube">▶️</a>`);
+      if (profile.etsy_url) socialLinks.push(`<a href="${profile.etsy_url}" target="_blank" class="social-icon" title="Etsy">🛒</a>`);
+
+      const socialDisplay = document.getElementById('socialLinksDisplay');
+      if (socialLinks.length > 0) {
+        socialDisplay.innerHTML = socialLinks.join('');
+      } else {
+        socialDisplay.innerHTML = '<span style="color: var(--hm-text-muted);">No social links added</span>';
+      }
+
       // Gallery link
       if (profile.gallery_slug) {
         const galleryUrl = `${window.location.origin}/pages/gallery/artist.html?slug=${profile.gallery_slug}`;
@@ -274,6 +342,13 @@
       document.getElementById('editPhone').value = currentProfile.phone || '';
       document.getElementById('editWebsite').value = currentProfile.website || '';
       document.getElementById('editBio').value = currentProfile.bio || '';
+      // Social links
+      document.getElementById('editInstagram').value = currentProfile.instagram_url || '';
+      document.getElementById('editFacebook').value = currentProfile.facebook_url || '';
+      document.getElementById('editTwitter').value = currentProfile.twitter_url || '';
+      document.getElementById('editTiktok').value = currentProfile.tiktok_url || '';
+      document.getElementById('editYoutube').value = currentProfile.youtube_url || '';
+      document.getElementById('editEtsy').value = currentProfile.etsy_url || '';
       document.getElementById('editError').textContent = '';
       document.getElementById('editSuccess').textContent = '';
       document.getElementById('editModal').classList.add('active');
@@ -313,7 +388,13 @@
           location: document.getElementById('editLocation').value.trim() || null,
           phone: document.getElementById('editPhone').value.trim() || null,
           website: document.getElementById('editWebsite').value.trim() || null,
-          bio: document.getElementById('editBio').value.trim() || null
+          bio: document.getElementById('editBio').value.trim() || null,
+          instagram_url: document.getElementById('editInstagram').value.trim() || null,
+          facebook_url: document.getElementById('editFacebook').value.trim() || null,
+          twitter_url: document.getElementById('editTwitter').value.trim() || null,
+          tiktok_url: document.getElementById('editTiktok').value.trim() || null,
+          youtube_url: document.getElementById('editYoutube').value.trim() || null,
+          etsy_url: document.getElementById('editEtsy').value.trim() || null
         })
         .eq('id', currentUser.id);
 
@@ -381,6 +462,50 @@
       }
     };
 
+    window.handleBannerUpload = async function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate file size (max 5MB for banners)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image is too large. Maximum size is 5MB.');
+        return;
+      }
+
+      try {
+        const fileExt = file.name.split('.').pop().toLowerCase();
+        const filePath = `${currentUser.id}/banner.${fileExt}`;
+
+        // Upload banner
+        const { error: uploadError } = await supabase.storage
+          .from('artworks')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: true
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('artworks')
+          .getPublicUrl(filePath);
+
+        // Update profile with banner URL
+        await supabase
+          .from('profiles')
+          .update({ banner_url: publicUrl })
+          .eq('id', currentUser.id);
+
+        document.getElementById('bannerImage').src = publicUrl + '?t=' + Date.now();
+        document.getElementById('bannerImage').style.display = 'block';
+        document.getElementById('bannerPlaceholder').style.display = 'none';
+
+      } catch (err) {
+        console.error('Banner upload error:', err);
+        alert('Failed to upload banner. Please try again.');
+      }
+    };
+
     window.copyGalleryLink = function() {
       const link = document.getElementById('galleryLink').href;
       if (link && link !== '#') {
@@ -420,6 +545,76 @@
   </script>
 
   <style>
+    /* Banner styles */
+    .profile-banner {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .banner-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .banner-edit-btn {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.2s;
+    }
+
+    .banner-edit-btn:hover {
+      background: rgba(0,0,0,0.9);
+    }
+
+    /* Social links styles */
+    .social-links-display {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .social-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--hm-light-gray);
+      border-radius: 50%;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .social-icon:hover {
+      transform: scale(1.1);
+      background: var(--hm-dark);
+    }
+
     .modal-overlay {
       display: none;
       position: fixed;
