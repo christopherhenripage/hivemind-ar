@@ -39,7 +39,8 @@ export default defineConfig({
  'client-about-us': resolve(__dirname, 'pages/client/about-us.html'),
  'client-gallery': resolve(__dirname, 'pages/client/gallery.html'),
  'client-contact-us': resolve(__dirname, 'pages/client/contact-us.html'),
- 'client-ordering': resolve(__dirname, 'pages/client/ordering.html')
+ 'client-ordering': resolve(__dirname, 'pages/client/ordering.html'),
+ 'ar-target': resolve(__dirname, 'pages/ar-target.html')
  }
  }
  }

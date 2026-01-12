@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Target - Print This Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .instructions {
+      max-width: 600px;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .instructions h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+    }
+
+    .instructions p {
+      color: #64748b;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .target-container {
+      background: white;
+      padding: 1rem;
+      border: 2px dashed #cbd5e1;
+      border-radius: 0.5rem;
+    }
+
+    .target-image {
+      width: 300px;
+      height: 300px;
+      display: block;
+    }
+
+    .print-btn {
+      margin-top: 2rem;
+      padding: 0.75rem 2rem;
+      background: #6366f1;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .print-btn:hover {
+      background: #4f46e5;
+    }
+
+    .tips {
+      max-width: 500px;
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #f8fafc;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      color: #475569;
+    }
+
+    .tips h3 {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+    }
+
+    .tips ul {
+      margin-left: 1.25rem;
+    }
+
+    .tips li {
+      margin: 0.25rem 0;
+    }
+
+    .back-link {
+      margin-top: 1.5rem;
+      color: #6366f1;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        padding: 0;
+      }
+
+      .instructions,
+      .print-btn,
+      .tips,
+      .back-link {
+        display: none;
+      }
+
+      .target-container {
+        border: none;
+        padding: 0;
+      }
+
+      .target-image {
+        width: 4in;
+        height: 4in;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+
+      .target-image {
+        width: 250px;
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="instructions">
+    <h1>AR Target Image</h1>
+    <p>Print this page or display it on another screen. Then scan it with your camera on the AR page to see the augmented reality content.</p>
+  </div>
+
+  <div class="target-container">
+    <img src="/ar/targets/sample-target.png" alt="AR Target" class="target-image" id="targetImage">
+  </div>
+
+  <button class="print-btn" onclick="window.print()">Print Target</button>
+
+  <div class="tips">
+    <h3>Tips for best results:</h3>
+    <ul>
+      <li>Print at 100% scale (no scaling/fit to page)</li>
+      <li>Use matte paper to avoid glare</li>
+      <li>Ensure the image is at least 3 inches wide</li>
+      <li>Keep the target flat and well-lit</li>
+      <li>Avoid shadows across the target</li>
+    </ul>
+  </div>
+
+  <a href="/pages/subscriber-admin/augmented-reality.html" class="back-link">← Back to AR Experience</a>
+
+  <script>
+    // If SVG target exists, prefer it for printing (higher quality)
+    const img = document.getElementById('targetImage');
+    const svgTarget = new Image();
+    svgTarget.onload = function() {
+      img.src = '/ar/targets/target.svg';
+    };
+    svgTarget.onerror = function() {
+      console.log('SVG target not available, using PNG');
+    };
+    svgTarget.src = '/ar/targets/target.svg';
+  </script>
+</body>
+</html>

@@ -38,7 +38,6 @@ CREATE TABLE leads (
   email TEXT NOT NULL,
   phone TEXT,
   status TEXT DEFAULT 'Hot',
-  source TEXT DEFAULT 'Website',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -109,3 +108,113 @@ The Mini CRM module provides lead management functionality:
 - **"Supabase: Error - Missing environment variables"**: Create `.env.local` with the required keys
 - **"Supabase: Error - relation 'leads' does not exist"**: Run the SQL above to create the leads table
 - **Toast shows error**: Check browser console for detailed error messages
+
+## Augmented Reality Features
+
+The AR module provides image-tracking augmented reality using MindAR and Three.js.
+
+### How AR Works
+
+1. **Image Tracking**: The camera scans for a specific target image
+2. **3D Overlay**: When the target is found, 3D content appears anchored to the image
+3. **Real-time Tracking**: The 3D content follows the target as you move
+
+### Running AR Locally
+
+AR requires a secure context (HTTPS) to access the camera. For local development:
+
+```bash
+# Start the Vite dev server
+npm run dev
+
+# This serves on:
+# - http://localhost:5173 (works on same device)
+# - https://localhost:5173 (if you configure HTTPS)
+```
+
+**Testing on mobile devices:**
+
+Since AR works best on mobile, you'll need HTTPS for camera access:
+
+1. **Option A - Use Vite's built-in network option:**
+   ```bash
+   npm run dev -- --host
+   ```
+   Then access from mobile using your computer's IP (camera may not work without HTTPS)
+
+2. **Option B - Deploy to Vercel:**
+   ```bash
+   npx vercel --prod
+   ```
+   Vercel provides HTTPS automatically
+
+3. **Option C - Use ngrok for local HTTPS:**
+   ```bash
+   npx ngrok http 5173
+   ```
+   Then use the ngrok HTTPS URL on your mobile device
+
+### Using the AR Feature
+
+1. Go to **Subscriber Admin** > **Augmented Reality**
+2. Click **Print Target** to get the target image
+3. Print the target or display it on another screen
+4. Click **Start AR** and allow camera access
+5. Point your camera at the target image
+6. A 3D branded cube will appear when the target is detected
+
+### Creating Custom Target Images
+
+To use your own target image:
+
+1. **Prepare your image:**
+   - Use a high-contrast image with unique features
+   - Avoid repetitive patterns or plain backgrounds
+   - Recommended size: 512x512 pixels or larger
+
+2. **Generate the .mind file:**
+   - Go to [MindAR Image Target Compiler](https://hiukim.github.io/mind-ar-js-doc/tools/compile)
+   - Upload your image
+   - Download the generated `.mind` file
+
+3. **Replace the target files:**
+   ```bash
+   # Replace target file
+   cp your-image.mind public/ar/targets/targets.mind
+   cp your-image.png public/ar/targets/sample-target.png
+   ```
+
+4. **Run the generator script (optional):**
+   ```bash
+   npm run ar:generate-target
+   ```
+   This downloads a sample target for testing
+
+### AR Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| "Camera requires HTTPS" | Use localhost, deploy to Vercel, or use ngrok |
+| Camera permission denied | Check browser settings, try a different browser |
+| Target not detected | Ensure good lighting, avoid glare, hold steady |
+| AR not available | Check WebGL support, try Chrome or Safari |
+| 3D content jittery | Hold device more steadily, improve lighting |
+
+### Supported Browsers
+
+- **iOS**: Safari (best support)
+- **Android**: Chrome (best support)
+- **Desktop**: Chrome, Edge (limited AR experience)
+
+## Diagnostics
+
+Run the doctor script to check your environment setup:
+
+```bash
+npm run doctor
+```
+
+This will verify:
+- Environment variables are set correctly
+- Supabase connection is working
+- Dev server URLs

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="white"/>
+
+  <!-- Border frame -->
+  <rect x="20" y="20" width="472" height="472" fill="none" stroke="black" stroke-width="8"/>
+
+  <!-- Corner markers for tracking -->
+  <rect x="40" y="40" width="80" height="80" fill="black"/>
+  <rect x="392" y="40" width="80" height="80" fill="black"/>
+  <rect x="40" y="392" width="80" height="80" fill="black"/>
+  <rect x="392" y="392" width="80" height="80" fill="black"/>
+
+  <!-- Center hexagon pattern -->
+  <polygon points="256,120 336,168 336,264 256,312 176,264 176,168" fill="#6366f1"/>
+  <polygon points="256,150 306,178 306,244 256,282 206,244 206,178" fill="white"/>
+  <polygon points="256,180 276,192 276,228 256,248 236,228 236,192" fill="#6366f1"/>
+
+  <!-- HiveMind text -->
+  <text x="256" y="380" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="black">HIVEMIND</text>
+  <text x="256" y="420" font-family="Arial, sans-serif" font-size="28" text-anchor="middle" fill="#6366f1">AR</text>
+
+  <!-- Additional tracking features -->
+  <circle cx="140" cy="256" r="25" fill="black"/>
+  <circle cx="372" cy="256" r="25" fill="black"/>
+  <rect x="236" y="80" width="40" height="20" fill="black"/>
+  <rect x="236" y="412" width="40" height="20" fill="black"/>
+</svg>

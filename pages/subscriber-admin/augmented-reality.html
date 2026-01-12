@@ -1,117 +1,613 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Augmented Reality - HiveMind AR</title>
- <link rel="stylesheet" href="/styles/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Augmented Reality - HiveMind AR</title>
+  <!-- Load AFRAME and MindAR AFRAME version - works with script tags -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <link rel="stylesheet" href="/styles/main.css">
+  <style>
+    /* AR-specific styles */
+    .ar-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: #1e293b;
+      border-radius: 0.75rem;
+      overflow: hidden;
+    }
+
+    .ar-container.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1000;
+      border-radius: 0;
+    }
+
+    .ar-viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* AFRAME/MindAR styling - critical for video to show */
+    #arScene {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    #arScene video {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      z-index: -1 !important;
+    }
+
+    #arScene canvas.a-canvas {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      background-color: transparent !important;
+    }
+
+    .ar-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .ar-overlay.hidden {
+      display: none;
+    }
+
+    .ar-overlay h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .ar-overlay p {
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+
+    .ar-status {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      right: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .ar-status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+    }
+
+    .ar-status-badge.scanning {
+      background: rgba(99, 102, 241, 0.8);
+    }
+
+    .ar-status-badge.found {
+      background: rgba(16, 185, 129, 0.8);
+    }
+
+    .ar-status-badge.error {
+      background: rgba(239, 68, 68, 0.8);
+    }
+
+    .ar-controls {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      z-index: 10;
+    }
+
+    .ar-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 2rem;
+      border: none;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .ar-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .ar-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .ar-btn-primary {
+      background: #6366f1;
+      color: white;
+    }
+
+    .ar-btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+
+    .ar-btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .ar-btn-fullscreen {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 1.25rem;
+      z-index: 10;
+    }
+
+    .troubleshoot-card {
+      margin-top: 1.5rem;
+    }
+
+    .troubleshoot-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .troubleshoot-list li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .troubleshoot-list li:last-child {
+      border-bottom: none;
+    }
+
+    .troubleshoot-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.75rem;
+    }
+
+    .target-preview {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--bg);
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .target-preview img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border: 2px solid var(--border);
+      border-radius: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .ar-container {
+        height: 300px;
+      }
+    }
+  </style>
 </head>
 <body>
- <div class="sidebar-overlay"></div>
- <div class="app-layout">
- <aside class="sidebar">
- <div class="sidebar-header">
- <h2>HiveMind AR</h2>
- <span>Subscriber Admin</span>
- </div>
- <nav class="sidebar-nav">
- <a href="/pages/subscriber-admin/dashboard.html">Dashboard</a>
- <a href="/pages/subscriber-admin/users.html">Users/Accounts</a>
- <a href="/pages/subscriber-admin/analytics.html">Analytics</a>
- <a href="/pages/subscriber-admin/mini-crm.html">Mini CRM</a>
- <a href="/pages/subscriber-admin/payments.html">Payments</a>
- <a href="/pages/subscriber-admin/contact-us.html">Contact Us</a>
- <a href="/pages/subscriber-admin/gallery.html">Gallery Showcase</a>
- <a href="/pages/subscriber-admin/about-us.html">About Us</a>
- <a href="/pages/subscriber-admin/augmented-reality.html" class="active">Augmented Reality</a>
- </nav>
- <div class="sidebar-footer">
- <a href="#" class="logout-btn" onclick="logout()">Logout</a>
- </div>
- </aside>
- <main class="main-content">
- <header class="header">
- <button class="menu-toggle">☰</button>
- <h1>Augmented Reality</h1>
- <div></div>
- </header>
- <div class="page-content">
- <div class="stats-grid">
- <div class="stat-card">
- <h3>Total AR Sessions</h3>
- <div class="value">2,341</div>
- </div>
- <div class="stat-card">
- <h3>Active Features</h3>
- <div class="value">8</div>
- </div>
- <div class="stat-card">
- <h3>Conversion Rate</h3>
- <div class="value">18.2%</div>
- </div>
- </div>
- <div class="card">
- <div class="card-header">
- <h3 class="card-title">My AR Features</h3>
- </div>
- <div class="table-container">
- <table>
- <thead>
- <tr>
- <th>Feature</th>
- <th>Type</th>
- <th>Sessions</th>
- <th>Status</th>
- <th>Toggle</th>
- </tr>
- </thead>
- <tbody>
- <tr>
- <td>Product Viewer 3D</td>
- <td>Product</td>
- <td>1,234</td>
- <td><span class="badge badge-success">Active</span></td>
- <td>
- <label class="toggle">
- <input type="checkbox" checked>
- <span class="toggle-slider"></span>
- </label>
- </td>
- </tr>
- <tr>
- <td>Virtual Try-On</td>
- <td>Fashion</td>
- <td>856</td>
- <td><span class="badge badge-success">Active</span></td>
- <td>
- <label class="toggle">
- <input type="checkbox" checked>
- <span class="toggle-slider"></span>
- </label>
- </td>
- </tr>
- <tr>
- <td>Room Placement</td>
- <td>Furniture</td>
- <td>251</td>
- <td><span class="badge badge-danger">Inactive</span></td>
- <td>
- <label class="toggle">
- <input type="checkbox">
- <span class="toggle-slider"></span>
- </label>
- </td>
- </tr>
- </tbody>
- </table>
- </div>
- </div>
- </div>
- <footer class="footer">
- <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
- </footer>
- </main>
- </div>
- <script type="module" src="/src/main.js"></script>
+  <div class="sidebar-overlay"></div>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>HiveMind AR</h2>
+        <span>Subscriber Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber-admin/dashboard.html">Dashboard</a>
+        <a href="/pages/subscriber-admin/users.html">Users/Accounts</a>
+        <a href="/pages/subscriber-admin/analytics.html">Analytics</a>
+        <a href="/pages/subscriber-admin/mini-crm.html">Mini CRM</a>
+        <a href="/pages/subscriber-admin/payments.html">Payments</a>
+        <a href="/pages/subscriber-admin/contact-us.html">Contact Us</a>
+        <a href="/pages/subscriber-admin/gallery.html">Gallery Showcase</a>
+        <a href="/pages/subscriber-admin/about-us.html">About Us</a>
+        <a href="/pages/subscriber-admin/augmented-reality.html" class="active">Augmented Reality</a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" class="logout-btn" onclick="logout()">Logout</a>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header class="header">
+        <button class="menu-toggle">☰</button>
+        <h1>Augmented Reality</h1>
+        <div id="arConnectionStatus" style="font-size: 0.75rem;"></div>
+      </header>
+      <div class="page-content">
+        <!-- AR Experience Section -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">AR Experience</h3>
+            <a href="/pages/ar-target.html" target="_blank" class="btn btn-secondary btn-sm">Print Target</a>
+          </div>
+
+          <div class="ar-container" id="arContainer">
+            <!-- AR Viewport - AFRAME scene will be injected here when Start AR is clicked -->
+            <div class="ar-viewport" id="arViewport"></div>
+
+            <!-- Initial Overlay -->
+            <div class="ar-overlay" id="arOverlay">
+              <h3>Start AR Experience</h3>
+              <p>Point your camera at the target image to see AR content.</p>
+              <button class="ar-btn ar-btn-primary" id="startARBtn" onclick="handleStartAR()">
+                Start AR
+              </button>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="ar-status" id="arStatus" style="display: none;">
+              <span class="ar-status-badge" id="arStatusBadge">Initializing...</span>
+            </div>
+
+            <!-- Controls -->
+            <div class="ar-controls" id="arControls" style="display: none;">
+              <button class="ar-btn ar-btn-danger" onclick="handleStopAR()">Stop AR</button>
+            </div>
+
+            <!-- Fullscreen Button -->
+            <button class="ar-btn ar-btn-fullscreen" id="fullscreenBtn" style="display: none;" onclick="toggleFullscreen()">
+              ⛶
+            </button>
+          </div>
+
+          <!-- Target Preview -->
+          <div class="target-preview">
+            <img src="/ar/targets/sample-target.png" alt="AR Target" id="targetPreview">
+            <div>
+              <strong>Target Image</strong>
+              <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--text-light);">
+                Print this image or display it on another screen, then scan it with your camera.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Troubleshooting Section -->
+        <div class="card troubleshoot-card">
+          <div class="card-header">
+            <h3 class="card-title">Troubleshooting</h3>
+          </div>
+          <ul class="troubleshoot-list">
+            <li>
+              <span class="troubleshoot-icon">1</span>
+              <div>
+                <strong>Camera Permission Required</strong>
+                <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--text-light);">
+                  Allow camera access when prompted. On iOS, you must tap "Start AR" first.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="troubleshoot-icon">2</span>
+              <div>
+                <strong>HTTPS Required</strong>
+                <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--text-light);">
+                  AR requires a secure connection. Use localhost for testing or deploy with HTTPS.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="troubleshoot-icon">3</span>
+              <div>
+                <strong>Good Lighting</strong>
+                <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--text-light);">
+                  Ensure the target image is well-lit and clearly visible. Avoid glare and shadows.
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="troubleshoot-icon">4</span>
+              <div>
+                <strong>Supported Browsers</strong>
+                <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--text-light);">
+                  Works best on iOS Safari and Android Chrome. Desktop browsers may have limited support.
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-grid" style="margin-top: 1.5rem;">
+          <div class="stat-card">
+            <h3>Total AR Sessions</h3>
+            <div class="value">2,341</div>
+          </div>
+          <div class="stat-card">
+            <h3>Active Features</h3>
+            <div class="value">8</div>
+          </div>
+          <div class="stat-card">
+            <h3>Conversion Rate</h3>
+            <div class="value">18.2%</div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- AR code - uses AFRAME with MindAR -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('[AR Page] Initializing...');
+      console.log('[AR Page] AFRAME loaded:', typeof AFRAME !== 'undefined');
+
+      // DOM Elements
+      const arContainer = document.getElementById('arContainer');
+      const arViewport = document.getElementById('arViewport');
+      const arOverlay = document.getElementById('arOverlay');
+      const arStatus = document.getElementById('arStatus');
+      const arStatusBadge = document.getElementById('arStatusBadge');
+      const arControls = document.getElementById('arControls');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const startARBtn = document.getElementById('startARBtn');
+      const connectionStatus = document.getElementById('arConnectionStatus');
+      let isRunning = false;
+
+      // Check compatibility
+      function checkCompatibility() {
+        const issues = [];
+        if (!window.isSecureContext) issues.push('Camera requires HTTPS');
+        if (!navigator.mediaDevices?.getUserMedia) issues.push('Camera API not supported');
+        const canvas = document.createElement('canvas');
+        if (!canvas.getContext('webgl')) issues.push('WebGL not supported');
+        return { compatible: issues.length === 0, issues };
+      }
+
+      const compat = checkCompatibility();
+      if (compat.compatible) {
+        connectionStatus.innerHTML = '<span style="color: #10b981;">AR: Ready</span>';
+        console.log('[AR Page] Browser compatible for AR');
+      } else {
+        connectionStatus.innerHTML = '<span style="color: #ef4444;">AR: ' + compat.issues[0] + '</span>';
+        startARBtn.disabled = true;
+        startARBtn.textContent = 'AR Not Available';
+      }
+
+      // Update status badge
+      function updateStatus(status, message) {
+        console.log('[AR Page] Status:', status, message);
+        arStatusBadge.textContent = message;
+        arStatusBadge.className = 'ar-status-badge' + (status === 'found' ? ' found' : status === 'error' ? ' error' : ' scanning');
+      }
+
+      // Show overlay
+      function showOverlay(title, message, isError) {
+        arOverlay.innerHTML = `
+          <h3>${title}</h3>
+          <p>${message}</p>
+          <button class="ar-btn ar-btn-primary" onclick="handleStartAR()">
+            ${isError ? 'Try Again' : 'Start AR'}
+          </button>
+        `;
+        arOverlay.classList.remove('hidden');
+        arViewport.style.display = 'none';
+        arStatus.style.display = 'none';
+        arControls.style.display = 'none';
+        fullscreenBtn.style.display = 'none';
+      }
+
+      // Start AR - inject AFRAME scene dynamically
+      window.handleStartAR = function() {
+        console.log('[AR Page] Starting AR...');
+
+        arOverlay.classList.add('hidden');
+        arStatus.style.display = 'flex';
+        arControls.style.display = 'flex';
+        fullscreenBtn.style.display = 'block';
+        updateStatus('loading', 'Starting camera...');
+
+        // Create AFRAME scene dynamically
+        arViewport.innerHTML = `
+          <a-scene
+            mindar-image="imageTargetSrc: /ar/targets/targets.mind; showStats: false; uiLoading: no; uiScanning: no; uiError: no;"
+            color-space="sRGB"
+            vr-mode-ui="enabled: false"
+            device-orientation-permission-ui="enabled: false"
+            id="arScene"
+          >
+            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+            <a-entity mindar-image-target="targetIndex: 0" id="arTarget">
+              <!-- Red cube that appears on the target - positioned above target, large and bright -->
+              <a-box
+                position="0 0 0.5"
+                scale="1 1 1"
+                color="#ff0000"
+                material="shader: flat; color: #ff0000;"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear"
+              ></a-box>
+              <!-- Plane on the target for debugging - should show immediately -->
+              <a-plane
+                position="0 0 0"
+                rotation="0 0 0"
+                width="1"
+                height="1"
+                color="#00ff00"
+                material="shader: flat; color: #00ff00; opacity: 0.7;"
+              ></a-plane>
+            </a-entity>
+          </a-scene>
+        `;
+
+        // Get references to the newly created elements
+        const arSceneEl = document.getElementById('arScene');
+        const arTargetEl = document.getElementById('arTarget');
+
+        // When scene is loaded, make renderer transparent and debug video
+        arSceneEl.addEventListener('loaded', () => {
+          console.log('[AR Page] Scene loaded');
+
+          // Debug: find all video elements
+          const videos = document.querySelectorAll('video');
+          console.log('[AR Page] Found video elements:', videos.length);
+          videos.forEach((v, i) => {
+            console.log('[AR Page] Video', i, ':', v, 'display:', getComputedStyle(v).display, 'visibility:', getComputedStyle(v).visibility);
+            // Force video to be visible
+            v.style.display = 'block';
+            v.style.visibility = 'visible';
+            v.style.opacity = '1';
+            v.style.zIndex = '0';
+          });
+
+          const renderer = arSceneEl.renderer;
+          if (renderer) {
+            renderer.setClearColor(0x000000, 0); // Transparent background
+            console.log('[AR Page] Renderer set to transparent');
+          }
+
+          // Debug: check canvas
+          const canvas = document.querySelector('.a-canvas');
+          if (canvas) {
+            console.log('[AR Page] Canvas found, setting transparent');
+            canvas.style.backgroundColor = 'transparent';
+          }
+        });
+
+        // Listen for MindAR events
+        arSceneEl.addEventListener('arReady', () => {
+          console.log('[AR Page] AR Ready');
+          updateStatus('scanning', 'Scanning for target...');
+          isRunning = true;
+
+          // Fix video styling after AR is ready
+          setTimeout(() => {
+            const video = document.querySelector('#arViewport video');
+            if (video) {
+              console.log('[AR Page] Fixing video styles');
+              video.style.position = 'absolute';
+              video.style.top = '0';
+              video.style.left = '0';
+              video.style.width = '100%';
+              video.style.height = '100%';
+              video.style.objectFit = 'cover';
+              video.style.zIndex = '0';
+              console.log('[AR Page] Video styles fixed');
+            }
+
+            // Also make sure canvas is above video but transparent
+            const canvas = document.querySelector('.a-canvas');
+            if (canvas) {
+              canvas.style.position = 'absolute';
+              canvas.style.top = '0';
+              canvas.style.left = '0';
+              canvas.style.zIndex = '1';
+              canvas.style.backgroundColor = 'transparent';
+            }
+          }, 500);
+        });
+
+        arSceneEl.addEventListener('arError', (e) => {
+          console.error('[AR Page] AR Error:', e);
+          showOverlay('AR Error', 'Failed to start AR. Please try again.', true);
+        });
+
+        // Listen for target found/lost on the target entity
+        arTargetEl.addEventListener('targetFound', () => {
+          console.log('[AR Page] Target found!');
+          updateStatus('found', 'Target Found!');
+        });
+
+        arTargetEl.addEventListener('targetLost', () => {
+          console.log('[AR Page] Target lost');
+          updateStatus('scanning', 'Scanning...');
+        });
+      };
+
+      // Stop AR
+      window.handleStopAR = function() {
+        console.log('[AR Page] Stopping AR...');
+        isRunning = false;
+
+        // Remove the AFRAME scene completely
+        arViewport.innerHTML = '';
+
+        if (document.fullscreenElement) document.exitFullscreen();
+        arContainer.classList.remove('fullscreen');
+        showOverlay('AR Stopped', 'Tap Start AR to begin again.', false);
+      };
+
+      // Fullscreen
+      window.toggleFullscreen = function() {
+        if (!document.fullscreenElement) {
+          arContainer.requestFullscreen().catch(() => arContainer.classList.add('fullscreen'));
+        } else {
+          document.exitFullscreen();
+        }
+      };
+
+      document.addEventListener('fullscreenchange', () => {
+        const isFs = !!document.fullscreenElement;
+        arContainer.classList.toggle('fullscreen', isFs);
+        fullscreenBtn.textContent = isFs ? '✕' : '⛶';
+      });
+
+      console.log('[AR Page] Initialized');
+    });
+  </script>
+
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
