@@ -1,65 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Mini CRM - HiveMind AR</title>
- <link rel="stylesheet" href="/styles/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini CRM - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
- <div class="sidebar-overlay"></div>
- <div class="app-layout">
- <aside class="sidebar">
- <div class="sidebar-header"><h2>HiveMind AR</h2><span>Sales Agent</span></div>
- <nav class="sidebar-nav">
- <a href="/pages/sales-agent/dashboard.html">Dashboard</a>
- <a href="/pages/sales-agent/analytics.html">Analytics</a>
- <a href="/pages/sales-agent/mini-crm.html" class="active">Mini CRM</a>
- <a href="/pages/sales-agent/contact-us.html">Contact Us</a>
- <a href="/pages/sales-agent/gallery.html">Gallery Showcase</a>
- <a href="/pages/sales-agent/about-us.html">About Us</a>
- <a href="/pages/sales-agent/ordering.html">Ordering / Reservation</a>
- </nav>
- <div class="sidebar-footer"><a href="#" class="logout-btn" onclick="logout()">Logout</a></div>
- </aside>
- <main class="main-content">
- <header class="header"><button class="menu-toggle">☰</button><h1>Mini CRM</h1><div></div></header>
- <div class="page-content">
- <div class="card">
- <div class="card-header">
- <h3 class="card-title">My Leads</h3>
- <div class="btn-group">
- <button class="btn btn-primary" onclick="showCreateModal()">+ Add Lead</button>
- <button class="btn btn-secondary" onclick="sendEmailToAll()">Email All</button>
- </div>
- </div>
- <div class="table-container">
- <table>
- <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>
- <tbody>
- <tr><td>Jennifer Adams</td><td>jennifer@email.com</td><td>+1 555-1001</td><td><span class="badge badge-success">Hot</span></td><td><div class="btn-group"><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-secondary">Email</button></div></td></tr>
- <tr><td>Robert Chen</td><td>robert@email.com</td><td>+1 555-1002</td><td><span class="badge badge-warning">Warm</span></td><td><div class="btn-group"><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-secondary">Email</button></div></td></tr>
- <tr><td>Maria Garcia</td><td>maria@email.com</td><td>+1 555-1003</td><td><span class="badge badge-danger">Cold</span></td><td><div class="btn-group"><button class="btn btn-sm btn-primary">Edit</button><button class="btn btn-sm btn-secondary">Email</button></div></td></tr>
- </tbody>
- </table>
- </div>
- </div>
- </div>
- <footer class="footer"><p>&copy; 2024 HiveMind AR. All rights reserved.</p></footer>
- </main>
- </div>
- <div class="modal-overlay" id="createModal">
- <div class="modal">
- <div class="modal-header"><h3>Add Lead</h3><button class="modal-close">&times;</button></div>
- <form id="createForm">
- <div class="form-group"><label>Name</label><input type="text" class="form-control" placeholder="Name"></div>
- <div class="form-group"><label>Email</label><input type="email" class="form-control" placeholder="Email"></div>
- <div class="form-group"><label>Phone</label><input type="tel" class="form-control" placeholder="Phone"></div>
- <div class="form-group"><label>Status</label><select class="form-control"><option>Hot</option><option>Warm</option><option>Cold</option></select></div>
- <button type="button" class="btn btn-primary" onclick="submitForm('createForm')">Add</button>
- </form>
- </div>
- </div>
- <script src="/src/main.js"></script>
+  <div class="sidebar-overlay"></div>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-header"><h2>HiveMind AR</h2><span>Sales Agent</span></div>
+      <nav class="sidebar-nav">
+        <a href="/pages/sales-agent/dashboard.html">Dashboard</a>
+        <a href="/pages/sales-agent/analytics.html">Analytics</a>
+        <a href="/pages/sales-agent/mini-crm.html" class="active">Mini CRM</a>
+        <a href="/pages/sales-agent/contact-us.html">Contact Us</a>
+        <a href="/pages/sales-agent/gallery.html">Gallery Showcase</a>
+        <a href="/pages/sales-agent/about-us.html">About Us</a>
+        <a href="/pages/sales-agent/ordering.html">Ordering / Reservation</a>
+      </nav>
+      <div class="sidebar-footer"><a href="#" class="logout-btn" onclick="logout()">Logout</a></div>
+    </aside>
+    <main class="main-content">
+      <header class="header">
+        <button class="menu-toggle">☰</button>
+        <h1>Mini CRM</h1>
+        <div id="supabaseStatus" style="font-size: 0.75rem;"></div>
+      </header>
+      <div class="page-content">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">My Leads</h3>
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="showCreateModal()">+ Add Lead</button>
+              <button class="btn btn-secondary" onclick="sendEmailToAll()">Email All</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leadsTableBody">
+                <tr>
+                  <td colspan="5" style="text-align: center; color: #64748b; padding: 2rem;">
+                    Loading leads...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <footer class="footer"><p>&copy; 2024 HiveMind AR. All rights reserved.</p></footer>
+    </main>
+  </div>
+
+  <!-- Create Lead Modal -->
+  <div class="modal-overlay" id="createModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Lead</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="createForm">
+        <div class="form-group">
+          <label for="createName">Name</label>
+          <input type="text" id="createName" name="name" class="form-control" placeholder="Name" required>
+        </div>
+        <div class="form-group">
+          <label for="createEmail">Email</label>
+          <input type="email" id="createEmail" name="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <label for="createPhone">Phone</label>
+          <input type="tel" id="createPhone" name="phone" class="form-control" placeholder="Phone">
+        </div>
+        <div class="form-group">
+          <label for="createStatus">Status</label>
+          <select id="createStatus" name="status" class="form-control">
+            <option value="Hot">Hot</option>
+            <option value="Warm">Warm</option>
+            <option value="Cold">Cold</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="submitForm('createForm')">Add</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Lead Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Lead</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="editForm">
+        <div class="form-group">
+          <label for="editName">Name</label>
+          <input type="text" id="editName" name="name" class="form-control" placeholder="Name" required>
+        </div>
+        <div class="form-group">
+          <label for="editEmail">Email</label>
+          <input type="email" id="editEmail" name="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+          <label for="editPhone">Phone</label>
+          <input type="tel" id="editPhone" name="phone" class="form-control" placeholder="Phone">
+        </div>
+        <div class="form-group">
+          <label for="editStatus">Status</label>
+          <select id="editStatus" name="status" class="form-control">
+            <option value="Hot">Hot</option>
+            <option value="Warm">Warm</option>
+            <option value="Cold">Cold</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="submitForm('editForm')">Update</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
