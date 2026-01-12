@@ -8,7 +8,37 @@
   <style>
     /* Additional home page specific styles */
     .hero {
-      background-image: url('https://media.hivemindar.com/images/client/hivemind-site-lg.jpg');
+      background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+      position: relative;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+    .hero-logo-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-logo-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 768px) {
+      .hero-logo-bg {
+        width: 400px;
+        height: 400px;
+        opacity: 0.3;
+      }
     }
 
     .testimonial-section {
@@ -105,6 +135,9 @@
 
   <!-- Hero Section -->
   <section class="hero">
+    <div class="hero-logo-bg">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+    </div>
     <div class="hero-content">
       <h1>Share Your Art With The World</h1>
       <p>HiveMind AR empowers independent artists and dealers to showcase their work globally through augmented reality technology.</p>
@@ -123,17 +156,17 @@
   <section class="features-section">
     <div class="features-grid">
       <div class="feature-card">
-        <img src="https://media.hivemindar.com/images/client/create-your-gallery.jpg" alt="Create Your Gallery">
+        <img src="https://images.unsplash.com/photo-1557672172-298e090bd0f1?w=600&h=400&fit=crop" alt="Create Your Gallery">
         <h3>Create Your Gallery</h3>
         <p>Subscribe for free and create your profile. Provide some biographical details, and select from three different subscription levels. Upload your artwork images with their descriptions using our intuitive customization interface.</p>
       </div>
       <div class="feature-card">
-        <img src="https://media.hivemindar.com/images/client/share-your-work.jpg" alt="Share Your Work">
+        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop" alt="Share Your Work">
         <h3>Share Your Work</h3>
         <p>Share your gallery links with potential buyers worldwide. Visitors can view your art through the HVM augmented reality app, available for free on iOS and Android devices.</p>
       </div>
       <div class="feature-card">
-        <img src="https://media.hivemindar.com/images/client/sell-to-anyone.jpg" alt="Sell to Anyone">
+        <img src="https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=600&h=400&fit=crop" alt="Sell to Anyone">
         <h3>Sell to Anyone</h3>
         <p>Viewers can connect with you directly through the messaging portal to inquire about your artwork and negotiate purchases. Sell your art to anyone, anywhere in the world.</p>
       </div>
@@ -166,17 +199,17 @@
   <section class="features-section">
     <div class="features-grid">
       <div class="feature-card">
-        <img src="https://media.hivemindar.com/images/client/client-01.jpg" alt="True Scale AR">
+        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop" alt="True Scale AR">
         <h3>True Scale AR</h3>
         <p>HVM AR ensures precise image scaling, representing the true size of art unlike many other AR solutions. Buyers see exactly how your artwork will look in their space.</p>
       </div>
       <div class="feature-card">
-        <img src="https://media.hivemindar.com/images/client/client-02.jpg" alt="Analytics">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop" alt="Analytics">
         <h3>Analytics Dashboard</h3>
         <p>Gain valuable insights into customer behavior, such as views and engagement, to make informed decisions about inventory and pricing strategies.</p>
       </div>
       <div class="feature-card">
-        <img src="https://media.hivemindar.com/images/client/client-03.jpg" alt="Social Sharing">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop" alt="Social Sharing">
         <h3>Social Sharing</h3>
         <p>Easily share your virtual galleries across social media platforms to expand your reach and attract new interest in your artwork.</p>
       </div>
@@ -188,7 +221,7 @@
     <h2>What Artists Say</h2>
     <div class="testimonial-card">
       <div class="testimonial-image">
-        <img src="https://media.hivemindar.com/images/client/creation-of-beauty-is-art.jpg" alt="Artist testimonial">
+        <img src="https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?w=600&h=400&fit=crop" alt="Contemporary art installation">
       </div>
       <div class="testimonial-content">
         <blockquote>"HiveMind AR has transformed how I showcase my work to collectors around the world. They can see my paintings at true scale in their homes before buying."</blockquote>
@@ -198,10 +231,11 @@
   </section>
 
   <!-- CTA Section -->
-  <section class="cta-section">
-    <h2>Ready to Share Your Art?</h2>
-    <p>Join thousands of artists using HiveMind AR to reach global audiences and sell their work through augmented reality.</p>
-    <a href="/pages/auth/signup.html" class="btn">Get Started Free</a>
+  <section class="cta-section" style="position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background-image: url('/images/brand/HMC_Logo_04c.jpg'); background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.1;"></div>
+    <h2 style="position: relative; z-index: 1;">Ready to Share Your Art?</h2>
+    <p style="position: relative; z-index: 1;">Join thousands of artists using HiveMind AR to reach global audiences and sell their work through augmented reality.</p>
+    <a href="/pages/auth/signup.html" class="btn" style="position: relative; z-index: 1;">Get Started Free</a>
   </section>
 
   <!-- Footer -->
