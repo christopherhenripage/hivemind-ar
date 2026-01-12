@@ -77,7 +77,7 @@
   </g>
   
   <!-- Main person silhouette - viewing the artwork -->
-  <g fill="#0a0a0a">
+  <g fill="#9A7B5B">
     <!-- Base -->
     <ellipse cx="400" cy="480" rx="45" ry="15"/>
     <!-- Body -->
@@ -85,8 +85,8 @@
     <!-- Head - looking up at artwork -->
     <circle cx="400" cy="290" r="30"/>
     <!-- Arms slightly raised -->
-    <path d="M 360 340 Q 320 350 300 330" stroke="#0a0a0a" stroke-width="16" fill="none" stroke-linecap="round"/>
-    <path d="M 440 340 Q 480 350 500 330" stroke="#0a0a0a" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M 360 340 Q 320 350 300 330" stroke="#9A7B5B" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M 440 340 Q 480 350 500 330" stroke="#9A7B5B" stroke-width="16" fill="none" stroke-linecap="round"/>
   </g>
   
   <!-- Pulse rings from center -->

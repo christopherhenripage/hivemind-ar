@@ -94,7 +94,7 @@
   </g>
   
   <!-- Person silhouette - standing for scale reference -->
-  <g fill="#080808">
+  <g fill="#9A7B5B">
     <!-- Feet/base -->
     <ellipse cx="130" cy="458" rx="30" ry="8"/>
     <!-- Legs -->
@@ -105,8 +105,8 @@
     <!-- Head -->
     <circle cx="130" cy="250" r="30"/>
     <!-- Arms at sides -->
-    <path d="M 100 290 Q 80 330 85 370" stroke="#080808" stroke-width="14" fill="none" stroke-linecap="round"/>
-    <path d="M 160 290 Q 180 330 175 370" stroke="#080808" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M 100 290 Q 80 330 85 370" stroke="#9A7B5B" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M 160 290 Q 180 330 175 370" stroke="#9A7B5B" stroke-width="14" fill="none" stroke-linecap="round"/>
   </g>
   
   <!-- Human height reference line -->

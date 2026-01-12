@@ -71,16 +71,16 @@
   </g>
   
   <!-- Person silhouette - back turned, arms gesturing -->
-  <g fill="#050505">
+  <g fill="#9A7B5B">
     <!-- Body base -->
     <ellipse cx="350" cy="490" rx="50" ry="15"/>
     <path d="M 310 340 Q 300 420 320 490 L 380 490 Q 400 420 390 340 Z"/>
     <!-- Head -->
     <circle cx="350" cy="310" r="32"/>
     <!-- Left arm raised - gesturing at artwork -->
-    <path d="M 310 350 Q 250 320 220 260 Q 210 240 230 235" stroke="#050505" stroke-width="20" fill="none" stroke-linecap="round"/>
+    <path d="M 310 350 Q 250 320 220 260 Q 210 240 230 235" stroke="#9A7B5B" stroke-width="20" fill="none" stroke-linecap="round"/>
     <!-- Right arm extended -->
-    <path d="M 390 350 Q 440 340 480 300 Q 500 280 495 270" stroke="#050505" stroke-width="18" fill="none" stroke-linecap="round"/>
+    <path d="M 390 350 Q 440 340 480 300 Q 500 280 495 270" stroke="#9A7B5B" stroke-width="18" fill="none" stroke-linecap="round"/>
   </g>
   
   <!-- Hand indicators/cursors -->

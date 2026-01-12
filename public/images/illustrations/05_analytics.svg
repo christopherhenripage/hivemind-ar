@@ -91,7 +91,7 @@
   </g>
   
   <!-- Person silhouette - contemplating the data -->
-  <g fill="#080808">
+  <g fill="#9A7B5B">
     <!-- Base -->
     <ellipse cx="180" cy="480" rx="45" ry="15"/>
     <!-- Body -->
@@ -99,9 +99,9 @@
     <!-- Head - looking at visualization -->
     <circle cx="180" cy="275" r="32"/>
     <!-- Arm extended toward data -->
-    <path d="M 220 330 Q 280 300 320 280" stroke="#080808" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M 220 330 Q 280 300 320 280" stroke="#9A7B5B" stroke-width="16" fill="none" stroke-linecap="round"/>
     <!-- Other arm relaxed -->
-    <path d="M 140 330 Q 110 370 115 400" stroke="#080808" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M 140 330 Q 110 370 115 400" stroke="#9A7B5B" stroke-width="14" fill="none" stroke-linecap="round"/>
   </g>
   
   <!-- Touch point indicator -->

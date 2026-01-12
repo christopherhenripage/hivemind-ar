@@ -108,13 +108,13 @@
   </g>
   
   <!-- Person silhouette - contemplating the fusion -->
-  <g fill="#050505">
+  <g fill="#9A7B5B">
     <ellipse cx="400" cy="478" rx="40" ry="12"/>
     <path d="M 365 350 Q 358 415 375 478 L 425 478 Q 442 415 435 350 Z"/>
     <circle cx="400" cy="320" r="28"/>
     <!-- Arms slightly spread in contemplation -->
-    <path d="M 365 365 Q 330 380 310 370" stroke="#050505" stroke-width="12" fill="none" stroke-linecap="round"/>
-    <path d="M 435 365 Q 470 380 490 370" stroke="#050505" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <path d="M 365 365 Q 330 380 310 370" stroke="#9A7B5B" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <path d="M 435 365 Q 470 380 490 370" stroke="#9A7B5B" stroke-width="12" fill="none" stroke-linecap="round"/>
   </g>
   
   <!-- Light emanating from center to person -->

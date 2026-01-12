@@ -38,31 +38,31 @@
   <!-- Multiple silhouettes arranged in a circle/collective formation -->
   
   <!-- Person 1 - Left -->
-  <g fill="#0a0a0a">
+  <g fill="#7A6B5B">
     <circle cx="150" cy="260" r="28"/>
     <path d="M 120 300 Q 115 360 130 420 L 170 420 Q 185 360 180 300 Z"/>
   </g>
-  
+
   <!-- Person 2 - Left-center -->
-  <g fill="#080808">
+  <g fill="#8A7B6B">
     <circle cx="280" cy="240" r="30"/>
     <path d="M 248 280 Q 240 350 258 430 L 302 430 Q 320 350 312 280 Z"/>
   </g>
-  
+
   <!-- Person 3 - Center -->
-  <g fill="#060606">
+  <g fill="#9A7B5B">
     <circle cx="400" cy="230" r="32"/>
     <path d="M 365 270 Q 355 350 375 440 L 425 440 Q 445 350 435 270 Z"/>
   </g>
-  
+
   <!-- Person 4 - Right-center -->
-  <g fill="#080808">
+  <g fill="#8A7B6B">
     <circle cx="520" cy="240" r="30"/>
     <path d="M 488 280 Q 480 350 498 430 L 542 430 Q 560 350 552 280 Z"/>
   </g>
-  
+
   <!-- Person 5 - Right -->
-  <g fill="#0a0a0a">
+  <g fill="#7A6B5B">
     <circle cx="650" cy="260" r="28"/>
     <path d="M 620 300 Q 615 360 630 420 L 670 420 Q 685 360 680 300 Z"/>
   </g>

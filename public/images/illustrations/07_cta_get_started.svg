@@ -85,27 +85,27 @@
   <line x1="0" y1="460" x2="800" y2="460" stroke="#222" stroke-width="0.5" opacity="0.5"/>
   
   <!-- Person silhouette - stepping forward -->
-  <g fill="#050505">
+  <g fill="#9A7B5B">
     <!-- Shadow on ground -->
     <ellipse cx="280" cy="458" rx="50" ry="10" fill="#000" opacity="0.3"/>
-    
+
     <!-- Back leg (planted) -->
-    <path d="M 230 380 Q 225 420 240 458" stroke="#050505" stroke-width="22" fill="none" stroke-linecap="round"/>
-    
+    <path d="M 230 380 Q 225 420 240 458" stroke="#9A7B5B" stroke-width="22" fill="none" stroke-linecap="round"/>
+
     <!-- Front leg (stepping forward) -->
-    <path d="M 280 370 Q 320 400 340 455" stroke="#050505" stroke-width="22" fill="none" stroke-linecap="round"/>
-    
+    <path d="M 280 370 Q 320 400 340 455" stroke="#9A7B5B" stroke-width="22" fill="none" stroke-linecap="round"/>
+
     <!-- Torso - leaning slightly forward -->
     <path d="M 230 280 Q 240 330 255 380 L 290 370 Q 285 320 280 280 Z"/>
-    
+
     <!-- Head - looking toward portal -->
     <circle cx="270" cy="250" r="32"/>
-    
+
     <!-- Back arm -->
-    <path d="M 240 290 Q 210 320 200 360" stroke="#050505" stroke-width="14" fill="none" stroke-linecap="round"/>
-    
+    <path d="M 240 290 Q 210 320 200 360" stroke="#9A7B5B" stroke-width="14" fill="none" stroke-linecap="round"/>
+
     <!-- Front arm - slightly forward with movement -->
-    <path d="M 290 290 Q 330 300 350 320" stroke="#050505" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <path d="M 290 290 Q 330 300 350 320" stroke="#9A7B5B" stroke-width="14" fill="none" stroke-linecap="round"/>
   </g>
   
   <!-- Light touching the person from portal -->
