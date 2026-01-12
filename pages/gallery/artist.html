@@ -270,6 +270,42 @@
       color: var(--hm-text-muted);
     }
 
+    /* Powered by HiveMind badge */
+    .powered-by-badge {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+
+    .powered-by-badge a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .powered-by-badge strong {
+      background: linear-gradient(90deg, #C9A227, #667eea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 768px) {
+      .powered-by-badge {
+        bottom: 10px;
+        right: 10px;
+        padding: 0.4rem 0.75rem;
+      }
+    }
+
     /* Contact Modal */
     .modal-overlay {
       display: none;
@@ -400,11 +436,18 @@
     <button class="btn btn-dark" onclick="showContactModal()">Contact Artist</button>
   </section>
 
+  <!-- Powered by HiveMind AR (shown for free tier) -->
+  <div id="poweredByBadge" class="powered-by-badge" style="display: none;">
+    <a href="/" target="_blank">
+      Powered by <strong>HiveMind AR</strong>
+    </a>
+  </div>
+
   <!-- Footer -->
   <footer class="public-footer">
     <div class="footer-links">
       <a href="/">Home</a>
-      <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/how-it-works.html">How It Works</a>
       <a href="/pages/public/about.html">About</a>
       <a href="/pages/public/contact.html">Contact</a>
     </div>
@@ -447,6 +490,7 @@
     import { supabase } from '/src/supabase.js';
 
     let currentArtist = null;
+    let currentPlan = null;
     let artworks = [];
 
     // Get slug from URL - supports both query param and clean URL formats
@@ -473,7 +517,7 @@
         return;
       }
 
-      // Get artist profile
+      // Get artist profile with subscription plan
       const { data: artist, error } = await supabase
         .from('profiles')
         .select('*')
@@ -488,6 +532,23 @@
       }
 
       currentArtist = artist;
+
+      // Get subscription plan details
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select(`
+          *,
+          subscription_plans (*)
+        `)
+        .eq('user_id', artist.id)
+        .single();
+
+      currentPlan = subscription?.subscription_plans || { slug: 'free', show_branding: true, social_links: false };
+
+      // Show branding badge for free tier
+      if (currentPlan.show_branding !== false && currentPlan.slug === 'free') {
+        document.getElementById('poweredByBadge').style.display = 'block';
+      }
 
       // Update page
       document.title = `${artist.gallery_name || artist.full_name} - HiveMind AR`;
@@ -523,16 +584,20 @@
         document.getElementById('artistHero').classList.add('has-banner');
       }
 
-      // Social links
+      // Social links (only show for paid plans with social_links feature)
       const socialContainer = document.getElementById('socialLinks');
-      const socialHtml = [];
-      if (artist.instagram_url) socialHtml.push(`<a href="${artist.instagram_url}" target="_blank" class="social-link" title="Instagram">📷</a>`);
-      if (artist.facebook_url) socialHtml.push(`<a href="${artist.facebook_url}" target="_blank" class="social-link" title="Facebook">📘</a>`);
-      if (artist.twitter_url) socialHtml.push(`<a href="${artist.twitter_url}" target="_blank" class="social-link" title="Twitter/X">🐦</a>`);
-      if (artist.tiktok_url) socialHtml.push(`<a href="${artist.tiktok_url}" target="_blank" class="social-link" title="TikTok">🎵</a>`);
-      if (artist.youtube_url) socialHtml.push(`<a href="${artist.youtube_url}" target="_blank" class="social-link" title="YouTube">▶️</a>`);
-      if (artist.etsy_url) socialHtml.push(`<a href="${artist.etsy_url}" target="_blank" class="social-link" title="Etsy Shop">🛒</a>`);
-      socialContainer.innerHTML = socialHtml.join('');
+      const canShowSocialLinks = currentPlan.social_links || currentPlan.slug === 'artist' || currentPlan.slug === 'professional';
+
+      if (canShowSocialLinks) {
+        const socialHtml = [];
+        if (artist.instagram_url) socialHtml.push(`<a href="${artist.instagram_url}" target="_blank" class="social-link" title="Instagram">📷</a>`);
+        if (artist.facebook_url) socialHtml.push(`<a href="${artist.facebook_url}" target="_blank" class="social-link" title="Facebook">📘</a>`);
+        if (artist.twitter_url) socialHtml.push(`<a href="${artist.twitter_url}" target="_blank" class="social-link" title="Twitter/X">🐦</a>`);
+        if (artist.tiktok_url) socialHtml.push(`<a href="${artist.tiktok_url}" target="_blank" class="social-link" title="TikTok">🎵</a>`);
+        if (artist.youtube_url) socialHtml.push(`<a href="${artist.youtube_url}" target="_blank" class="social-link" title="YouTube">▶️</a>`);
+        if (artist.etsy_url) socialHtml.push(`<a href="${artist.etsy_url}" target="_blank" class="social-link" title="Etsy Shop">🛒</a>`);
+        socialContainer.innerHTML = socialHtml.join('');
+      }
 
       // Get artworks
       const { data: artworkData } = await supabase

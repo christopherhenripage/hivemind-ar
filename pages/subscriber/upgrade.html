@@ -460,9 +460,8 @@
     // PayPal Plan IDs - These need to be created in PayPal Dashboard
     // Map our plan slugs to PayPal subscription plan IDs
     const PAYPAL_PLAN_IDS = {
-      'basic': 'P-XXXXXXXXXXXXXXXXXXXXXX', // Replace with actual PayPal Plan ID
-      'pro': 'P-XXXXXXXXXXXXXXXXXXXXXX',   // Replace with actual PayPal Plan ID
-      'unlimited': 'P-XXXXXXXXXXXXXXXXXXXXXX' // Replace with actual PayPal Plan ID
+      'artist': 'P-XXXXXXXXXXXXXXXXXXXXXX',       // $12/month - Replace with actual PayPal Plan ID
+      'professional': 'P-XXXXXXXXXXXXXXXXXXXXXX'  // $29/month - Replace with actual PayPal Plan ID
     };
 
     // Check authentication
@@ -535,7 +534,7 @@
         const isCurrent = plan.slug === currentPlanSlug;
         const isUpgrade = index > currentPlanIndex;
         const isDowngrade = index < currentPlanIndex;
-        const isRecommended = plan.slug === 'pro'; // Mark Pro as recommended
+        const isRecommended = plan.slug === 'artist'; // Mark Artist as recommended (best value)
 
         const features = getFeatures(plan);
 
@@ -561,30 +560,52 @@
     // Get features for a plan
     function getFeatures(plan) {
       const limit = plan.artwork_limit >= 9999 ? 'Unlimited' : plan.artwork_limit;
+      const features = [];
 
-      const features = [
-        { text: `${limit} artworks`, disabled: false },
-        { text: 'AR viewing for collectors', disabled: false },
-        { text: 'Public gallery page', disabled: false },
-        { text: 'Collector inquiries', disabled: false }
-      ];
+      // Artwork limit
+      features.push({ text: `${limit} artworks`, disabled: false });
 
-      // Add tier-specific features
-      if (plan.slug === 'basic' || plan.slug === 'pro' || plan.slug === 'studio') {
+      // AR viewing (all plans)
+      features.push({ text: 'AR viewing for collectors', disabled: false });
+
+      // Custom URL / Branding
+      if (plan.slug === 'free') {
+        features.push({ text: 'Basic gallery URL', disabled: false });
+        features.push({ text: '"Powered by HiveMind AR" branding', disabled: false });
+      } else {
+        features.push({ text: 'Custom gallery URL', disabled: false });
+        features.push({ text: 'Your branding only (no HiveMind)', disabled: false });
+      }
+
+      // Social links
+      if (plan.social_links || plan.slug !== 'free') {
+        features.push({ text: 'Social media links on gallery', disabled: false });
+      } else {
+        features.push({ text: 'Social media links on gallery', disabled: true });
+      }
+
+      // Analytics
+      if (plan.full_analytics || plan.slug === 'professional') {
+        features.push({ text: 'Full analytics (views, AR, location)', disabled: false });
+      } else if (plan.slug === 'artist') {
+        features.push({ text: 'Views + AR activation analytics', disabled: false });
+      } else {
+        features.push({ text: 'View count only', disabled: false });
+      }
+
+      // Support
+      if (plan.priority_support || plan.slug === 'professional') {
         features.push({ text: 'Priority support', disabled: false });
+      } else if (plan.slug === 'artist') {
+        features.push({ text: 'Email support', disabled: false });
       } else {
-        features.push({ text: 'Priority support', disabled: true });
+        features.push({ text: 'Community support', disabled: false });
       }
 
-      if (plan.slug === 'pro' || plan.slug === 'studio') {
-        features.push({ text: 'Analytics dashboard', disabled: false });
-        features.push({ text: 'Custom gallery branding', disabled: false });
-      } else {
-        features.push({ text: 'Analytics dashboard', disabled: true });
-      }
-
-      if (plan.slug === 'studio') {
+      // Professional-only features
+      if (plan.slug === 'professional') {
         features.push({ text: 'Featured artist listing', disabled: false });
+        features.push({ text: 'Custom domain support', disabled: false });
       }
 
       return features;

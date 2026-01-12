@@ -200,29 +200,38 @@
 
         <h3 style="margin: 1.5rem 0 1rem; font-size: 1rem; color: var(--hm-text-muted);">Social Links</h3>
 
-        <div class="form-group">
-          <label for="editInstagram">Instagram</label>
-          <input type="url" id="editInstagram" class="form-control" placeholder="https://instagram.com/yourusername">
+        <!-- Social links section (gated by plan) -->
+        <div id="socialLinksSection">
+          <div class="form-group">
+            <label for="editInstagram">Instagram</label>
+            <input type="url" id="editInstagram" class="form-control" placeholder="https://instagram.com/yourusername">
+          </div>
+          <div class="form-group">
+            <label for="editFacebook">Facebook</label>
+            <input type="url" id="editFacebook" class="form-control" placeholder="https://facebook.com/yourusername">
+          </div>
+          <div class="form-group">
+            <label for="editTwitter">Twitter / X</label>
+            <input type="url" id="editTwitter" class="form-control" placeholder="https://twitter.com/yourusername">
+          </div>
+          <div class="form-group">
+            <label for="editTiktok">TikTok</label>
+            <input type="url" id="editTiktok" class="form-control" placeholder="https://tiktok.com/@yourusername">
+          </div>
+          <div class="form-group">
+            <label for="editYoutube">YouTube</label>
+            <input type="url" id="editYoutube" class="form-control" placeholder="https://youtube.com/@yourchannel">
+          </div>
+          <div class="form-group">
+            <label for="editEtsy">Etsy Shop</label>
+            <input type="url" id="editEtsy" class="form-control" placeholder="https://etsy.com/shop/yourshop">
+          </div>
         </div>
-        <div class="form-group">
-          <label for="editFacebook">Facebook</label>
-          <input type="url" id="editFacebook" class="form-control" placeholder="https://facebook.com/yourusername">
-        </div>
-        <div class="form-group">
-          <label for="editTwitter">Twitter / X</label>
-          <input type="url" id="editTwitter" class="form-control" placeholder="https://twitter.com/yourusername">
-        </div>
-        <div class="form-group">
-          <label for="editTiktok">TikTok</label>
-          <input type="url" id="editTiktok" class="form-control" placeholder="https://tiktok.com/@yourusername">
-        </div>
-        <div class="form-group">
-          <label for="editYoutube">YouTube</label>
-          <input type="url" id="editYoutube" class="form-control" placeholder="https://youtube.com/@yourchannel">
-        </div>
-        <div class="form-group">
-          <label for="editEtsy">Etsy Shop</label>
-          <input type="url" id="editEtsy" class="form-control" placeholder="https://etsy.com/shop/yourshop">
+
+        <!-- Upgrade prompt for free users -->
+        <div id="socialLinksUpgrade" style="display: none; background: var(--hm-light-gray); padding: 1rem; border-radius: 8px; text-align: center;">
+          <p style="margin: 0 0 0.5rem; color: var(--hm-text-muted);">Social links are available on paid plans</p>
+          <a href="/pages/subscriber/upgrade.html" class="btn btn-dark btn-sm">Upgrade to Artist - $12/mo</a>
         </div>
 
         <p class="error-text" id="editError"></p>
@@ -240,6 +249,7 @@
 
     let currentUser = null;
     let currentProfile = null;
+    let currentPlan = null;
 
     // Check authentication
     async function checkAuth() {
@@ -256,22 +266,30 @@
       currentUser = await checkAuth();
       if (!currentUser) return;
 
-      // Get profile
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', currentUser.id)
-        .single();
+      // Get profile and subscription in parallel
+      const [profileResult, subscriptionResult] = await Promise.all([
+        supabase.from('profiles').select('*').eq('id', currentUser.id).single(),
+        supabase.from('subscriptions').select('*, subscription_plans(*)').eq('user_id', currentUser.id).single()
+      ]);
 
-      if (error) {
-        console.error('Error loading profile:', error);
+      if (profileResult.error) {
+        console.error('Error loading profile:', profileResult.error);
         document.getElementById('galleryName').textContent = 'Error loading profile';
         return;
       }
 
-      currentProfile = profile;
+      currentProfile = profileResult.data;
+      currentPlan = subscriptionResult.data?.subscription_plans || { slug: 'free', social_links: false };
+
+      // Gate social links by plan
+      const canUseSocialLinks = currentPlan.social_links || currentPlan.slug === 'artist' || currentPlan.slug === 'professional';
+      if (!canUseSocialLinks) {
+        document.getElementById('socialLinksSection').style.display = 'none';
+        document.getElementById('socialLinksUpgrade').style.display = 'block';
+      }
 
       // Update UI
+      const profile = currentProfile;
       document.getElementById('galleryName').textContent = profile.gallery_name || 'Your Gallery';
       document.getElementById('fullName').textContent = profile.full_name || '-';
       document.getElementById('location').textContent = profile.location || '';
