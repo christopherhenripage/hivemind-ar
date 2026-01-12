@@ -398,10 +398,18 @@
     let currentArtist = null;
     let artworks = [];
 
-    // Get slug from URL
+    // Get slug from URL - supports both query param and clean URL formats
     function getSlug() {
+      // First try query parameter: /pages/gallery/artist.html?slug=xxx
       const params = new URLSearchParams(window.location.search);
-      return params.get('slug');
+      const querySlug = params.get('slug');
+      if (querySlug) return querySlug;
+
+      // Then try clean URL format: /gallery/xxx
+      const pathMatch = window.location.pathname.match(/^\/gallery\/([^\/]+)\/?$/);
+      if (pathMatch) return pathMatch[1];
+
+      return null;
     }
 
     // Load gallery

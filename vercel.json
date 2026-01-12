@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/gallery/:slug",
-      "destination": "/pages/gallery/index.html?slug=:slug"
+      "destination": "/pages/gallery/artist.html?slug=:slug"
     },
     {
       "source": "/gallery/:slug/",
-      "destination": "/pages/gallery/index.html?slug=:slug"
+      "destination": "/pages/gallery/artist.html?slug=:slug"
     }
   ],
   "headers": [

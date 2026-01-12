@@ -51,6 +51,7 @@ export default defineConfig({
         'public-contact': resolve(__dirname, 'pages/public/contact.html'),
         // Gallery
         'gallery': resolve(__dirname, 'pages/gallery/index.html'),
+        'gallery-artist': resolve(__dirname, 'pages/gallery/artist.html'),
         // Subscriber pages
         'subscriber-dashboard': resolve(__dirname, 'pages/subscriber/dashboard.html'),
         'subscriber-profile': resolve(__dirname, 'pages/subscriber/profile.html'),
