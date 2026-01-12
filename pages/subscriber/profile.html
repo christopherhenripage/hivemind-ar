@@ -74,7 +74,12 @@
           <div class="banner-placeholder" id="bannerPlaceholder">
             <span>Add a banner image to personalize your gallery</span>
           </div>
-          <button class="banner-edit-btn" onclick="document.getElementById('bannerInput').click()">Change Banner</button>
+          <div class="banner-controls" id="bannerControls" style="display: none;">
+            <label>Adjust Position:</label>
+            <input type="range" id="bannerPosition" min="0" max="100" value="50" onchange="handleBannerPositionChange(this.value)">
+            <button class="banner-edit-btn" onclick="document.getElementById('bannerInput').click()">Change Image</button>
+          </div>
+          <button class="banner-edit-btn" id="bannerUploadBtn" onclick="document.getElementById('bannerInput').click()">Add Banner</button>
           <input type="file" id="bannerInput" accept="image/*" style="display: none;" onchange="handleBannerUpload(event)">
         </div>
 
@@ -282,9 +287,17 @@
 
       // Banner
       if (profile.banner_url) {
-        document.getElementById('bannerImage').src = profile.banner_url;
-        document.getElementById('bannerImage').style.display = 'block';
+        const bannerImg = document.getElementById('bannerImage');
+        bannerImg.src = profile.banner_url;
+        bannerImg.style.display = 'block';
         document.getElementById('bannerPlaceholder').style.display = 'none';
+        document.getElementById('bannerUploadBtn').style.display = 'none';
+        document.getElementById('bannerControls').style.display = 'flex';
+
+        // Apply saved position (default 50%)
+        const position = profile.banner_position || 50;
+        bannerImg.style.objectPosition = `center ${position}%`;
+        document.getElementById('bannerPosition').value = position;
       }
 
       // Social links display
@@ -496,13 +509,33 @@
           .update({ banner_url: publicUrl })
           .eq('id', currentUser.id);
 
-        document.getElementById('bannerImage').src = publicUrl + '?t=' + Date.now();
-        document.getElementById('bannerImage').style.display = 'block';
+        const bannerImg = document.getElementById('bannerImage');
+        bannerImg.src = publicUrl + '?t=' + Date.now();
+        bannerImg.style.display = 'block';
+        bannerImg.style.objectPosition = 'center 50%';
         document.getElementById('bannerPlaceholder').style.display = 'none';
+        document.getElementById('bannerUploadBtn').style.display = 'none';
+        document.getElementById('bannerControls').style.display = 'flex';
+        document.getElementById('bannerPosition').value = 50;
 
       } catch (err) {
         console.error('Banner upload error:', err);
         alert('Failed to upload banner. Please try again.');
+      }
+    };
+
+    window.handleBannerPositionChange = async function(value) {
+      const bannerImg = document.getElementById('bannerImage');
+      bannerImg.style.objectPosition = `center ${value}%`;
+
+      // Save position to database
+      try {
+        await supabase
+          .from('profiles')
+          .update({ banner_position: parseInt(value) })
+          .eq('id', currentUser.id);
+      } catch (err) {
+        console.error('Failed to save banner position:', err);
       }
     };
 
@@ -588,6 +621,48 @@
 
     .banner-edit-btn:hover {
       background: rgba(0,0,0,0.9);
+    }
+
+    .banner-controls {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(0,0,0,0.7);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+    }
+
+    .banner-controls label {
+      color: white;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .banner-controls input[type="range"] {
+      flex: 1;
+      height: 6px;
+      -webkit-appearance: none;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .banner-controls input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .banner-controls .banner-edit-btn {
+      position: static;
+      padding: 0.4rem 0.8rem;
     }
 
     /* Social links styles */

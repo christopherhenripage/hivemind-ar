@@ -72,6 +72,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center 50%;
     }
 
     .artist-hero.has-banner {
@@ -515,7 +516,9 @@
       // Banner
       if (artist.banner_url) {
         const bannerContainer = document.getElementById('artistBanner');
-        document.getElementById('bannerImage').src = artist.banner_url;
+        const bannerImg = document.getElementById('bannerImage');
+        bannerImg.src = artist.banner_url;
+        bannerImg.style.objectPosition = `center ${artist.banner_position || 50}%`;
         bannerContainer.style.display = 'block';
         document.getElementById('artistHero').classList.add('has-banner');
       }
