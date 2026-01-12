@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="goldGlow8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGrad8" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#111111" />
+      <stop offset="100%" style="stop-color:#080808" />
+    </linearGradient>
+    <radialGradient id="centerGlow8" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#D4AF37;stop-opacity:0" />
+    </radialGradient>
+    <filter id="glow8">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow8">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="500" fill="url(#bgGrad8)"/>
+  
+  <!-- Central glow -->
+  <ellipse cx="400" cy="250" rx="300" ry="200" fill="url(#centerGlow8)"/>
+  
+  <!-- Multiple silhouettes arranged in a circle/collective formation -->
+  
+  <!-- Person 1 - Left -->
+  <g fill="#0a0a0a">
+    <circle cx="150" cy="260" r="28"/>
+    <path d="M 120 300 Q 115 360 130 420 L 170 420 Q 185 360 180 300 Z"/>
+  </g>
+  
+  <!-- Person 2 - Left-center -->
+  <g fill="#080808">
+    <circle cx="280" cy="240" r="30"/>
+    <path d="M 248 280 Q 240 350 258 430 L 302 430 Q 320 350 312 280 Z"/>
+  </g>
+  
+  <!-- Person 3 - Center -->
+  <g fill="#060606">
+    <circle cx="400" cy="230" r="32"/>
+    <path d="M 365 270 Q 355 350 375 440 L 425 440 Q 445 350 435 270 Z"/>
+  </g>
+  
+  <!-- Person 4 - Right-center -->
+  <g fill="#080808">
+    <circle cx="520" cy="240" r="30"/>
+    <path d="M 488 280 Q 480 350 498 430 L 542 430 Q 560 350 552 280 Z"/>
+  </g>
+  
+  <!-- Person 5 - Right -->
+  <g fill="#0a0a0a">
+    <circle cx="650" cy="260" r="28"/>
+    <path d="M 620 300 Q 615 360 630 420 L 670 420 Q 685 360 680 300 Z"/>
+  </g>
+  
+  <!-- Neural/connection network between heads -->
+  <g stroke="url(#goldGlow8)" fill="none" filter="url(#softGlow8)">
+    <!-- Main connections -->
+    <path d="M 178 260 Q 215 200 252 240" stroke-width="1.5" opacity="0.7"/>
+    <path d="M 308 240 Q 340 180 370 230" stroke-width="1.8" opacity="0.8"/>
+    <path d="M 430 230 Q 460 180 492 240" stroke-width="1.8" opacity="0.8"/>
+    <path d="M 548 240 Q 585 200 622 260" stroke-width="1.5" opacity="0.7"/>
+    
+    <!-- Cross connections -->
+    <path d="M 178 250 Q 290 120 400 200" stroke-width="1" opacity="0.5"/>
+    <path d="M 400 200 Q 510 120 622 250" stroke-width="1" opacity="0.5"/>
+    <path d="M 252 230 Q 400 100 548 230" stroke-width="0.8" opacity="0.4"/>
+    
+    <!-- Upper arc connection -->
+    <path d="M 150 240 Q 400 50 650 240" stroke-width="1.2" opacity="0.4"/>
+  </g>
+  
+  <!-- Node points at connection intersections -->
+  <g fill="#FFD700" filter="url(#glow8)">
+    <circle cx="215" cy="210" r="4" opacity="0.7"/>
+    <circle cx="340" cy="180" r="5" opacity="0.8"/>
+    <circle cx="400" cy="150" r="6" opacity="0.9"/>
+    <circle cx="460" cy="180" r="5" opacity="0.8"/>
+    <circle cx="585" cy="210" r="4" opacity="0.7"/>
+  </g>
+  
+  <!-- Smaller connection nodes -->
+  <g fill="#D4AF37" opacity="0.5">
+    <circle cx="280" cy="160" r="3"/>
+    <circle cx="520" cy="160" r="3"/>
+    <circle cx="350" cy="130" r="2.5"/>
+    <circle cx="450" cy="130" r="2.5"/>
+  </g>
+  
+  <!-- Central collective symbol - hexagon -->
+  <g filter="url(#glow8)" transform="translate(400, 120)">
+    <polygon points="0,-25 22,-12 22,12 0,25 -22,12 -22,-12" 
+             fill="none" stroke="#FFD700" stroke-width="2" opacity="0.8"/>
+    <polygon points="0,-15 13,-7 13,7 0,15 -13,7 -13,-7" 
+             fill="#D4AF37" opacity="0.3"/>
+  </g>
+  
+  <!-- Energy pulses from center -->
+  <g stroke="#D4AF37" fill="none" opacity="0.15">
+    <circle cx="400" cy="120" r="50"/>
+    <circle cx="400" cy="120" r="80"/>
+    <circle cx="400" cy="120" r="120"/>
+  </g>
+  
+  <!-- Subtle thought/idea particles -->
+  <g fill="#FFD700" opacity="0.4">
+    <circle cx="200" cy="180" r="2"/>
+    <circle cx="320" cy="140" r="1.5"/>
+    <circle cx="480" cy="140" r="1.5"/>
+    <circle cx="600" cy="180" r="2"/>
+    <circle cx="250" cy="120" r="1.5"/>
+    <circle cx="550" cy="120" r="1.5"/>
+  </g>
+  
+  <!-- Ambient particles -->
+  <g fill="#D4AF37" opacity="0.25">
+    <circle cx="50" cy="100" r="1"/>
+    <circle cx="750" cy="150" r="1.5"/>
+    <circle cx="100" cy="400" r="1"/>
+    <circle cx="700" cy="380" r="1"/>
+  </g>
+</svg>

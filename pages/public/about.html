@@ -62,6 +62,10 @@
       border-radius: 8px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
+    /* SVG illustrations don't need box shadow - they have dark backgrounds */
+    .about-section-image img[src$=".svg"] {
+      box-shadow: none;
+    }
     .about-section-text h2 {
       font-size: 1.75rem;
       margin-bottom: 1.5rem;
@@ -91,8 +95,8 @@
     <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
       <a href="/pages/public/about.html">About</a>
-      <a href="/pages/public/privacy.html">Privacy</a>
       <a href="/pages/public/contact.html">Contact</a>
       <a href="/pages/auth/login.html">Subscribe</a>
     </div>
@@ -113,7 +117,7 @@
     <!-- Who We Are -->
     <div class="about-section">
       <div class="about-section-image">
-        <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600&h=400&fit=crop" alt="Connected minds">
+        <img src="/images/illustrations/08_about_who_we_are.svg" alt="Connected minds">
       </div>
       <div class="about-section-text">
         <h2>Who We Are</h2>
@@ -125,7 +129,7 @@
     <!-- Our Philosophy -->
     <div class="about-section reverse">
       <div class="about-section-image">
-        <img src="https://images.unsplash.com/photo-1484406566174-9da000fda645?w=600&h=400&fit=crop" alt="Nature and technology">
+        <img src="/images/illustrations/09_about_philosophy.svg" alt="Nature and technology">
       </div>
       <div class="about-section-text">
         <h2>Our Philosophy</h2>
@@ -137,7 +141,7 @@
     <!-- HiveMind AR -->
     <div class="about-section">
       <div class="about-section-image">
-        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop" alt="Augmented reality">
+        <img src="/images/illustrations/03_true_scale_ar.svg" alt="Augmented reality">
       </div>
       <div class="about-section-text">
         <h2>HiveMind AR</h2>
@@ -149,7 +153,7 @@
     <!-- Looking Forward -->
     <div class="about-section reverse">
       <div class="about-section-image">
-        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=400&fit=crop" alt="Global innovation">
+        <img src="/images/illustrations/07_cta_get_started.svg" alt="Global innovation">
       </div>
       <div class="about-section-text">
         <h2>Looking Forward</h2>
@@ -169,8 +173,8 @@
   <footer class="public-footer">
     <div class="footer-links">
       <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
       <a href="/pages/public/about.html">About</a>
-      <a href="/pages/public/privacy.html">Privacy</a>
       <a href="/pages/public/contact.html">Contact</a>
     </div>
     <p class="copyright">&copy; 2026 HiveMind Collective.</p>

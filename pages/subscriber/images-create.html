@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Image - HiveMind AR</title>
+  <title>Add Artwork - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
 </head>
 <body>
@@ -18,9 +18,13 @@
       </div>
 
       <nav class="sidebar-nav">
-        <a href="/pages/subscriber/upgrade.html">
-          <span class="nav-icon">🏆</span>
-          <span class="nav-text">Upgrade</span>
+        <a href="/pages/subscriber/dashboard.html">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="/pages/subscriber/images.html" class="active">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">My Artworks</span>
         </a>
         <a href="/pages/subscriber/profile.html">
           <span class="nav-icon">👤</span>
@@ -30,13 +34,9 @@
           <span class="nav-icon">✉️</span>
           <span class="nav-text">Messages</span>
         </a>
-        <a href="/pages/subscriber/images.html" class="active">
-          <span class="nav-icon">🖼️</span>
-          <span class="nav-text">Images</span>
-        </a>
-        <a href="/pages/subscriber/transactions.html">
-          <span class="nav-icon">💲</span>
-          <span class="nav-text">Transactions</span>
+        <a href="/pages/subscriber/upgrade.html">
+          <span class="nav-icon">⭐</span>
+          <span class="nav-text">Upgrade Plan</span>
         </a>
         <a href="/pages/subscriber/support.html">
           <span class="nav-icon">🎧</span>
@@ -58,14 +58,14 @@
 
       <!-- Breadcrumb -->
       <div class="breadcrumb">
-        <a href="/pages/subscriber/dashboard.html">Home</a> /
-        <a href="/pages/subscriber/images.html">Painting</a> /
-        <span>Create</span>
+        <a href="/pages/subscriber/dashboard.html">Dashboard</a> /
+        <a href="/pages/subscriber/images.html">My Artworks</a> /
+        <span id="pageAction">Add Artwork</span>
       </div>
 
       <!-- Page Header -->
       <div class="page-header">
-        <h1>Create</h1>
+        <h1 id="pageTitle">Add New Artwork</h1>
       </div>
 
       <!-- Page Content -->
@@ -74,146 +74,147 @@
         <div class="wizard-steps">
           <div class="wizard-step active" data-step="1">
             <div class="step-number">1</div>
-            <span class="step-label">INFO</span>
+            <span class="step-label">DETAILS</span>
           </div>
           <div class="wizard-step" data-step="2">
             <div class="step-number">2</div>
-            <span class="step-label">PRICING</span>
+            <span class="step-label">DIMENSIONS</span>
           </div>
           <div class="wizard-step" data-step="3">
             <div class="step-number">3</div>
             <span class="step-label">IMAGE</span>
           </div>
-          <div class="wizard-step" data-step="4">
-            <div class="step-number">4</div>
-            <span class="step-label">THUMBNAIL</span>
-          </div>
         </div>
 
-        <!-- Step 1: INFO -->
+        <!-- Step 1: DETAILS -->
         <div class="wizard-content" id="step1">
           <div class="form-group">
-            <label>Title</label>
-            <input type="text" id="title" class="form-control" required>
+            <label>Title <span class="required">*</span></label>
+            <input type="text" id="title" class="form-control" required placeholder="e.g., Sunset Over Mountains">
           </div>
           <div class="form-group">
-            <label>Creator</label>
-            <input type="text" id="creator" class="form-control">
+            <label>Artist/Creator</label>
+            <input type="text" id="creator" class="form-control" placeholder="Leave blank to use your profile name">
           </div>
           <div class="form-group">
-            <label>Year Painted</label>
-            <input type="text" id="yearPainted" class="form-control" placeholder="e.g. 1982">
+            <label>Year Created</label>
+            <input type="text" id="yearCreated" class="form-control" placeholder="e.g., 2024">
           </div>
           <div class="form-group">
             <label>Medium</label>
-            <input type="text" id="medium" class="form-control" placeholder="e.g. Oil, Watercolor, Charcoal Painting, etc.">
+            <input type="text" id="medium" class="form-control" placeholder="e.g., Oil on canvas, Acrylic, Watercolor">
           </div>
           <div class="form-group">
-            <label>Information</label>
-            <textarea id="information" class="form-control" rows="4"></textarea>
+            <label>Category</label>
+            <select id="category" class="form-control">
+              <option value="">Select category...</option>
+              <option value="painting">Painting</option>
+              <option value="photography">Photography</option>
+              <option value="digital">Digital Art</option>
+              <option value="sculpture">Sculpture</option>
+              <option value="mixed-media">Mixed Media</option>
+              <option value="print">Print</option>
+              <option value="other">Other</option>
+            </select>
           </div>
           <div class="form-group">
-            <label>Copyright</label>
-            <input type="text" id="copyright" class="form-control" placeholder="e.g. &copy; 2012 Barbara Kruger">
+            <label>Description</label>
+            <textarea id="description" class="form-control" rows="4" placeholder="Tell potential buyers about this artwork..."></textarea>
           </div>
-          <div class="wizard-actions">
-            <button class="btn btn-dark" onclick="nextStep(1)">Next</button>
-          </div>
-        </div>
-
-        <!-- Step 2: PRICING -->
-        <div class="wizard-content" id="step2" style="display: none;">
           <div class="form-group">
             <label>Price (USD)</label>
-            <input type="number" id="priceUsd" class="form-control" step="0.01" min="0" placeholder="e.g. 1500.00">
+            <input type="number" id="priceUsd" class="form-control" step="0.01" min="0" placeholder="e.g., 1500.00">
+            <p class="form-hint">Leave blank if not for sale or price on request</p>
           </div>
           <div class="wizard-actions">
-            <button class="btn btn-light" onclick="prevStep(2)">Back</button>
-            <button class="btn btn-dark" onclick="nextStep(2)">Next</button>
+            <button class="btn btn-dark" onclick="nextStep(1)">Next: Dimensions</button>
           </div>
         </div>
 
-        <!-- Step 3: IMAGE -->
+        <!-- Step 2: DIMENSIONS (for AR) -->
+        <div class="wizard-content" id="step2" style="display: none;">
+          <div class="info-box" style="background: #e8f4fd; border: 1px solid #b8daff; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+            <strong>Why dimensions matter:</strong>
+            <p style="margin: 0.5rem 0 0; color: var(--hm-text-light);">
+              Enter the physical size of your artwork in inches. This allows collectors to view your art in AR at true scale - they'll see exactly how it looks on their wall before purchasing.
+            </p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Width (inches) <span class="required">*</span></label>
+              <input type="number" id="widthInches" class="form-control" step="0.1" min="1" placeholder="e.g., 24">
+            </div>
+            <div class="form-group">
+              <label>Height (inches) <span class="required">*</span></label>
+              <input type="number" id="heightInches" class="form-control" step="0.1" min="1" placeholder="e.g., 36">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Depth (inches)</label>
+            <input type="number" id="depthInches" class="form-control" step="0.1" min="0" placeholder="e.g., 1.5 (optional, for canvas depth)">
+            <p class="form-hint">Optional - for stretched canvas or framed works</p>
+          </div>
+
+          <div class="wizard-actions">
+            <button class="btn btn-light" onclick="prevStep(2)">Back</button>
+            <button class="btn btn-dark" onclick="nextStep(2)">Next: Upload Image</button>
+          </div>
+        </div>
+
+        <!-- Step 3: IMAGE UPLOAD -->
         <div class="wizard-content" id="step3" style="display: none;">
-          <h3 style="font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase;">Physical Image Size</h3>
           <div class="form-group">
-            <label>Width in cm</label>
-            <input type="number" id="widthCm" class="form-control" step="0.1" placeholder="e.g. 92">
-          </div>
-          <div class="form-group">
-            <label>Height in cm</label>
-            <input type="number" id="heightCm" class="form-control" step="0.1" placeholder="e.g. 122">
-          </div>
-
-          <h3 style="font-size: 0.875rem; font-weight: 600; margin: 2rem 0 1rem; text-transform: uppercase;">Image Size in Browser</h3>
-          <div class="form-group">
-            <label>Image Width in px</label>
-            <input type="number" id="widthPx" class="form-control" placeholder="e.g. 300">
-          </div>
-          <div class="form-group">
-            <label>Image Height in px</label>
-            <input type="number" id="heightPx" class="form-control" placeholder="e.g. 600">
-          </div>
-
-          <div class="form-group">
-            <label>Artwork Image</label>
+            <label>Artwork Image <span class="required">*</span></label>
             <div class="image-upload-area" id="imageUploadArea" onclick="document.getElementById('imageInput').click()">
               <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
               <div id="imagePreviewContainer">
-                <p style="color: var(--hm-text-muted);">Click to upload image</p>
+                <div class="upload-placeholder">
+                  <div style="font-size: 3rem; margin-bottom: 1rem;">📷</div>
+                  <p>Click to upload your artwork image</p>
+                  <p style="font-size: 0.875rem; color: var(--hm-text-muted);">Recommended: High resolution JPG or PNG</p>
+                </div>
               </div>
             </div>
-            <div class="image-controls" id="imageControls" style="display: none;">
-              <span>Image</span>
-              <button onclick="rotateImage(-90)">↺</button>
-              <button onclick="rotateImage(90)">↻</button>
-              <button onclick="zoomImage(-0.1)">🔍-</button>
-              <input type="range" class="zoom-slider" id="zoomSlider" min="0.5" max="2" step="0.1" value="1" onchange="setZoom(this.value)">
-              <button onclick="zoomImage(0.1)">🔍+</button>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label>Thumbnail (optional)</label>
+            <div class="image-upload-area thumbnail-upload" id="thumbnailUploadArea" onclick="document.getElementById('thumbnailInput').click()">
+              <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="handleThumbnailUpload(event)">
+              <div id="thumbnailPreviewContainer">
+                <div class="upload-placeholder">
+                  <p style="font-size: 0.875rem;">Click to upload a custom thumbnail</p>
+                </div>
+              </div>
             </div>
+            <p class="form-hint">If not provided, a thumbnail will be generated from your main image</p>
+          </div>
+
+          <p class="error-text" id="createError"></p>
+          <p class="success-text" id="successMessage" style="color: #28a745; text-align: center;"></p>
+
+          <!-- Progress indicator for GLB generation -->
+          <div id="progressContainer" style="display: none; margin: 1rem 0;">
+            <div style="background: var(--hm-light-gray); border-radius: 4px; height: 8px; overflow: hidden;">
+              <div id="progressBar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; transition: width 0.3s;"></div>
+            </div>
+            <p id="progressText" style="font-size: 0.875rem; color: var(--hm-text-muted); margin-top: 0.5rem; text-align: center;">Uploading...</p>
           </div>
 
           <div class="wizard-actions">
             <button class="btn btn-light" onclick="prevStep(3)">Back</button>
-            <button class="btn btn-dark" onclick="nextStep(3)">Next</button>
-          </div>
-        </div>
-
-        <!-- Step 4: THUMBNAIL -->
-        <div class="wizard-content" id="step4" style="display: none;">
-          <div class="form-group">
-            <label>Thumbnail</label>
-            <div class="image-upload-area" id="thumbnailUploadArea" onclick="document.getElementById('thumbnailInput').click()">
-              <input type="file" id="thumbnailInput" accept="image/*" style="display: none;" onchange="handleThumbnailUpload(event)">
-              <div id="thumbnailPreviewContainer">
-                <p style="color: var(--hm-text-muted);">Click to upload thumbnail</p>
-              </div>
-            </div>
-            <div class="image-controls" id="thumbnailControls" style="display: none;">
-              <span>Thumbnail</span>
-              <button onclick="rotateThumbnail(-90)">↺</button>
-              <button onclick="rotateThumbnail(90)">↻</button>
-              <button onclick="zoomThumbnail(-0.1)">🔍-</button>
-              <input type="range" class="zoom-slider" id="thumbnailZoomSlider" min="0.5" max="2" step="0.1" value="1">
-              <button onclick="zoomThumbnail(0.1)">🔍+</button>
-            </div>
-            <p style="color: var(--hm-text-muted); font-size: 0.875rem; margin-top: 1rem;">
-              This will be the image that displays on your gallery page. We suggest that you use the same image as the image you are going to sell.
-            </p>
-          </div>
-
-          <p class="error-text" id="createError"></p>
-
-          <div class="wizard-actions">
-            <button class="btn btn-light" onclick="prevStep(4)">Back</button>
-            <button class="btn btn-dark" id="createBtn" onclick="createArtwork()">Create</button>
+            <button class="btn btn-dark" id="createBtn" onclick="createArtwork()">
+              <span id="btnText">Save Artwork</span>
+            </button>
           </div>
         </div>
       </div>
 
       <!-- Footer -->
       <footer class="dashboard-footer">
-        &copy; 2026 by Hivemind
+        &copy; 2026 HiveMind AR
       </footer>
     </main>
   </div>
@@ -221,13 +222,40 @@
   <script type="module">
     import { supabase } from '/src/supabase.js';
 
+    const INCHES_TO_METERS = 0.0254;
+
+    // Load Three.js dynamically when needed
+    let THREE = null;
+    let GLTFExporter = null;
+
+    async function loadThreeJS() {
+      if (THREE) return true;
+      try {
+        console.log('Loading Three.js...');
+        // Use esm.sh which properly handles dependencies
+        THREE = await import('https://esm.sh/three@0.160.0');
+        console.log('Three.js loaded, loading GLTFExporter...');
+        const exporterModule = await import('https://esm.sh/three@0.160.0/examples/jsm/exporters/GLTFExporter.js');
+        GLTFExporter = exporterModule.GLTFExporter;
+        console.log('GLTFExporter loaded successfully');
+        return true;
+      } catch (e) {
+        console.error('Failed to load Three.js:', e);
+        alert('Failed to load 3D library: ' + e.message);
+        return false;
+      }
+    }
+
     let currentStep = 1;
-    let currentArtist = null;
+    let currentUser = null;
+    let userSubscription = null;
     let imageFile = null;
+    let imageDataUrl = null;
     let thumbnailFile = null;
     let editingId = null;
+    let existingArtwork = null;
 
-    // Check if editing
+    // Check if editing existing artwork
     const urlParams = new URLSearchParams(window.location.search);
     editingId = urlParams.get('id');
 
@@ -241,72 +269,204 @@
       return user;
     }
 
-    // Initialize
-    async function init() {
-      const user = await checkAuth();
-      if (!user) return;
+    // Generate GLB from image (optimized for iOS Quick Look)
+    async function generateGLB(imageDataUrl, widthInches, heightInches) {
+      console.log('generateGLB called with dimensions:', widthInches, 'x', heightInches);
 
-      // Get artist profile
-      const { data: artist } = await supabase
-        .from('artists')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      currentArtist = artist;
-
-      if (!artist) {
-        alert('Please complete your profile first.');
-        window.location.href = '/pages/subscriber/profile.html';
-        return;
+      // Load Three.js if not already loaded
+      const loaded = await loadThreeJS();
+      if (!loaded) {
+        throw new Error('Could not load 3D library');
       }
 
-      // Check image limit
-      const { count } = await supabase
-        .from('artworks')
-        .select('*', { count: 'exact', head: true })
-        .eq('artist_id', artist.id);
+      console.log('Creating GLB model with texture...');
 
-      if (!editingId && count >= artist.max_images) {
-        alert(`You have reached your image limit (${artist.max_images}). Please upgrade your subscription.`);
-        window.location.href = '/pages/subscriber/upgrade.html';
-        return;
+      // Convert inches to meters for true scale AR
+      const widthMeters = widthInches * INCHES_TO_METERS;
+      const heightMeters = heightInches * INCHES_TO_METERS;
+      console.log('Dimensions in meters:', widthMeters, 'x', heightMeters);
+
+      // Load image and create DataTexture from raw pixel data
+      const textureData = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 1024; // Keep smaller for mobile
+
+          // Calculate size maintaining aspect ratio
+          let w = img.width;
+          let h = img.height;
+          if (w > maxSize || h > maxSize) {
+            if (w > h) {
+              h = Math.round(h * maxSize / w);
+              w = maxSize;
+            } else {
+              w = Math.round(w * maxSize / h);
+              h = maxSize;
+            }
+          }
+
+          canvas.width = w;
+          canvas.height = h;
+
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          // Flip vertically when drawing (GLB expects bottom-up)
+          ctx.translate(0, h);
+          ctx.scale(1, -1);
+          ctx.drawImage(img, 0, 0, w, h);
+
+          // Get raw pixel data
+          const imageData = ctx.getImageData(0, 0, w, h);
+
+          console.log('Image processed:', w, 'x', h, 'pixels:', imageData.data.length);
+
+          resolve({ data: imageData.data, width: w, height: h });
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = imageDataUrl;
+      });
+
+      // Create DataTexture from raw pixels
+      const texture = new THREE.DataTexture(
+        textureData.data,
+        textureData.width,
+        textureData.height,
+        THREE.RGBAFormat
+      );
+      texture.flipY = false;
+      texture.needsUpdate = true;
+
+      // Create scene
+      const scene = new THREE.Scene();
+
+      // Use PlaneGeometry for flat artwork
+      const geometry = new THREE.PlaneGeometry(widthMeters, heightMeters);
+
+      // Create material with texture - use StandardMaterial for iOS compatibility
+      const material = new THREE.MeshStandardMaterial({
+        map: texture,
+        side: THREE.FrontSide,
+        metalness: 0,
+        roughness: 1
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+
+      // Add ambient light for StandardMaterial
+      const light = new THREE.AmbientLight(0xffffff, 1);
+      scene.add(light);
+
+      return new Promise((resolve, reject) => {
+        const exporter = new GLTFExporter();
+        exporter.parse(
+          scene,
+          (glb) => {
+            console.log('GLB export successful, size:', glb.byteLength);
+            const blob = new Blob([glb], { type: 'model/gltf-binary' });
+            resolve(blob);
+          },
+          (error) => {
+            console.error('GLTFExporter error:', error);
+            reject(new Error('Failed to export 3D model'));
+          },
+          { binary: true }
+        );
+      });
+    }
+
+    // Update progress UI
+    function updateProgress(percent, text) {
+      document.getElementById('progressContainer').style.display = 'block';
+      document.getElementById('progressBar').style.width = percent + '%';
+      document.getElementById('progressText').textContent = text;
+    }
+
+    // Initialize
+    async function init() {
+      currentUser = await checkAuth();
+      if (!currentUser) return;
+
+      // Get subscription with plan details
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select(`
+          *,
+          subscription_plans (
+            name,
+            slug,
+            artwork_limit
+          )
+        `)
+        .eq('user_id', currentUser.id)
+        .single();
+
+      userSubscription = subscription;
+
+      // Check artwork limit (only for new artworks)
+      if (!editingId) {
+        const { count } = await supabase
+          .from('artworks')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', currentUser.id);
+
+        const limit = subscription?.subscription_plans?.artwork_limit || 3;
+
+        if (count >= limit && limit < 9999) {
+          alert(`You have reached your artwork limit (${limit}). Please upgrade your subscription to add more.`);
+          window.location.href = '/pages/subscriber/upgrade.html';
+          return;
+        }
       }
 
       // Load existing artwork if editing
       if (editingId) {
-        const { data: artwork } = await supabase
+        document.getElementById('pageAction').textContent = 'Edit Artwork';
+        document.getElementById('pageTitle').textContent = 'Edit Artwork';
+        document.getElementById('btnText').textContent = 'Update Artwork';
+
+        const { data: artwork, error } = await supabase
           .from('artworks')
           .select('*')
           .eq('id', editingId)
+          .eq('user_id', currentUser.id)
           .single();
 
-        if (artwork) {
-          document.getElementById('title').value = artwork.title || '';
-          document.getElementById('creator').value = artwork.creator || '';
-          document.getElementById('yearPainted').value = artwork.year_created || '';
-          document.getElementById('medium').value = artwork.medium || '';
-          document.getElementById('information').value = artwork.description || '';
-          document.getElementById('copyright').value = artwork.copyright || '';
-          document.getElementById('priceUsd').value = artwork.price_usd || '';
-          document.getElementById('widthCm').value = artwork.width_cm || '';
-          document.getElementById('heightCm').value = artwork.height_cm || '';
-          document.getElementById('widthPx').value = artwork.width_px || '';
-          document.getElementById('heightPx').value = artwork.height_px || '';
+        if (error || !artwork) {
+          alert('Artwork not found or you do not have permission to edit it.');
+          window.location.href = '/pages/subscriber/images.html';
+          return;
+        }
 
-          if (artwork.image_url) {
-            document.getElementById('imagePreviewContainer').innerHTML =
-              `<img src="${artwork.image_url}" class="image-preview" id="imagePreview">`;
-            document.getElementById('imageControls').style.display = 'flex';
-          }
+        existingArtwork = artwork;
 
-          if (artwork.thumbnail_url) {
-            document.getElementById('thumbnailPreviewContainer').innerHTML =
-              `<img src="${artwork.thumbnail_url}" class="image-preview" id="thumbnailPreview">`;
-            document.getElementById('thumbnailControls').style.display = 'flex';
-          }
+        // Populate form fields
+        document.getElementById('title').value = artwork.title || '';
+        document.getElementById('creator').value = artwork.creator || '';
+        document.getElementById('yearCreated').value = artwork.year_created || '';
+        document.getElementById('medium').value = artwork.medium || '';
+        document.getElementById('category').value = artwork.category || '';
+        document.getElementById('description').value = artwork.description || '';
+        document.getElementById('priceUsd').value = artwork.price_usd || '';
+        document.getElementById('widthInches').value = artwork.width_inches || '';
+        document.getElementById('heightInches').value = artwork.height_inches || '';
+        document.getElementById('depthInches').value = artwork.depth_inches || '';
 
-          document.getElementById('createBtn').textContent = 'Update';
+        // Show existing images
+        if (artwork.image_url) {
+          document.getElementById('imagePreviewContainer').innerHTML =
+            `<img src="${artwork.image_url}" class="image-preview" id="imagePreview">`;
+          document.getElementById('imageUploadArea').classList.add('has-image');
+          imageDataUrl = artwork.image_url;
+        }
+
+        if (artwork.thumbnail_url) {
+          document.getElementById('thumbnailPreviewContainer').innerHTML =
+            `<img src="${artwork.thumbnail_url}" class="image-preview" id="thumbnailPreview">`;
+          document.getElementById('thumbnailUploadArea').classList.add('has-image');
         }
       }
     }
@@ -320,7 +480,7 @@
       });
 
       // Show/hide step content
-      for (let i = 1; i <= 4; i++) {
+      for (let i = 1; i <= 3; i++) {
         document.getElementById('step' + i).style.display = i === step ? 'block' : 'none';
       }
     }
@@ -328,8 +488,25 @@
     window.nextStep = function(from) {
       // Validate current step
       if (from === 1) {
-        if (!document.getElementById('title').value.trim()) {
-          alert('Title is required');
+        const title = document.getElementById('title').value.trim();
+        if (!title) {
+          alert('Please enter a title for your artwork.');
+          document.getElementById('title').focus();
+          return;
+        }
+      }
+
+      if (from === 2) {
+        const width = parseFloat(document.getElementById('widthInches').value);
+        const height = parseFloat(document.getElementById('heightInches').value);
+        if (!width || width <= 0) {
+          alert('Please enter the width in inches.');
+          document.getElementById('widthInches').focus();
+          return;
+        }
+        if (!height || height <= 0) {
+          alert('Please enter the height in inches.');
+          document.getElementById('heightInches').focus();
           return;
         }
       }
@@ -347,12 +524,18 @@
       const file = event.target.files[0];
       if (!file) return;
 
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Image file is too large. Maximum size is 10MB.');
+        return;
+      }
+
       imageFile = file;
       const reader = new FileReader();
       reader.onload = function(e) {
+        imageDataUrl = e.target.result;
         document.getElementById('imagePreviewContainer').innerHTML =
-          `<img src="${e.target.result}" class="image-preview" id="imagePreview">`;
-        document.getElementById('imageControls').style.display = 'flex';
+          `<img src="${imageDataUrl}" class="image-preview" id="imagePreview">`;
         document.getElementById('imageUploadArea').classList.add('has-image');
       };
       reader.readAsDataURL(file);
@@ -367,118 +550,194 @@
       reader.onload = function(e) {
         document.getElementById('thumbnailPreviewContainer').innerHTML =
           `<img src="${e.target.result}" class="image-preview" id="thumbnailPreview">`;
-        document.getElementById('thumbnailControls').style.display = 'flex';
         document.getElementById('thumbnailUploadArea').classList.add('has-image');
       };
       reader.readAsDataURL(file);
     };
 
-    let imageRotation = 0;
-    let thumbnailRotation = 0;
-
-    window.rotateImage = function(deg) {
-      imageRotation += deg;
-      const img = document.getElementById('imagePreview');
-      if (img) img.style.transform = `rotate(${imageRotation}deg)`;
-    };
-
-    window.rotateThumbnail = function(deg) {
-      thumbnailRotation += deg;
-      const img = document.getElementById('thumbnailPreview');
-      if (img) img.style.transform = `rotate(${thumbnailRotation}deg)`;
-    };
-
-    window.zoomImage = function(delta) {
-      const slider = document.getElementById('zoomSlider');
-      slider.value = Math.max(0.5, Math.min(2, parseFloat(slider.value) + delta));
-      setZoom(slider.value);
-    };
-
-    window.setZoom = function(val) {
-      const img = document.getElementById('imagePreview');
-      if (img) img.style.scale = val;
-    };
-
     window.createArtwork = async function() {
       const btn = document.getElementById('createBtn');
+      const btnText = document.getElementById('btnText');
       const error = document.getElementById('createError');
+      const success = document.getElementById('successMessage');
       error.textContent = '';
+      success.textContent = '';
 
-      // Validate
+      // Validate required fields
       const title = document.getElementById('title').value.trim();
+      const widthInches = parseFloat(document.getElementById('widthInches').value);
+      const heightInches = parseFloat(document.getElementById('heightInches').value);
+
       if (!title) {
         error.textContent = 'Title is required';
         return;
       }
 
+      if (!widthInches || !heightInches) {
+        error.textContent = 'Width and height are required for AR viewing';
+        return;
+      }
+
+      // For new artworks, image is required
+      if (!editingId && !imageFile) {
+        error.textContent = 'Please upload an image of your artwork';
+        return;
+      }
+
       btn.disabled = true;
-      btn.textContent = editingId ? 'Updating...' : 'Creating...';
+      btnText.textContent = 'Processing...';
 
       try {
-        let imageUrl = null;
-        let thumbnailUrl = null;
+        let imageUrl = existingArtwork?.image_url || null;
+        let thumbnailUrl = existingArtwork?.thumbnail_url || null;
+        let glbUrl = existingArtwork?.glb_url || null;
 
-        // Upload image if new file selected
+        // Upload main image if new file selected
         if (imageFile) {
-          const imageExt = imageFile.name.split('.').pop();
-          const imagePath = `${currentArtist.id}/${Date.now()}.${imageExt}`;
+          updateProgress(10, 'Uploading artwork image...');
+
+          const imageExt = imageFile.name.split('.').pop().toLowerCase();
+          const imagePath = `${currentUser.id}/${Date.now()}_main.${imageExt}`;
 
           const { error: uploadError } = await supabase.storage
             .from('artworks')
-            .upload(imagePath, imageFile);
+            .upload(imagePath, imageFile, {
+              cacheControl: '3600',
+              upsert: false
+            });
 
-          if (uploadError) throw uploadError;
+          if (uploadError) {
+            throw new Error('Failed to upload image: ' + uploadError.message);
+          }
 
           const { data: { publicUrl } } = supabase.storage
             .from('artworks')
             .getPublicUrl(imagePath);
 
           imageUrl = publicUrl;
+
+          // Delete old image if replacing
+          if (existingArtwork?.image_url) {
+            try {
+              const oldPath = existingArtwork.image_url.split('/artworks/')[1];
+              if (oldPath) {
+                await supabase.storage.from('artworks').remove([oldPath]);
+              }
+            } catch (e) {
+              console.warn('Could not delete old image:', e);
+            }
+          }
         }
+
+        updateProgress(30, 'Uploading thumbnail...');
 
         // Upload thumbnail if new file selected
         if (thumbnailFile) {
-          const thumbExt = thumbnailFile.name.split('.').pop();
-          const thumbPath = `${currentArtist.id}/thumb_${Date.now()}.${thumbExt}`;
+          const thumbExt = thumbnailFile.name.split('.').pop().toLowerCase();
+          const thumbPath = `${currentUser.id}/${Date.now()}_thumb.${thumbExt}`;
 
           const { error: uploadError } = await supabase.storage
             .from('artworks')
-            .upload(thumbPath, thumbnailFile);
+            .upload(thumbPath, thumbnailFile, {
+              cacheControl: '3600',
+              upsert: false
+            });
 
-          if (uploadError) throw uploadError;
+          if (uploadError) {
+            throw new Error('Failed to upload thumbnail: ' + uploadError.message);
+          }
 
           const { data: { publicUrl } } = supabase.storage
             .from('artworks')
             .getPublicUrl(thumbPath);
 
           thumbnailUrl = publicUrl;
+        } else if (!thumbnailUrl && imageUrl) {
+          // Use main image as thumbnail if none provided
+          thumbnailUrl = imageUrl;
         }
+
+        // Generate GLB for AR viewing (only if image changed or new artwork)
+        if (imageFile || !glbUrl) {
+          updateProgress(50, 'Generating AR model...');
+
+          try {
+            // Use the local data URL for GLB generation (avoids CORS issues)
+            const sourceImageUrl = imageDataUrl;
+            if (!sourceImageUrl) {
+              throw new Error('No image data available for AR model generation');
+            }
+            const glbBlob = await generateGLB(sourceImageUrl, widthInches, heightInches);
+
+            updateProgress(70, 'Uploading AR model...');
+
+            const glbPath = `${currentUser.id}/${Date.now()}_model.glb`;
+
+            const { error: glbUploadError } = await supabase.storage
+              .from('artworks')
+              .upload(glbPath, glbBlob, {
+                cacheControl: '3600',
+                contentType: 'model/gltf-binary',
+                upsert: false
+              });
+
+            if (glbUploadError) {
+              console.warn('Failed to upload GLB:', glbUploadError);
+              // Don't fail the whole operation if GLB fails
+            } else {
+              const { data: { publicUrl: glbPublicUrl } } = supabase.storage
+                .from('artworks')
+                .getPublicUrl(glbPath);
+
+              glbUrl = glbPublicUrl;
+
+              // Delete old GLB if replacing
+              if (existingArtwork?.glb_url) {
+                try {
+                  const oldGlbPath = existingArtwork.glb_url.split('/artworks/')[1];
+                  if (oldGlbPath) {
+                    await supabase.storage.from('artworks').remove([oldGlbPath]);
+                  }
+                } catch (e) {
+                  console.warn('Could not delete old GLB:', e);
+                }
+              }
+            }
+          } catch (glbError) {
+            console.error('GLB generation failed:', glbError);
+            alert('AR model generation failed: ' + glbError.message);
+            // Continue without GLB - AR just won't be available for this artwork
+          }
+        }
+
+        updateProgress(85, 'Saving artwork data...');
 
         // Prepare artwork data
         const artworkData = {
-          artist_id: currentArtist.id,
+          user_id: currentUser.id,
           title: title,
-          creator: document.getElementById('creator').value.trim(),
-          year_created: document.getElementById('yearPainted').value.trim(),
-          medium: document.getElementById('medium').value.trim(),
-          description: document.getElementById('information').value.trim(),
-          copyright: document.getElementById('copyright').value.trim(),
-          price_usd: parseFloat(document.getElementById('priceUsd').value) || 0,
-          width_cm: parseFloat(document.getElementById('widthCm').value) || null,
-          height_cm: parseFloat(document.getElementById('heightCm').value) || null,
-          width_px: parseInt(document.getElementById('widthPx').value) || null,
-          height_px: parseInt(document.getElementById('heightPx').value) || null
+          creator: document.getElementById('creator').value.trim() || null,
+          year_created: document.getElementById('yearCreated').value.trim() || null,
+          medium: document.getElementById('medium').value.trim() || null,
+          category: document.getElementById('category').value || null,
+          description: document.getElementById('description').value.trim() || null,
+          price_usd: parseFloat(document.getElementById('priceUsd').value) || null,
+          width_inches: widthInches,
+          height_inches: heightInches,
+          depth_inches: parseFloat(document.getElementById('depthInches').value) || null,
+          image_url: imageUrl,
+          thumbnail_url: thumbnailUrl,
+          glb_url: glbUrl,
+          is_active: true
         };
-
-        if (imageUrl) artworkData.image_url = imageUrl;
-        if (thumbnailUrl) artworkData.thumbnail_url = thumbnailUrl;
 
         if (editingId) {
           // Update existing artwork
           const { error: updateError } = await supabase
             .from('artworks')
             .update(artworkData)
-            .eq('id', editingId);
+            .eq('id', editingId)
+            .eq('user_id', currentUser.id);
 
           if (updateError) throw updateError;
         } else {
@@ -490,14 +749,22 @@
           if (insertError) throw insertError;
         }
 
-        // Success - redirect to images list
-        window.location.href = '/pages/subscriber/images.html';
+        updateProgress(100, 'Complete!');
+        success.textContent = glbUrl
+          ? 'Artwork saved with AR model!'
+          : 'Artwork saved! (AR model generation failed - you can try again by editing)';
+
+        // Redirect after short delay
+        setTimeout(() => {
+          window.location.href = '/pages/subscriber/images.html';
+        }, 1500);
 
       } catch (err) {
         console.error('Error:', err);
-        error.textContent = err.message || 'An error occurred';
+        error.textContent = err.message || 'An error occurred. Please try again.';
         btn.disabled = false;
-        btn.textContent = editingId ? 'Update' : 'Create';
+        btnText.textContent = editingId ? 'Update Artwork' : 'Save Artwork';
+        document.getElementById('progressContainer').style.display = 'none';
       }
     };
 
@@ -545,11 +812,66 @@
       }
     }
 
+    .required {
+      color: #dc3545;
+    }
+
+    .image-upload-area {
+      border: 2px dashed var(--hm-border);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background-color 0.2s;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-upload-area:hover {
+      border-color: var(--hm-dark);
+      background: var(--hm-light-gray);
+    }
+
+    .image-upload-area.has-image {
+      border-style: solid;
+      padding: 1rem;
+    }
+
+    .thumbnail-upload {
+      min-height: 100px;
+      padding: 1rem;
+    }
+
+    .upload-placeholder {
+      color: var(--hm-text-muted);
+    }
+
     .image-preview {
       max-width: 100%;
       max-height: 400px;
       object-fit: contain;
-      transition: transform 0.2s;
+      border-radius: 4px;
+    }
+
+    .thumbnail-upload .image-preview {
+      max-height: 150px;
+    }
+
+    .form-hint {
+      font-size: 0.875rem;
+      color: var(--hm-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .info-box strong {
+      color: var(--hm-text);
+    }
+
+    #createBtn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
     }
   </style>
 </body>

@@ -17,8 +17,15 @@
 
       <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)">
         <div class="form-group">
+          <label for="fullName">Your Name</label>
+          <input type="text" id="fullName" name="fullName" class="form-control" placeholder="e.g., John Smith" required>
+          <p class="error-text" id="fullNameError"></p>
+        </div>
+
+        <div class="form-group">
           <label for="galleryName">Gallery Name</label>
-          <input type="text" id="galleryName" name="galleryName" class="form-control" placeholder="e.g., John's Gallery" required>
+          <input type="text" id="galleryName" name="galleryName" class="form-control" placeholder="e.g., Smith Art Studio">
+          <p class="form-hint">This will be your public gallery name</p>
           <p class="error-text" id="galleryNameError"></p>
         </div>
 
@@ -26,12 +33,6 @@
           <label for="email">Email</label>
           <input type="email" id="email" name="email" class="form-control" required>
           <p class="error-text" id="emailError"></p>
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" name="phone" class="form-control">
-          <p class="error-text" id="phoneError"></p>
         </div>
 
         <div class="form-group">
@@ -62,12 +63,21 @@
   <script type="module">
     import { supabase } from '/src/supabase.js';
 
+    // Generate URL-safe slug from text
+    function generateSlug(text) {
+      return text.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+    }
+
     window.handleSignup = async function(event) {
       event.preventDefault();
 
-      const galleryName = document.getElementById('galleryName').value.trim();
+      const fullName = document.getElementById('fullName').value.trim();
+      const galleryName = document.getElementById('galleryName').value.trim() || fullName + "'s Gallery";
       const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
       const submitBtn = document.getElementById('submitBtn');
@@ -80,16 +90,16 @@
 
       // Validate
       let hasError = false;
-      if (!galleryName) {
-        document.getElementById('galleryNameError').textContent = 'Gallery name cannot be blank.';
+      if (!fullName) {
+        document.getElementById('fullNameError').textContent = 'Name is required.';
         hasError = true;
       }
       if (!email) {
-        document.getElementById('emailError').textContent = 'Email cannot be blank.';
+        document.getElementById('emailError').textContent = 'Email is required.';
         hasError = true;
       }
       if (!password) {
-        document.getElementById('passwordError').textContent = 'Password cannot be blank.';
+        document.getElementById('passwordError').textContent = 'Password is required.';
         hasError = true;
       }
       if (password.length < 6) {
@@ -104,22 +114,20 @@
       if (hasError) return;
 
       // Generate slug from gallery name
-      const slug = galleryName.toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-');
+      const slug = generateSlug(galleryName);
 
       // Disable button
       submitBtn.disabled = true;
       submitBtn.textContent = 'Creating account...';
 
       try {
-        // 1. Create auth user
+        // 1. Create auth user (this triggers auto-creation of profile and subscription)
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
-              gallery_name: galleryName
+              full_name: fullName
             }
           }
         });
@@ -131,30 +139,32 @@
           return;
         }
 
-        // 2. Create artist profile
+        // 2. Update profile with gallery info (profile was auto-created by trigger)
+        // Small delay to ensure trigger has completed
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         const { error: profileError } = await supabase
-          .from('artists')
-          .insert({
-            user_id: authData.user.id,
+          .from('profiles')
+          .update({
+            full_name: fullName,
             gallery_name: galleryName,
-            slug: slug,
-            phone: phone,
-            subscription_tier: 'free',
-            max_images: 1
-          });
+            gallery_slug: slug
+          })
+          .eq('id', authData.user.id);
 
         if (profileError) {
-          console.error('Profile creation error:', profileError);
-          // Continue anyway - profile can be created later
+          console.error('Profile update error:', profileError);
+          // Not critical - user can update later
         }
 
         // Success
-        successMessage.textContent = 'Account created! Please check your email to verify your account.';
+        successMessage.textContent = 'Account created! Check your email to verify, then sign in.';
         submitBtn.textContent = 'Account Created';
+        document.getElementById('signupForm').reset();
 
         // Redirect after delay
         setTimeout(() => {
-          window.location.href = '/pages/auth/login.html';
+          window.location.href = '/pages/auth/login.html?registered=true';
         }, 3000);
 
       } catch (err) {

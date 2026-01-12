@@ -3,214 +3,231 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upgrade Your Plan - HiveMind AR</title>
+  <title>Upgrade Plan - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
   <style>
-    .subscription-hero {
-      background-image: url('https://media.hivemindar.com/images/client/hivemind-site-lg.jpg');
-      background-size: cover;
-      background-position: center;
-      padding: 3rem 2rem;
+    .plans-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .current-plan-banner {
+      background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
       color: white;
-      text-align: center;
-      position: relative;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
-    .subscription-hero::before {
-      content: '';
+
+    .current-plan-info h3 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+
+    .current-plan-info .plan-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .plan-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .plan-card.current {
+      border-color: var(--hm-dark);
+    }
+
+    .plan-card.recommended {
+      border-color: #667eea;
+    }
+
+    .plan-card.recommended::before {
+      content: 'MOST POPULAR';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.6);
-    }
-    .subscription-hero h1 {
-      position: relative;
-      z-index: 1;
-      font-size: 2rem;
-      font-weight: 400;
-    }
-  </style>
-</head>
-<body>
-  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
-
-  <div class="dashboard-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
-        <span class="logo-text">HiveMind AR</span>
-      </div>
-
-      <nav class="sidebar-nav">
-        <a href="/pages/subscriber/upgrade.html" class="active">
-          <span class="nav-icon">🏆</span>
-          <span class="nav-text">Upgrade</span>
-        </a>
-        <a href="/pages/subscriber/profile.html">
-          <span class="nav-icon">👤</span>
-          <span class="nav-text">Profile</span>
-        </a>
-        <a href="/pages/subscriber/messages.html">
-          <span class="nav-icon">✉️</span>
-          <span class="nav-text">Messages</span>
-        </a>
-        <a href="/pages/subscriber/images.html">
-          <span class="nav-icon">🖼️</span>
-          <span class="nav-text">Images</span>
-        </a>
-        <a href="/pages/subscriber/transactions.html">
-          <span class="nav-icon">💲</span>
-          <span class="nav-text">Transactions</span>
-        </a>
-        <a href="/pages/subscriber/support.html">
-          <span class="nav-icon">🎧</span>
-          <span class="nav-text">Support</span>
-        </a>
-      </nav>
-
-      <div class="sidebar-footer">
-        <a href="#" onclick="handleLogout()">
-          <span class="nav-icon">🚪</span>
-          <span class="nav-text">Sign Out</span>
-        </a>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-
-      <!-- Hero -->
-      <div class="subscription-hero">
-        <h1>Upgrade Your Plan</h1>
-      </div>
-
-      <!-- Page Content -->
-      <div class="page-content">
-        <div class="subscription-grid">
-          <!-- Free/Trial -->
-          <div class="subscription-card" data-tier="free" onclick="selectTier('free')">
-            <div class="checkmark">✓</div>
-            <div class="tier-name">Free</div>
-            <div class="tier-price">Free</div>
-            <div class="tier-limit">Maximum of 1 Image</div>
-            <button class="btn btn-outline btn-block">Trial</button>
-          </div>
-
-          <!-- Bronze -->
-          <div class="subscription-card" data-tier="bronze" onclick="selectTier('bronze')">
-            <div class="checkmark">✓</div>
-            <div class="tier-name">$9.99/Month</div>
-            <div class="tier-price"></div>
-            <div class="tier-limit">Maximum of 5 Images</div>
-            <button class="btn btn-dark btn-block">Bronze</button>
-          </div>
-
-          <!-- Silver -->
-          <div class="subscription-card" data-tier="silver" onclick="selectTier('silver')">
-            <div class="checkmark">✓</div>
-            <div class="tier-name">$24.99/Month</div>
-            <div class="tier-price"></div>
-            <div class="tier-limit">Maximum of 25 Images</div>
-            <button class="btn btn-dark btn-block">Silver</button>
-          </div>
-
-          <!-- Gold -->
-          <div class="subscription-card" data-tier="gold" onclick="selectTier('gold')">
-            <div class="checkmark">✓</div>
-            <div class="tier-name">$49.99/Month</div>
-            <div class="tier-price"></div>
-            <div class="tier-limit">Maximum of 100 Images</div>
-            <button class="btn btn-paypal btn-block">
-              <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" alt="PayPal" style="height: 20px;">
-            </button>
-          </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 2rem; color: var(--hm-text-muted);">
-          <p>Payment processing will be available soon. Contact support for manual upgrades.</p>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <footer class="dashboard-footer">
-        &copy; 2026 by Hivemind
-      </footer>
-    </main>
-  </div>
-
-  <script type="module">
-    import { supabase } from '/src/supabase.js';
-
-    let currentArtist = null;
-
-    // Check authentication
-    async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        window.location.href = '/pages/auth/login.html';
-        return null;
-      }
-      return user;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.25rem 1rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
-    // Initialize
-    async function init() {
-      const user = await checkAuth();
-      if (!user) return;
-
-      // Get artist profile
-      const { data: artist } = await supabase
-        .from('artists')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      currentArtist = artist;
-
-      // Highlight current tier
-      if (artist) {
-        const currentCard = document.querySelector(`[data-tier="${artist.subscription_tier}"]`);
-        if (currentCard) {
-          currentCard.classList.add('selected');
-        }
-      }
+    .current-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--hm-dark);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
     }
 
-    window.selectTier = function(tier) {
-      // Remove selected from all
-      document.querySelectorAll('.subscription-card').forEach(c => c.classList.remove('selected'));
+    .plan-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--hm-dark);
+    }
 
-      // Add selected to clicked
-      document.querySelector(`[data-tier="${tier}"]`).classList.add('selected');
+    .plan-price {
+      margin-bottom: 1.5rem;
+    }
 
-      // For now, show message (payment integration would go here)
-      if (tier !== 'free' && tier !== currentArtist?.subscription_tier) {
-        alert('Payment integration coming soon! Please contact support to upgrade your plan.');
-      }
-    };
+    .plan-price .amount {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--hm-dark);
+    }
 
-    window.handleLogout = async function() {
-      await supabase.auth.signOut();
-      window.location.href = '/pages/auth/login.html';
-    };
+    .plan-price .period {
+      color: var(--hm-text-muted);
+      font-size: 0.9rem;
+    }
 
-    window.toggleSidebar = function() {
-      document.getElementById('sidebar').classList.toggle('open');
-      document.getElementById('mobileOverlay').classList.toggle('active');
-    };
+    .plan-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.5rem 0;
+      flex-grow: 1;
+    }
 
-    window.closeSidebar = function() {
-      document.getElementById('sidebar').classList.remove('open');
-      document.getElementById('mobileOverlay').classList.remove('active');
-    };
+    .plan-features li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      color: var(--hm-text);
+      font-size: 0.9rem;
+    }
 
-    init();
-  </script>
+    .plan-features li::before {
+      content: '✓';
+      color: #28a745;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
 
-  <style>
+    .plan-features li.disabled {
+      color: var(--hm-text-muted);
+      text-decoration: line-through;
+    }
+
+    .plan-features li.disabled::before {
+      content: '✗';
+      color: #dc3545;
+    }
+
+    .plan-card .btn {
+      width: 100%;
+      padding: 0.875rem;
+      font-weight: 600;
+    }
+
+    .btn-upgrade {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+    }
+
+    .btn-upgrade:hover {
+      opacity: 0.9;
+    }
+
+    .btn-current {
+      background: var(--hm-light-gray);
+      color: var(--hm-text-muted);
+      border: none;
+      cursor: default;
+    }
+
+    .btn-downgrade {
+      background: white;
+      color: var(--hm-text-muted);
+      border: 1px solid var(--hm-border);
+    }
+
+    .paypal-button-container {
+      min-height: 45px;
+    }
+
+    .billing-info {
+      background: var(--hm-light-gray);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .billing-info h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+    }
+
+    .billing-info p {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--hm-text-muted);
+    }
+
+    .faq-section {
+      margin-top: 3rem;
+    }
+
+    .faq-section h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .faq-item {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .faq-item h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.95rem;
+    }
+
+    .faq-item p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--hm-text-muted);
+    }
+
     .mobile-menu-btn {
       display: none;
       position: fixed;
@@ -231,7 +248,554 @@
       .mobile-menu-btn {
         display: block;
       }
+      .breadcrumb, .page-header {
+        padding-left: 4rem;
+      }
+      .plans-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Loading state */
+    .plans-loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--hm-text-muted);
+    }
+
+    /* Modal for confirmation */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 480px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-content h2 {
+      margin: 0 0 1rem 0;
+      font-size: 1.25rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
     }
   </style>
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
+        <span class="logo-text">HiveMind AR</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber/dashboard.html">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="/pages/subscriber/images.html">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">My Artworks</span>
+        </a>
+        <a href="/pages/subscriber/profile.html">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/pages/subscriber/messages.html">
+          <span class="nav-icon">✉️</span>
+          <span class="nav-text">Messages</span>
+        </a>
+        <a href="/pages/subscriber/upgrade.html" class="active">
+          <span class="nav-icon">⭐</span>
+          <span class="nav-text">Upgrade Plan</span>
+        </a>
+        <a href="/pages/subscriber/support.html">
+          <span class="nav-icon">🎧</span>
+          <span class="nav-text">Support</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" onclick="handleLogout()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/pages/subscriber/dashboard.html">Dashboard</a> /
+        <span>Upgrade Plan</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Choose Your Plan</h1>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="plans-container">
+          <!-- Current Plan Banner -->
+          <div class="current-plan-banner" id="currentPlanBanner" style="display: none;">
+            <div class="current-plan-info">
+              <h3>Your Current Plan</h3>
+              <div class="plan-name" id="currentPlanName">Free</div>
+            </div>
+            <div class="current-plan-usage">
+              <span id="currentUsage">0</span> of <span id="currentLimit">3</span> artworks used
+            </div>
+          </div>
+
+          <!-- Plans Grid -->
+          <div class="plans-grid" id="plansGrid">
+            <div class="plans-loading">Loading plans...</div>
+          </div>
+
+          <!-- Billing Info -->
+          <div class="billing-info">
+            <h3>Billing Information</h3>
+            <p>All plans are billed monthly via PayPal. You can cancel anytime.</p>
+            <p>When you upgrade, you'll be charged the new rate immediately and your artwork limit increases instantly.</p>
+            <p>When you downgrade, the change takes effect at the end of your current billing period.</p>
+          </div>
+
+          <!-- FAQ -->
+          <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+
+            <div class="faq-item">
+              <h4>What happens to my artworks if I downgrade?</h4>
+              <p>Your existing artworks remain in your account, but you won't be able to add new ones until you're under your plan's limit.</p>
+            </div>
+
+            <div class="faq-item">
+              <h4>Can I cancel my subscription?</h4>
+              <p>Yes, you can cancel anytime. Your account will revert to the Free plan at the end of your billing period.</p>
+            </div>
+
+            <div class="faq-item">
+              <h4>How does AR viewing work?</h4>
+              <p>All plans include AR viewing. Collectors can view your artworks in augmented reality at true scale on their walls.</p>
+            </div>
+
+            <div class="faq-item">
+              <h4>Is there a contract or commitment?</h4>
+              <p>No contracts. All plans are month-to-month and you can change or cancel anytime.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        &copy; 2026 HiveMind AR
+      </footer>
+    </main>
+  </div>
+
+  <!-- Upgrade Confirmation Modal -->
+  <div class="modal-overlay" id="upgradeModal">
+    <div class="modal-content">
+      <h2>Upgrade to <span id="modalPlanName">Pro</span></h2>
+      <p>You're about to upgrade to the <strong id="modalPlanNameConfirm">Pro</strong> plan for <strong id="modalPlanPrice">$19.99/month</strong>.</p>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--hm-text-muted);">You'll be redirected to PayPal to complete your subscription. Your artwork limit will increase immediately after payment.</p>
+
+      <div id="paypalButtonContainer" class="paypal-button-container" style="margin-top: 1.5rem;">
+        <!-- PayPal buttons will be rendered here -->
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-light" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PayPal SDK - Replace YOUR_CLIENT_ID with actual client ID -->
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let currentUser = null;
+    let currentSubscription = null;
+    let plans = [];
+    let selectedPlan = null;
+
+    // PayPal Plan IDs - These need to be created in PayPal Dashboard
+    // Map our plan slugs to PayPal subscription plan IDs
+    const PAYPAL_PLAN_IDS = {
+      'basic': 'P-XXXXXXXXXXXXXXXXXXXXXX', // Replace with actual PayPal Plan ID
+      'pro': 'P-XXXXXXXXXXXXXXXXXXXXXX',   // Replace with actual PayPal Plan ID
+      'unlimited': 'P-XXXXXXXXXXXXXXXXXXXXXX' // Replace with actual PayPal Plan ID
+    };
+
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Load plans from database
+    async function loadPlans() {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('price_monthly', { ascending: true });
+
+      if (error) {
+        console.error('Error loading plans:', error);
+        return [];
+      }
+
+      return data || [];
+    }
+
+    // Get current subscription
+    async function getCurrentSubscription(userId) {
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select(`
+          *,
+          subscription_plans (*)
+        `)
+        .eq('user_id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error loading subscription:', error);
+        return null;
+      }
+
+      return data;
+    }
+
+    // Get artwork count
+    async function getArtworkCount(userId) {
+      const { count } = await supabase
+        .from('artworks')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+
+      return count || 0;
+    }
+
+    // Render plan cards
+    function renderPlans(plans, currentPlanSlug, artworkCount) {
+      const grid = document.getElementById('plansGrid');
+
+      if (!plans || plans.length === 0) {
+        grid.innerHTML = '<p>No plans available. Please contact support.</p>';
+        return;
+      }
+
+      const currentPlanIndex = plans.findIndex(p => p.slug === currentPlanSlug);
+
+      grid.innerHTML = plans.map((plan, index) => {
+        const isCurrent = plan.slug === currentPlanSlug;
+        const isUpgrade = index > currentPlanIndex;
+        const isDowngrade = index < currentPlanIndex;
+        const isRecommended = plan.slug === 'pro'; // Mark Pro as recommended
+
+        const features = getFeatures(plan);
+
+        return `
+          <div class="plan-card ${isCurrent ? 'current' : ''} ${isRecommended && !isCurrent ? 'recommended' : ''}">
+            ${isCurrent ? '<span class="current-badge">Current Plan</span>' : ''}
+            <div class="plan-name">${plan.name}</div>
+            <div class="plan-price">
+              ${plan.price_monthly > 0
+                ? `<span class="amount">$${plan.price_monthly}</span><span class="period">/month</span>`
+                : '<span class="amount">Free</span>'
+              }
+            </div>
+            <ul class="plan-features">
+              ${features.map(f => `<li${f.disabled ? ' class="disabled"' : ''}>${f.text}</li>`).join('')}
+            </ul>
+            ${renderPlanButton(plan, isCurrent, isUpgrade, isDowngrade, artworkCount)}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Get features for a plan
+    function getFeatures(plan) {
+      const limit = plan.artwork_limit >= 9999 ? 'Unlimited' : plan.artwork_limit;
+
+      const features = [
+        { text: `${limit} artworks`, disabled: false },
+        { text: 'AR viewing for collectors', disabled: false },
+        { text: 'Public gallery page', disabled: false },
+        { text: 'Collector inquiries', disabled: false }
+      ];
+
+      // Add tier-specific features
+      if (plan.slug === 'basic' || plan.slug === 'pro' || plan.slug === 'studio') {
+        features.push({ text: 'Priority support', disabled: false });
+      } else {
+        features.push({ text: 'Priority support', disabled: true });
+      }
+
+      if (plan.slug === 'pro' || plan.slug === 'studio') {
+        features.push({ text: 'Analytics dashboard', disabled: false });
+        features.push({ text: 'Custom gallery branding', disabled: false });
+      } else {
+        features.push({ text: 'Analytics dashboard', disabled: true });
+      }
+
+      if (plan.slug === 'studio') {
+        features.push({ text: 'Featured artist listing', disabled: false });
+      }
+
+      return features;
+    }
+
+    // Render the appropriate button for each plan
+    function renderPlanButton(plan, isCurrent, isUpgrade, isDowngrade, artworkCount) {
+      if (isCurrent) {
+        return '<button class="btn btn-current" disabled>Current Plan</button>';
+      }
+
+      if (plan.slug === 'free') {
+        // Can only downgrade to free, and only if under the limit
+        if (artworkCount > plan.artwork_limit) {
+          return `<button class="btn btn-light" disabled title="You have ${artworkCount} artworks. Delete some to downgrade.">Too Many Artworks</button>`;
+        }
+        return `<button class="btn btn-downgrade" onclick="handleDowngrade('${plan.slug}')">Downgrade to Free</button>`;
+      }
+
+      if (isUpgrade) {
+        return `<button class="btn btn-upgrade" onclick="handleUpgrade('${plan.slug}')">Upgrade to ${plan.name}</button>`;
+      }
+
+      if (isDowngrade) {
+        if (artworkCount > plan.artwork_limit) {
+          return `<button class="btn btn-light" disabled title="You have ${artworkCount} artworks. Limit is ${plan.artwork_limit}.">Too Many Artworks</button>`;
+        }
+        return `<button class="btn btn-downgrade" onclick="handleDowngrade('${plan.slug}')">Downgrade</button>`;
+      }
+
+      return '<button class="btn btn-light" disabled>Select</button>';
+    }
+
+    // Handle upgrade button click
+    window.handleUpgrade = function(planSlug) {
+      selectedPlan = plans.find(p => p.slug === planSlug);
+      if (!selectedPlan) return;
+
+      document.getElementById('modalPlanName').textContent = selectedPlan.name;
+      document.getElementById('modalPlanNameConfirm').textContent = selectedPlan.name;
+      document.getElementById('modalPlanPrice').textContent = `$${selectedPlan.price_monthly}/month`;
+      document.getElementById('upgradeModal').classList.add('active');
+
+      // Initialize PayPal button
+      initPayPalButton(planSlug);
+    };
+
+    // Handle downgrade
+    window.handleDowngrade = async function(planSlug) {
+      if (!confirm(`Are you sure you want to downgrade to the ${planSlug === 'free' ? 'Free' : planSlug} plan? This will take effect at the end of your current billing period.`)) {
+        return;
+      }
+
+      // For downgrade to free, we cancel the PayPal subscription
+      // For paid plan downgrades, we update the subscription
+
+      try {
+        const targetPlan = plans.find(p => p.slug === planSlug);
+        if (!targetPlan) return;
+
+        // Update subscription in database
+        const { error } = await supabase
+          .from('subscriptions')
+          .update({
+            plan_id: targetPlan.id,
+            status: planSlug === 'free' ? 'active' : 'pending_downgrade',
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', currentUser.id);
+
+        if (error) throw error;
+
+        alert(planSlug === 'free'
+          ? 'Your subscription has been cancelled. You will keep your current benefits until the end of the billing period.'
+          : 'Your downgrade has been scheduled for the end of your billing period.');
+
+        window.location.reload();
+
+      } catch (err) {
+        console.error('Downgrade error:', err);
+        alert('Failed to process downgrade. Please contact support.');
+      }
+    };
+
+    // Initialize PayPal subscription button
+    function initPayPalButton(planSlug) {
+      const container = document.getElementById('paypalButtonContainer');
+      container.innerHTML = ''; // Clear any existing button
+
+      const planId = PAYPAL_PLAN_IDS[planSlug];
+
+      if (!planId || planId.includes('XXXX')) {
+        container.innerHTML = '<p style="color: var(--hm-text-muted); font-size: 0.9rem; text-align: center;">PayPal integration is being configured. Please contact support to upgrade.</p>';
+        return;
+      }
+
+      // Check if PayPal SDK loaded
+      if (typeof paypal === 'undefined') {
+        container.innerHTML = '<p style="color: #dc3545; font-size: 0.9rem; text-align: center;">Payment system unavailable. Please try again later.</p>';
+        return;
+      }
+
+      paypal.Buttons({
+        style: {
+          shape: 'rect',
+          color: 'gold',
+          layout: 'vertical',
+          label: 'subscribe'
+        },
+        createSubscription: function(data, actions) {
+          return actions.subscription.create({
+            plan_id: planId
+          });
+        },
+        onApprove: async function(data, actions) {
+          console.log('Subscription approved:', data.subscriptionID);
+
+          // Update subscription in database
+          try {
+            const targetPlan = plans.find(p => p.slug === planSlug);
+
+            const { error } = await supabase
+              .from('subscriptions')
+              .update({
+                plan_id: targetPlan.id,
+                status: 'active',
+                paypal_subscription_id: data.subscriptionID,
+                current_period_start: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .eq('user_id', currentUser.id);
+
+            if (error) throw error;
+
+            alert('Subscription successful! Your plan has been upgraded.');
+            closeModal();
+            window.location.reload();
+
+          } catch (err) {
+            console.error('Failed to update subscription:', err);
+            alert('Payment received but failed to update your account. Please contact support with subscription ID: ' + data.subscriptionID);
+          }
+        },
+        onError: function(err) {
+          console.error('PayPal error:', err);
+          alert('Payment failed. Please try again or contact support.');
+        }
+      }).render('#paypalButtonContainer');
+    }
+
+    // Close modal
+    window.closeModal = function() {
+      document.getElementById('upgradeModal').classList.remove('active');
+      selectedPlan = null;
+    };
+
+    // Close modal on outside click
+    document.getElementById('upgradeModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Logout
+    window.handleLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/pages/auth/login.html';
+    };
+
+    // Mobile sidebar
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    // Initialize
+    async function init() {
+      currentUser = await checkAuth();
+      if (!currentUser) return;
+
+      // Load data in parallel
+      const [plansData, subscription, artworkCount] = await Promise.all([
+        loadPlans(),
+        getCurrentSubscription(currentUser.id),
+        getArtworkCount(currentUser.id)
+      ]);
+
+      plans = plansData;
+      currentSubscription = subscription;
+
+      const currentPlan = subscription?.subscription_plans;
+      const currentPlanSlug = currentPlan?.slug || 'free';
+
+      // Update current plan banner
+      if (currentPlan) {
+        document.getElementById('currentPlanName').textContent = currentPlan.name;
+        document.getElementById('currentUsage').textContent = artworkCount;
+        document.getElementById('currentLimit').textContent = currentPlan.artwork_limit >= 9999 ? '∞' : currentPlan.artwork_limit;
+        document.getElementById('currentPlanBanner').style.display = 'flex';
+      }
+
+      // Render plans
+      renderPlans(plans, currentPlanSlug, artworkCount);
+    }
+
+    init();
+  </script>
 </body>
 </html>

@@ -1,29 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>HiveMind AR - Login</title>
-  <link rel="stylesheet" crossorigin href="/assets/main-BNvkHC9H.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HiveMind AR - Augmented Reality for Artists</title>
+  <style>
+    /* Additional home page specific styles */
+    .hero {
+      background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
+      position: relative;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+    .hero-logo-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-logo-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 768px) {
+      .hero-logo-bg {
+        width: 400px;
+        height: 400px;
+        opacity: 0.3;
+      }
+    }
+
+    .testimonial-section {
+      padding: 5rem 2rem;
+      background: var(--hm-white);
+    }
+
+    .testimonial-section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .testimonial-card {
+      max-width: 800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .testimonial-image img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .testimonial-content blockquote {
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--hm-text);
+      margin-bottom: 1rem;
+    }
+
+    .testimonial-content cite {
+      color: var(--hm-text-muted);
+      font-style: normal;
+    }
+
+    .cta-section {
+      padding: 5rem 2rem;
+      background: var(--hm-dark);
+      text-align: center;
+      color: var(--hm-white);
+    }
+
+    .cta-section h2 {
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      opacity: 0.8;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-section .btn {
+      background: var(--hm-white);
+      color: var(--hm-dark);
+      padding: 1rem 2rem;
+      font-size: 1rem;
+    }
+
+    .cta-section .btn:hover {
+      background: var(--hm-light-gray);
+    }
+
+    @media (max-width: 768px) {
+      .testimonial-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <link rel="stylesheet" crossorigin href="/assets/hivemind-C3YzYbgb.css">
 </head>
 <body>
- <div class="login-container">
- <div class="login-box">
- <h1>HiveMind AR</h1>
- <p>Select your role to continue</p>
- <div class="role-buttons">
- <button class="role-btn" onclick="loginAs('super-admin')">Super Admin</button>
- <button class="role-btn" onclick="loginAs('subscriber-admin')">Subscriber Admin</button>
- <button class="role-btn" onclick="loginAs('sales-agent')">Sales Agent</button>
- <button class="role-btn" onclick="loginAs('client')">Client</button>
- </div>
- </div>
- </div>
- <script>
- function loginAs(role) {
- localStorage.setItem('hivemind_role', role);
- window.location.href = '/pages/' + role + '/dashboard.html';
- }
- </script>
+  <!-- Navigation -->
+  <nav class="public-nav">
+    <a href="/" class="logo">
+      <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
+    </a>
+    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/contact.html">Contact</a>
+      <a href="/pages/auth/login.html">Subscribe</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-logo-bg">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+    </div>
+    <div class="hero-content">
+      <h1>Share Your Art With The World</h1>
+      <p>HiveMind AR empowers independent artists and dealers to showcase their work globally through augmented reality technology. No app required - AR works directly in your browser.</p>
+      <a href="/pages/auth/signup.html" class="btn btn-light" style="margin-top: 2rem;">Get Started Free</a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="features-grid">
+      <div class="feature-card">
+        <img src="/images/illustrations/02_create_gallery.svg" alt="Create Your Gallery">
+        <h3>Create Your Gallery</h3>
+        <p>Subscribe for free and create your profile. Provide some biographical details, and select from three different subscription levels. Upload your artwork images with their descriptions using our intuitive customization interface.</p>
+      </div>
+      <div class="feature-card">
+        <img src="/images/illustrations/04_share_work.svg" alt="Share Your Work">
+        <h3>Share Your Work</h3>
+        <p>Share your gallery links with potential buyers worldwide. Visitors can view your art in augmented reality directly in their browser - no app download required.</p>
+      </div>
+      <div class="feature-card">
+        <img src="https://images.unsplash.com/photo-1567095761054-7a02e69e5c43?w=600&h=400&fit=crop" alt="Sell to Anyone">
+        <h3>Sell to Anyone</h3>
+        <p>Viewers can connect with you directly through the messaging portal to inquire about your artwork and negotiate purchases. Sell your art to anyone, anywhere in the world.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Subscribe</h3>
+        <p>Create your free account and choose a subscription tier based on how many artworks you want to showcase.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Upload</h3>
+        <p>Upload your artwork images with dimensions for true-scale AR viewing. Add descriptions, pricing, and details.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Share</h3>
+        <p>Share your gallery link or QR code. Buyers view your art in AR at true scale in their own space.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Features -->
+  <section class="features-section">
+    <div class="features-grid">
+      <div class="feature-card">
+        <img src="/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR">
+        <h3>True Scale AR</h3>
+        <p>HVM AR ensures precise image scaling, representing the true size of art unlike many other AR solutions. Buyers see exactly how your artwork will look in their space.</p>
+      </div>
+      <div class="feature-card">
+        <img src="/images/illustrations/05_analytics.svg" alt="Analytics">
+        <h3>Analytics Dashboard</h3>
+        <p>Gain valuable insights into customer behavior, such as views and engagement, to make informed decisions about inventory and pricing strategies.</p>
+      </div>
+      <div class="feature-card">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop" alt="Social Sharing">
+        <h3>Social Sharing</h3>
+        <p>Easily share your virtual galleries across social media platforms to expand your reach and attract new interest in your artwork.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="testimonial-section">
+    <h2>What Artists Say</h2>
+    <div class="testimonial-card">
+      <div class="testimonial-image">
+        <img src="https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?w=600&h=400&fit=crop" alt="Contemporary art installation">
+      </div>
+      <div class="testimonial-content">
+        <blockquote>"HiveMind AR has transformed how I showcase my work to collectors around the world. They can see my paintings at true scale in their homes before buying."</blockquote>
+        <cite>- Independent Artist</cite>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section" style="position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 500px; height: 400px; background-image: url('/images/illustrations/07_cta_get_started.svg'); background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.4;"></div>
+    <h2 style="position: relative; z-index: 1;">Ready to Share Your Art?</h2>
+    <p style="position: relative; z-index: 1;">Join thousands of artists using HiveMind AR to reach global audiences and sell their work through augmented reality.</p>
+    <a href="/pages/auth/signup.html" class="btn" style="position: relative; z-index: 1;">Get Started Free</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="public-footer">
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/contact.html">Contact</a>
+    </div>
+    <p class="copyright">&copy; 2026 HiveMind AR.</p>
+  </footer>
+
+  <script>
+    function toggleMobileNav() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
 </body>
 </html>

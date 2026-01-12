@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Demo - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+
+  <!-- Model-Viewer from Google -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    .ar-demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .ar-demo-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .ar-demo-header h1 {
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .ar-demo-header p {
+      color: var(--hm-text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .ar-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .ar-artwork-card {
+      background: var(--hm-white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .ar-artwork-card model-viewer {
+      width: 100%;
+      height: 400px;
+      background: #f5f5f5;
+      --poster-color: transparent;
+    }
+
+    .ar-artwork-card model-viewer::part(default-ar-button) {
+      background: var(--hm-dark);
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-family: inherit;
+    }
+
+    .ar-artwork-info {
+      padding: 1.5rem;
+    }
+
+    .ar-artwork-info h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .ar-artwork-info .artist {
+      color: var(--hm-text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .ar-artwork-info .dimensions {
+      color: var(--hm-text-light);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .ar-artwork-info .price {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .demo-note {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .demo-note h4 {
+      color: #92400e;
+      margin-bottom: 0.5rem;
+    }
+
+    .demo-note p {
+      color: #a16207;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .demo-note ul {
+      color: #a16207;
+      font-size: 0.9rem;
+      margin: 0.5rem 0 0 1.5rem;
+    }
+
+    .how-it-works {
+      background: var(--hm-light-gray);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+
+    .how-it-works h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+
+    .step-item {
+      text-align: center;
+    }
+
+    .step-item .step-num {
+      width: 40px;
+      height: 40px;
+      background: var(--hm-dark);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-weight: bold;
+    }
+
+    .step-item h4 {
+      margin-bottom: 0.5rem;
+    }
+
+    .step-item p {
+      font-size: 0.9rem;
+      color: var(--hm-text-light);
+    }
+
+    @media (max-width: 768px) {
+      .ar-gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .ar-artwork-card model-viewer {
+        height: 350px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="public-nav">
+    <a href="/" class="logo">
+      <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
+    </a>
+    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/ar-demo.html">AR Demo</a>
+      <a href="/pages/public/contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <div class="ar-demo-container">
+    <div class="ar-demo-header">
+      <h1>Experience Art in Your Space</h1>
+      <p>Use augmented reality to see how artwork looks on your walls before you buy. Tap the AR button on mobile to try it.</p>
+    </div>
+
+    <div class="demo-note">
+      <h4>AR Demo - True Scale Artwork</h4>
+      <p>The first two artworks are 2D images converted to true-scale 3D planes. On mobile devices:</p>
+      <ul>
+        <li><strong>iOS:</strong> Opens AR Quick Look (native Apple AR)</li>
+        <li><strong>Android:</strong> Opens Scene Viewer (native Google AR)</li>
+      </ul>
+      <p style="margin-top: 0.5rem;">The 24" x 24" piece will appear exactly that size on your wall!</p>
+    </div>
+
+    <div class="ar-gallery">
+
+      <!-- 2D Artwork converted to GLB - HiveMind Logo Gold -->
+      <div class="ar-artwork-card">
+        <model-viewer
+          src="/models/sample-artwork.glb"
+          alt="HiveMind Collective - Gold Edition"
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          ar-scale="fixed"
+          camera-controls
+          touch-action="pan-y"
+          shadow-intensity="0.5"
+          environment-image="neutral"
+          exposure="1.2">
+        </model-viewer>
+        <div class="ar-artwork-info">
+          <h3>HiveMind Collective</h3>
+          <p class="artist">Gold Edition</p>
+          <p class="dimensions">24" x 24" (61cm x 61cm)</p>
+          <p class="price">$850</p>
+        </div>
+      </div>
+
+      <!-- 2D Artwork converted to GLB - HiveMind Logo -->
+      <div class="ar-artwork-card">
+        <model-viewer
+          src="/models/hivemind-logo.glb"
+          alt="HiveMind Collective - Classic"
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          ar-scale="fixed"
+          camera-controls
+          touch-action="pan-y"
+          shadow-intensity="0.5"
+          environment-image="neutral"
+          exposure="1.2">
+        </model-viewer>
+        <div class="ar-artwork-info">
+          <h3>HiveMind Collective</h3>
+          <p class="artist">Classic Edition</p>
+          <p class="dimensions">18" x 18" (46cm x 46cm)</p>
+          <p class="price">$650</p>
+        </div>
+      </div>
+
+      <!-- Sample 3D Model for comparison -->
+      <div class="ar-artwork-card">
+        <model-viewer
+          src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+          ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
+          poster="https://modelviewer.dev/shared-assets/models/Astronaut.webp"
+          alt="3D Astronaut Sculpture"
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          ar-scale="fixed"
+          camera-controls
+          touch-action="pan-y"
+          shadow-intensity="1"
+          auto-rotate>
+        </model-viewer>
+        <div class="ar-artwork-info">
+          <h3>The Astronaut</h3>
+          <p class="artist">Sample 3D Sculpture</p>
+          <p class="dimensions">3D model for comparison</p>
+          <p class="price">Demo</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="how-it-works">
+      <h2>How AR Viewing Works</h2>
+      <div class="steps">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <h4>Browse Gallery</h4>
+          <p>View artwork details, dimensions, and pricing</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <h4>Tap AR Button</h4>
+          <p>Opens your camera with AR overlay</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <h4>Point at Wall</h4>
+          <p>The artwork appears at true scale</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <h4>Place & Adjust</h4>
+          <p>Move it around to find the perfect spot</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="public-footer">
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/privacy.html">Privacy</a>
+      <a href="/pages/public/contact.html">Contact</a>
+    </div>
+    <p class="copyright">&copy; 2026 HiveMind AR.</p>
+  </footer>
+
+  <script>
+    function toggleMobileNav() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
+</body>
+</html>

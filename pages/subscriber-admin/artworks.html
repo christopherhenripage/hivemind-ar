@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artworks - HiveMind AR Admin</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar { width: 260px; background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+    .admin-sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .admin-sidebar-header h2 { font-size: 1.25rem; margin: 0; }
+    .admin-sidebar-header span { font-size: 0.75rem; background: #dc3545; padding: 0.125rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; }
+    .admin-nav { flex: 1; padding: 1rem 0; }
+    .admin-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; }
+    .admin-nav a:hover { background: rgba(255,255,255,0.1); color: white; }
+    .admin-nav a.active { background: rgba(255,255,255,0.15); color: white; border-left: 3px solid #667eea; }
+    .admin-sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .admin-sidebar-footer a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.875rem; }
+    .admin-main { flex: 1; margin-left: 260px; background: var(--hm-light-gray); min-height: 100vh; }
+    .admin-header { background: white; padding: 1rem 2rem; border-bottom: 1px solid var(--hm-border); display: flex; justify-content: space-between; align-items: center; }
+    .admin-header h1 { font-size: 1.5rem; margin: 0; }
+    .admin-content { padding: 2rem; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .stat-card h3 { font-size: 0.875rem; color: var(--hm-text-muted); margin: 0 0 0.5rem 0; }
+    .stat-card .value { font-size: 2rem; font-weight: 700; }
+
+    .filters-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .search-box { flex: 1; min-width: 200px; position: relative; }
+    .search-box input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--hm-border); border-radius: 8px; }
+    .search-box::before { content: '🔍'; position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); }
+    .filter-select { padding: 0.75rem 1rem; border: 1px solid var(--hm-border); border-radius: 8px; background: white; min-width: 150px; }
+
+    .artworks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
+    .artwork-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .artwork-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+    .artwork-card-body { padding: 1rem; }
+    .artwork-card h4 { margin: 0 0 0.25rem 0; font-size: 0.95rem; }
+    .artwork-card .artist { font-size: 0.8rem; color: var(--hm-text-muted); margin-bottom: 0.5rem; }
+    .artwork-card .meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--hm-text-muted); }
+    .artwork-card .price { font-weight: 600; color: var(--hm-dark); }
+    .artwork-card .ar-badge { display: inline-block; background: #dcfce7; color: #16a34a; padding: 0.125rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; margin-top: 0.5rem; }
+
+    .mobile-menu-btn { display: none; background: var(--hm-dark); color: white; border: none; width: 40px; height: 40px; border-radius: 8px; font-size: 1.25rem; cursor: pointer; }
+    @media (max-width: 768px) {
+      .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+      .admin-sidebar.open { transform: translateX(0); }
+      .admin-main { margin-left: 0; }
+      .mobile-menu-btn { display: block; }
+    }
+
+    .pagination { display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="sidebar">
+      <div class="admin-sidebar-header"><h2>HiveMind AR <span>ADMIN</span></h2></div>
+      <nav class="admin-nav">
+        <a href="/pages/subscriber-admin/dashboard.html"><span>📊</span> Dashboard</a>
+        <a href="/pages/subscriber-admin/users.html"><span>👥</span> Users</a>
+        <a href="/pages/subscriber-admin/subscriptions.html"><span>💳</span> Subscriptions</a>
+        <a href="/pages/subscriber-admin/artworks.html" class="active"><span>🖼️</span> Artworks</a>
+        <a href="/pages/subscriber-admin/messages.html"><span>✉️</span> Messages</a>
+        <a href="/pages/subscriber-admin/analytics.html"><span>📈</span> Analytics</a>
+      </nav>
+      <div class="admin-sidebar-footer"><a href="/pages/subscriber/dashboard.html">← Back to User View</a></div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+          <h1>All Artworks</h1>
+        </div>
+        <span id="artworkCount" style="font-size: 0.875rem; color: var(--hm-text-muted);"></span>
+      </header>
+
+      <div class="admin-content">
+        <div class="stats-row">
+          <div class="stat-card">
+            <h3>Total Artworks</h3>
+            <div class="value" id="totalArtworks">-</div>
+          </div>
+          <div class="stat-card">
+            <h3>With AR</h3>
+            <div class="value" id="arArtworks">-</div>
+          </div>
+          <div class="stat-card">
+            <h3>Total Views</h3>
+            <div class="value" id="totalViews">-</div>
+          </div>
+          <div class="stat-card">
+            <h3>AR Views</h3>
+            <div class="value" id="totalArViews">-</div>
+          </div>
+        </div>
+
+        <div class="filters-bar">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search artworks..." onkeyup="handleSearch()">
+          </div>
+          <select class="filter-select" id="sortBy" onchange="loadArtworks()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="views">Most Views</option>
+            <option value="ar_views">Most AR Views</option>
+            <option value="price_high">Price: High to Low</option>
+            <option value="price_low">Price: Low to High</option>
+          </select>
+        </div>
+
+        <div class="artworks-grid" id="artworksGrid">
+          <p style="grid-column: 1 / -1; text-align: center; color: var(--hm-text-muted); padding: 2rem;">Loading artworks...</p>
+        </div>
+
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let allArtworks = [];
+    let currentPage = 1;
+    const pageSize = 12;
+
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { window.location.href = '/pages/auth/login.html'; return null; }
+      return user;
+    }
+
+    async function loadStats() {
+      const { data: artworks } = await supabase.from('artworks').select('id, glb_url, view_count, ar_view_count');
+
+      const total = artworks?.length || 0;
+      const withAr = artworks?.filter(a => a.glb_url).length || 0;
+      const views = artworks?.reduce((sum, a) => sum + (a.view_count || 0), 0) || 0;
+      const arViews = artworks?.reduce((sum, a) => sum + (a.ar_view_count || 0), 0) || 0;
+
+      document.getElementById('totalArtworks').textContent = total;
+      document.getElementById('arArtworks').textContent = withAr;
+      document.getElementById('totalViews').textContent = views.toLocaleString();
+      document.getElementById('totalArViews').textContent = arViews.toLocaleString();
+    }
+
+    async function loadArtworks() {
+      const sortBy = document.getElementById('sortBy').value;
+
+      let query = supabase.from('artworks').select(`
+        *,
+        profiles:user_id (full_name, gallery_name)
+      `);
+
+      switch (sortBy) {
+        case 'oldest': query = query.order('created_at', { ascending: true }); break;
+        case 'views': query = query.order('view_count', { ascending: false }); break;
+        case 'ar_views': query = query.order('ar_view_count', { ascending: false }); break;
+        case 'price_high': query = query.order('price_usd', { ascending: false }); break;
+        case 'price_low': query = query.order('price_usd', { ascending: true }); break;
+        default: query = query.order('created_at', { ascending: false });
+      }
+
+      const { data } = await query;
+      allArtworks = data || [];
+      document.getElementById('artworkCount').textContent = `${allArtworks.length} artworks`;
+      currentPage = 1;
+      renderArtworks();
+    }
+
+    function renderArtworks() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      let filtered = allArtworks;
+
+      if (search) {
+        filtered = allArtworks.filter(a =>
+          a.title?.toLowerCase().includes(search) ||
+          a.creator?.toLowerCase().includes(search) ||
+          a.profiles?.full_name?.toLowerCase().includes(search)
+        );
+      }
+
+      const start = (currentPage - 1) * pageSize;
+      const pageArtworks = filtered.slice(start, start + pageSize);
+      const totalPages = Math.ceil(filtered.length / pageSize);
+
+      const grid = document.getElementById('artworksGrid');
+
+      if (pageArtworks.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--hm-text-muted); padding: 2rem;">No artworks found</p>';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      grid.innerHTML = pageArtworks.map(a => `
+        <div class="artwork-card">
+          <img src="${a.thumbnail_url || a.image_url || '/images/placeholder.png'}" alt="${a.title}" loading="lazy">
+          <div class="artwork-card-body">
+            <h4>${escapeHtml(a.title)}</h4>
+            <div class="artist">by ${escapeHtml(a.profiles?.full_name || a.profiles?.gallery_name || a.creator || 'Unknown')}</div>
+            <div class="meta">
+              <span>${a.view_count || 0} views</span>
+              <span class="price">${a.price_usd ? '$' + a.price_usd : 'No price'}</span>
+            </div>
+            ${a.glb_url ? '<span class="ar-badge">AR Ready</span>' : ''}
+          </div>
+        </div>
+      `).join('');
+
+      // Pagination
+      const pagination = document.getElementById('pagination');
+      if (totalPages > 1) {
+        pagination.innerHTML = `
+          <button class="btn btn-outline" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>
+          <span style="padding: 0.5rem 1rem;">Page ${currentPage} of ${totalPages}</span>
+          <button class="btn btn-outline" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+        `;
+      } else {
+        pagination.innerHTML = '';
+      }
+    }
+
+    window.changePage = function(page) {
+      currentPage = page;
+      renderArtworks();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.handleSearch = function() {
+      clearTimeout(window.searchTimeout);
+      window.searchTimeout = setTimeout(() => { currentPage = 1; renderArtworks(); }, 300);
+    };
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('mobileOverlay').classList.toggle('active'); };
+    window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('mobileOverlay').classList.remove('active'); };
+
+    async function init() {
+      if (!await checkAuth()) return;
+      await Promise.all([loadStats(), loadArtworks()]);
+    }
+    init();
+  </script>
+</body>
+</html>

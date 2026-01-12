@@ -18,9 +18,13 @@
       </div>
 
       <nav class="sidebar-nav">
-        <a href="/pages/subscriber/upgrade.html">
-          <span class="nav-icon">🏆</span>
-          <span class="nav-text">Upgrade</span>
+        <a href="/pages/subscriber/dashboard.html">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="/pages/subscriber/images.html">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">My Artworks</span>
         </a>
         <a href="/pages/subscriber/profile.html" class="active">
           <span class="nav-icon">👤</span>
@@ -30,13 +34,9 @@
           <span class="nav-icon">✉️</span>
           <span class="nav-text">Messages</span>
         </a>
-        <a href="/pages/subscriber/images.html">
-          <span class="nav-icon">🖼️</span>
-          <span class="nav-text">Images</span>
-        </a>
-        <a href="/pages/subscriber/transactions.html">
-          <span class="nav-icon">💲</span>
-          <span class="nav-text">Transactions</span>
+        <a href="/pages/subscriber/upgrade.html">
+          <span class="nav-icon">⭐</span>
+          <span class="nav-text">Upgrade Plan</span>
         </a>
         <a href="/pages/subscriber/support.html">
           <span class="nav-icon">🎧</span>
@@ -58,7 +58,7 @@
 
       <!-- Breadcrumb -->
       <div class="breadcrumb">
-        <a href="/pages/subscriber/dashboard.html">Home</a> / <span>Profile</span>
+        <a href="/pages/subscriber/dashboard.html">Dashboard</a> / <span>Profile</span>
       </div>
 
       <!-- Page Header -->
@@ -68,48 +68,72 @@
 
       <!-- Page Content -->
       <div class="page-content">
-        <div class="profile-layout">
-          <!-- Profile Info -->
-          <div class="profile-info">
-            <h2 id="galleryName">Loading...</h2>
-            <p class="location" id="location"></p>
-
-            <div class="profile-field">
-              <label>Public Gallery Link:</label>
-              <div class="value"><a href="#" id="galleryLink" target="_blank"></a></div>
+        <div class="profile-card">
+          <div class="profile-header">
+            <div class="profile-avatar" id="avatarContainer">
+              <img id="avatarImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23e2e8f0'/%3E%3Ccircle cx='50' cy='40' r='18' fill='%2394a3b8'/%3E%3Cellipse cx='50' cy='85' rx='30' ry='25' fill='%2394a3b8'/%3E%3C/svg%3E" alt="Profile">
+              <button class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()">Edit</button>
+              <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
             </div>
-
-            <div class="profile-field">
-              <label>Email:</label>
-              <div class="value" id="email"></div>
+            <div class="profile-title">
+              <h2 id="galleryName">Loading...</h2>
+              <p id="location" class="location"></p>
             </div>
-
-            <div class="profile-field">
-              <label>Phone:</label>
-              <div class="value" id="phone"></div>
-            </div>
-
-            <button class="btn btn-dark" style="margin-top: 1.5rem;" onclick="showEditModal()">Update Profile</button>
-
-            <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">Change Password</h3>
-            <p style="color: var(--hm-text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Please follow the link below to change your password.</p>
-            <button class="btn btn-outline" onclick="changePassword()">Change Password</button>
-
-            <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">Deactivate Account</h3>
-            <p style="color: var(--hm-text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Please click the button below to deactivate your account.</p>
-            <button class="btn btn-outline" style="border-color: var(--hm-danger); color: var(--hm-danger);" onclick="deactivateAccount()">Deactivate Account</button>
           </div>
 
-          <!-- Profile Artworks -->
+          <div class="profile-details">
+            <div class="profile-field">
+              <label>Full Name</label>
+              <div class="value" id="fullName">-</div>
+            </div>
+
+            <div class="profile-field">
+              <label>Email</label>
+              <div class="value" id="email">-</div>
+            </div>
+
+            <div class="profile-field">
+              <label>Phone</label>
+              <div class="value" id="phone">-</div>
+            </div>
+
+            <div class="profile-field">
+              <label>Website</label>
+              <div class="value" id="website">-</div>
+            </div>
+
+            <div class="profile-field full-width">
+              <label>Bio</label>
+              <div class="value" id="bio">-</div>
+            </div>
+
+            <div class="profile-field full-width">
+              <label>Public Gallery Link</label>
+              <div class="value">
+                <a href="#" id="galleryLink" target="_blank" style="word-break: break-all;"></a>
+                <button class="btn btn-sm" style="margin-left: 0.5rem;" onclick="copyGalleryLink()">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <button class="btn btn-dark" onclick="showEditModal()">Edit Profile</button>
+            <button class="btn btn-outline" onclick="changePassword()">Change Password</button>
+          </div>
+        </div>
+
+        <!-- Recent Artworks -->
+        <div class="profile-artworks-section">
+          <h3>Recent Artworks</h3>
           <div class="profile-artworks" id="profileArtworks">
-            <!-- Artwork thumbnails will be loaded here -->
+            <p style="color: var(--hm-text-muted);">Loading...</p>
           </div>
         </div>
       </div>
 
       <!-- Footer -->
       <footer class="dashboard-footer">
-        &copy; 2026 by Hivemind
+        &copy; 2026 HiveMind AR
       </footer>
     </main>
   </div>
@@ -118,32 +142,42 @@
   <div class="modal-overlay" id="editModal">
     <div class="modal" style="max-width: 500px;">
       <div class="modal-header">
-        <h2>Update Profile</h2>
+        <h2>Edit Profile</h2>
         <button class="modal-close" onclick="hideEditModal()">&times;</button>
       </div>
       <form id="editForm" onsubmit="handleUpdateProfile(event)">
+        <div class="form-group">
+          <label for="editFullName">Full Name</label>
+          <input type="text" id="editFullName" class="form-control">
+        </div>
         <div class="form-group">
           <label for="editGalleryName">Gallery Name</label>
           <input type="text" id="editGalleryName" class="form-control" required>
         </div>
         <div class="form-group">
+          <label for="editGallerySlug">Gallery URL Slug</label>
+          <input type="text" id="editGallerySlug" class="form-control" pattern="[a-z0-9-]+" title="Lowercase letters, numbers, and hyphens only">
+          <p class="form-hint">This will be your public gallery URL (e.g., your-gallery-name)</p>
+        </div>
+        <div class="form-group">
           <label for="editLocation">Location</label>
-          <input type="text" id="editLocation" class="form-control">
+          <input type="text" id="editLocation" class="form-control" placeholder="e.g., New York, USA">
         </div>
         <div class="form-group">
           <label for="editPhone">Phone</label>
           <input type="tel" id="editPhone" class="form-control">
         </div>
         <div class="form-group">
-          <label for="editBio">Bio</label>
-          <textarea id="editBio" class="form-control" rows="4"></textarea>
+          <label for="editWebsite">Website</label>
+          <input type="url" id="editWebsite" class="form-control" placeholder="https://...">
         </div>
         <div class="form-group">
-          <label for="editWebsite">Website</label>
-          <input type="url" id="editWebsite" class="form-control">
+          <label for="editBio">Bio</label>
+          <textarea id="editBio" class="form-control" rows="4" placeholder="Tell visitors about yourself and your art..."></textarea>
         </div>
         <p class="error-text" id="editError"></p>
-        <div style="display: flex; gap: 1rem;">
+        <p class="success-text" id="editSuccess" style="color: #28a745;"></p>
+        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
           <button type="button" class="btn btn-light" onclick="hideEditModal()">Cancel</button>
           <button type="submit" class="btn btn-dark" id="editSubmitBtn">Save Changes</button>
         </div>
@@ -154,7 +188,8 @@
   <script type="module">
     import { supabase } from '/src/supabase.js';
 
-    let currentArtist = null;
+    let currentUser = null;
+    let currentProfile = null;
 
     // Check authentication
     async function checkAuth() {
@@ -168,70 +203,79 @@
 
     // Load profile
     async function loadProfile() {
-      const user = await checkAuth();
-      if (!user) return;
+      currentUser = await checkAuth();
+      if (!currentUser) return;
 
-      // Get artist profile
-      const { data: artist, error } = await supabase
-        .from('artists')
+      // Get profile
+      const { data: profile, error } = await supabase
+        .from('profiles')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('id', currentUser.id)
         .single();
 
-      if (error || !artist) {
-        // Create profile if doesn't exist
-        const { data: newArtist } = await supabase
-          .from('artists')
-          .insert({
-            user_id: user.id,
-            gallery_name: user.email.split('@')[0] + ' Gallery',
-            slug: user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '-')
-          })
-          .select()
-          .single();
-
-        currentArtist = newArtist;
-      } else {
-        currentArtist = artist;
+      if (error) {
+        console.error('Error loading profile:', error);
+        document.getElementById('galleryName').textContent = 'Error loading profile';
+        return;
       }
 
+      currentProfile = profile;
+
       // Update UI
-      document.getElementById('galleryName').textContent = currentArtist.gallery_name;
-      document.getElementById('location').textContent = currentArtist.location || '';
-      document.getElementById('email').textContent = user.email;
-      document.getElementById('phone').textContent = currentArtist.phone || '-';
+      document.getElementById('galleryName').textContent = profile.gallery_name || 'Your Gallery';
+      document.getElementById('fullName').textContent = profile.full_name || '-';
+      document.getElementById('location').textContent = profile.location || '';
+      document.getElementById('email').textContent = currentUser.email;
+      document.getElementById('phone').textContent = profile.phone || '-';
+      document.getElementById('website').textContent = profile.website || '-';
+      document.getElementById('bio').textContent = profile.bio || '-';
 
-      const galleryUrl = window.location.origin + '/gallery/' + currentArtist.slug;
-      const galleryLink = document.getElementById('galleryLink');
-      galleryLink.href = galleryUrl;
-      galleryLink.textContent = galleryUrl;
+      // Avatar
+      if (profile.avatar_url) {
+        document.getElementById('avatarImage').src = profile.avatar_url;
+      }
 
-      // Load artworks
+      // Gallery link
+      if (profile.gallery_slug) {
+        const galleryUrl = `${window.location.origin}/pages/gallery/artist.html?slug=${profile.gallery_slug}`;
+        const galleryLink = document.getElementById('galleryLink');
+        galleryLink.href = galleryUrl;
+        galleryLink.textContent = galleryUrl;
+      } else {
+        document.getElementById('galleryLink').textContent = 'Set a gallery slug to get your public link';
+      }
+
+      // Load recent artworks
       const { data: artworks } = await supabase
         .from('artworks')
         .select('*')
-        .eq('artist_id', currentArtist.id)
+        .eq('user_id', currentUser.id)
         .order('created_at', { ascending: false })
         .limit(6);
 
       const container = document.getElementById('profileArtworks');
       if (artworks && artworks.length > 0) {
         container.innerHTML = artworks.map(artwork => `
-          <div class="profile-artwork-thumb">
+          <a href="/pages/subscriber/images-create.html?id=${artwork.id}" class="profile-artwork-thumb">
             <img src="${artwork.thumbnail_url || artwork.image_url || '/images/placeholder.png'}" alt="${artwork.title}">
-          </div>
+            ${artwork.glb_url ? '<span class="ar-badge">AR</span>' : ''}
+          </a>
         `).join('');
       } else {
-        container.innerHTML = '<p style="color: var(--hm-text-muted); grid-column: span 2;">No artworks uploaded yet.</p>';
+        container.innerHTML = '<p style="color: var(--hm-text-muted); grid-column: span 3;">No artworks uploaded yet. <a href="/pages/subscriber/images-create.html">Add your first artwork</a></p>';
       }
     }
 
     window.showEditModal = function() {
-      document.getElementById('editGalleryName').value = currentArtist.gallery_name || '';
-      document.getElementById('editLocation').value = currentArtist.location || '';
-      document.getElementById('editPhone').value = currentArtist.phone || '';
-      document.getElementById('editBio').value = currentArtist.bio || '';
-      document.getElementById('editWebsite').value = currentArtist.website || '';
+      document.getElementById('editFullName').value = currentProfile.full_name || '';
+      document.getElementById('editGalleryName').value = currentProfile.gallery_name || '';
+      document.getElementById('editGallerySlug').value = currentProfile.gallery_slug || '';
+      document.getElementById('editLocation').value = currentProfile.location || '';
+      document.getElementById('editPhone').value = currentProfile.phone || '';
+      document.getElementById('editWebsite').value = currentProfile.website || '';
+      document.getElementById('editBio').value = currentProfile.bio || '';
+      document.getElementById('editError').textContent = '';
+      document.getElementById('editSuccess').textContent = '';
       document.getElementById('editModal').classList.add('active');
     };
 
@@ -243,51 +287,118 @@
       event.preventDefault();
 
       const submitBtn = document.getElementById('editSubmitBtn');
+      const errorEl = document.getElementById('editError');
+      const successEl = document.getElementById('editSuccess');
+
+      errorEl.textContent = '';
+      successEl.textContent = '';
       submitBtn.disabled = true;
       submitBtn.textContent = 'Saving...';
 
-      const { error } = await supabase
-        .from('artists')
-        .update({
-          gallery_name: document.getElementById('editGalleryName').value,
-          location: document.getElementById('editLocation').value,
-          phone: document.getElementById('editPhone').value,
-          bio: document.getElementById('editBio').value,
-          website: document.getElementById('editWebsite').value
-        })
-        .eq('id', currentArtist.id);
-
-      if (error) {
-        document.getElementById('editError').textContent = error.message;
+      // Validate slug format
+      const slug = document.getElementById('editGallerySlug').value.trim().toLowerCase();
+      if (slug && !/^[a-z0-9-]+$/.test(slug)) {
+        errorEl.textContent = 'Gallery slug can only contain lowercase letters, numbers, and hyphens';
         submitBtn.disabled = false;
         submitBtn.textContent = 'Save Changes';
         return;
       }
 
-      hideEditModal();
-      loadProfile();
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Save Changes';
-    };
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: document.getElementById('editFullName').value.trim(),
+          gallery_name: document.getElementById('editGalleryName').value.trim(),
+          gallery_slug: slug || null,
+          location: document.getElementById('editLocation').value.trim() || null,
+          phone: document.getElementById('editPhone').value.trim() || null,
+          website: document.getElementById('editWebsite').value.trim() || null,
+          bio: document.getElementById('editBio').value.trim() || null
+        })
+        .eq('id', currentUser.id);
 
-    window.changePassword = async function() {
-      const { data: { user } } = await supabase.auth.getUser();
-      await supabase.auth.resetPasswordForEmail(user.email);
-      alert('Password reset email sent!');
-    };
-
-    window.deactivateAccount = async function() {
-      if (!confirm('Are you sure you want to deactivate your account? This action cannot be undone.')) {
+      if (error) {
+        if (error.message.includes('duplicate') || error.message.includes('unique')) {
+          errorEl.textContent = 'This gallery slug is already taken. Please choose another.';
+        } else {
+          errorEl.textContent = error.message;
+        }
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Changes';
         return;
       }
 
-      await supabase
-        .from('artists')
-        .update({ is_active: false })
-        .eq('id', currentArtist.id);
+      successEl.textContent = 'Profile updated!';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Save Changes';
 
-      await supabase.auth.signOut();
-      window.location.href = '/';
+      // Reload profile after short delay
+      setTimeout(() => {
+        hideEditModal();
+        loadProfile();
+      }, 1000);
+    };
+
+    window.handleAvatarUpload = async function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Image is too large. Maximum size is 2MB.');
+        return;
+      }
+
+      try {
+        const fileExt = file.name.split('.').pop().toLowerCase();
+        const filePath = `${currentUser.id}/avatar.${fileExt}`;
+
+        // Upload avatar
+        const { error: uploadError } = await supabase.storage
+          .from('artworks')
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: true
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('artworks')
+          .getPublicUrl(filePath);
+
+        // Update profile with avatar URL
+        await supabase
+          .from('profiles')
+          .update({ avatar_url: publicUrl })
+          .eq('id', currentUser.id);
+
+        document.getElementById('avatarImage').src = publicUrl + '?t=' + Date.now();
+
+      } catch (err) {
+        console.error('Avatar upload error:', err);
+        alert('Failed to upload avatar. Please try again.');
+      }
+    };
+
+    window.copyGalleryLink = function() {
+      const link = document.getElementById('galleryLink').href;
+      if (link && link !== '#') {
+        navigator.clipboard.writeText(link).then(() => {
+          alert('Gallery link copied!');
+        });
+      } else {
+        alert('Please set a gallery slug first.');
+      }
+    };
+
+    window.changePassword = async function() {
+      const { error } = await supabase.auth.resetPasswordForEmail(currentUser.email);
+      if (error) {
+        alert('Error: ' + error.message);
+      } else {
+        alert('Password reset email sent to ' + currentUser.email);
+      }
     };
 
     window.handleLogout = async function() {
@@ -369,8 +480,170 @@
       .breadcrumb, .page-header {
         padding-left: 4rem;
       }
-      .profile-layout {
-        grid-template-columns: 1fr !important;
+    }
+
+    .profile-card {
+      background: var(--hm-white);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--hm-light-gray);
+    }
+
+    .profile-avatar {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      flex-shrink: 0;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--hm-light-gray);
+    }
+
+    .avatar-edit-btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .profile-title h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .profile-title .location {
+      color: var(--hm-text-muted);
+      font-size: 0.9rem;
+    }
+
+    .profile-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .profile-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .profile-field.full-width {
+      grid-column: span 2;
+    }
+
+    .profile-field label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--hm-text-muted);
+    }
+
+    .profile-field .value {
+      font-size: 1rem;
+      color: var(--hm-text);
+    }
+
+    .profile-actions {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--hm-light-gray);
+      display: flex;
+      gap: 1rem;
+    }
+
+    .profile-artworks-section {
+      margin-top: 2rem;
+    }
+
+    .profile-artworks-section h3 {
+      margin-bottom: 1rem;
+    }
+
+    .profile-artworks {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1rem;
+    }
+
+    .profile-artwork-thumb {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--hm-light-gray);
+    }
+
+    .profile-artwork-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s;
+    }
+
+    .profile-artwork-thumb:hover img {
+      transform: scale(1.05);
+    }
+
+    .profile-artwork-thumb .ar-badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 0.6rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .form-hint {
+      font-size: 0.8rem;
+      color: var(--hm-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .btn-sm {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .profile-details {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-field.full-width {
+        grid-column: span 1;
+      }
+
+      .profile-actions {
+        flex-direction: column;
       }
     }
   </style>

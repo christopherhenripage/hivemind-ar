@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="goldGlow9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bgGrad9" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#0a0a0a" />
+      <stop offset="100%" style="stop-color:#101010" />
+    </linearGradient>
+    <linearGradient id="leafGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:0.6" />
+    </linearGradient>
+    <filter id="glow9">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow9">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="500" fill="url(#bgGrad9)"/>
+  
+  <!-- Organic tree/plant form on left - representing nature -->
+  <g filter="url(#softGlow9)">
+    <!-- Main trunk/stem -->
+    <path d="M 200 480 Q 190 400 210 320 Q 220 260 200 200 Q 190 160 210 120" 
+          stroke="url(#goldGlow9)" stroke-width="4" fill="none" opacity="0.8"/>
+    
+    <!-- Branches -->
+    <path d="M 200 320 Q 150 280 120 240" stroke="#D4AF37" stroke-width="2.5" fill="none" opacity="0.7"/>
+    <path d="M 210 280 Q 260 250 300 220" stroke="#D4AF37" stroke-width="2.5" fill="none" opacity="0.7"/>
+    <path d="M 200 220 Q 140 190 100 170" stroke="#D4AF37" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M 205 180 Q 250 160 280 130" stroke="#D4AF37" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M 210 140 Q 170 110 150 80" stroke="#D4AF37" stroke-width="1.5" fill="none" opacity="0.5"/>
+    
+    <!-- Leaves as abstract golden shapes -->
+    <ellipse cx="120" cy="235" rx="20" ry="12" fill="url(#leafGold)" opacity="0.6" transform="rotate(-30 120 235)"/>
+    <ellipse cx="100" cy="165" rx="18" ry="10" fill="url(#leafGold)" opacity="0.5" transform="rotate(-20 100 165)"/>
+    <ellipse cx="300" cy="215" rx="22" ry="12" fill="url(#leafGold)" opacity="0.6" transform="rotate(25 300 215)"/>
+    <ellipse cx="280" cy="125" rx="18" ry="10" fill="url(#leafGold)" opacity="0.5" transform="rotate(15 280 125)"/>
+    <ellipse cx="150" cy="75" rx="15" ry="9" fill="url(#leafGold)" opacity="0.4" transform="rotate(-25 150 75)"/>
+  </g>
+  
+  <!-- Circuit/technology pattern on right - representing technology -->
+  <g stroke="#D4AF37" fill="none" filter="url(#glow9)">
+    <!-- Main circuit lines -->
+    <path d="M 500 480 L 500 380 L 550 380 L 550 300 L 600 300" stroke-width="2" opacity="0.7"/>
+    <path d="M 600 300 L 600 220 L 650 220 L 650 150" stroke-width="2" opacity="0.7"/>
+    <path d="M 550 300 L 550 250 L 500 250 L 500 180" stroke-width="1.5" opacity="0.6"/>
+    <path d="M 650 220 L 700 220 L 700 280 L 750 280" stroke-width="1.5" opacity="0.6"/>
+    <path d="M 600 220 L 600 160 L 550 160 L 550 100" stroke-width="1.5" opacity="0.6"/>
+    <path d="M 650 150 L 650 100 L 700 100" stroke-width="1.2" opacity="0.5"/>
+    <path d="M 500 180 L 450 180 L 450 120" stroke-width="1.2" opacity="0.5"/>
+    
+    <!-- Circuit nodes -->
+    <circle cx="600" cy="300" r="6" fill="#D4AF37" opacity="0.8"/>
+    <circle cx="650" cy="220" r="5" fill="#D4AF37" opacity="0.7"/>
+    <circle cx="550" cy="300" r="4" fill="#D4AF37" opacity="0.6"/>
+    <circle cx="600" cy="220" r="4" fill="#D4AF37" opacity="0.6"/>
+    <circle cx="500" cy="250" r="3" fill="#D4AF37" opacity="0.5"/>
+    <circle cx="650" cy="150" r="4" fill="#D4AF37" opacity="0.6"/>
+    <circle cx="500" cy="180" r="3" fill="#D4AF37" opacity="0.5"/>
+  </g>
+  
+  <!-- Central merging point - where nature meets technology -->
+  <g filter="url(#softGlow9)">
+    <!-- Organic-digital fusion element -->
+    <circle cx="400" cy="250" r="50" fill="none" stroke="url(#goldGlow9)" stroke-width="2.5" opacity="0.8"/>
+    <circle cx="400" cy="250" r="35" fill="none" stroke="#FFD700" stroke-width="1.5" opacity="0.6"/>
+    
+    <!-- Inner fusion pattern - half organic, half geometric -->
+    <!-- Left side - organic curves -->
+    <path d="M 365 250 Q 380 230 400 235 Q 380 250 400 265 Q 380 270 365 250" 
+          stroke="#D4AF37" stroke-width="1.5" fill="none" opacity="0.7"/>
+    <!-- Right side - geometric -->
+    <path d="M 435 250 L 420 235 L 400 240 L 420 250 L 400 260 L 420 265 L 435 250" 
+          stroke="#D4AF37" stroke-width="1.5" fill="none" opacity="0.7"/>
+    
+    <!-- Center point -->
+    <circle cx="400" cy="250" r="8" fill="#FFD700" opacity="0.5"/>
+    <circle cx="400" cy="250" r="4" fill="#FFD700" opacity="0.8"/>
+  </g>
+  
+  <!-- Connection lines from nature to center -->
+  <g stroke="#D4AF37" stroke-width="1" opacity="0.3" stroke-dasharray="4,4">
+    <line x1="280" y1="220" x2="350" y2="250"/>
+    <line x1="300" y1="130" x2="365" y2="220"/>
+    <line x1="210" y1="280" x2="355" y2="260"/>
+  </g>
+  
+  <!-- Connection lines from technology to center -->
+  <g stroke="#D4AF37" stroke-width="1" opacity="0.3" stroke-dasharray="4,4">
+    <line x1="500" y1="250" x2="450" y2="250"/>
+    <line x1="550" y1="160" x2="435" y2="220"/>
+    <line x1="500" y1="180" x2="445" y2="230"/>
+  </g>
+  
+  <!-- Person silhouette - contemplating the fusion -->
+  <g fill="#050505">
+    <ellipse cx="400" cy="478" rx="40" ry="12"/>
+    <path d="M 365 350 Q 358 415 375 478 L 425 478 Q 442 415 435 350 Z"/>
+    <circle cx="400" cy="320" r="28"/>
+    <!-- Arms slightly spread in contemplation -->
+    <path d="M 365 365 Q 330 380 310 370" stroke="#050505" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <path d="M 435 365 Q 470 380 490 370" stroke="#050505" stroke-width="12" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Light emanating from center to person -->
+  <g stroke="#D4AF37" stroke-width="0.8" opacity="0.2">
+    <line x1="400" y1="300" x2="400" y2="320"/>
+    <line x1="380" y1="295" x2="375" y2="320"/>
+    <line x1="420" y1="295" x2="425" y2="320"/>
+  </g>
+  
+  <!-- Ambient particles -->
+  <g fill="#D4AF37" opacity="0.3">
+    <circle cx="80" cy="300" r="1.5"/>
+    <circle cx="720" cy="350" r="1.5"/>
+    <circle cx="350" cy="80" r="1"/>
+    <circle cx="680" cy="60" r="1"/>
+    <circle cx="50" cy="450" r="1"/>
+    <circle cx="750" cy="450" r="1"/>
+  </g>
+</svg>

@@ -5,6 +5,220 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gallery - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
+
+  <!-- Model-Viewer for AR -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    .gallery-hero {
+      background: var(--hm-dark);
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+      color: var(--hm-white);
+    }
+
+    .gallery-hero h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .gallery-hero p {
+      opacity: 0.8;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .gallery-filters {
+      background: var(--hm-light-gray);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--hm-border);
+      border-radius: 20px;
+      background: var(--hm-white);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--hm-dark);
+      color: var(--hm-white);
+      border-color: var(--hm-dark);
+    }
+
+    .gallery-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .artwork-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .artwork-card {
+      background: var(--hm-white);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .artwork-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .artwork-card model-viewer {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    }
+
+    .artwork-card model-viewer::part(default-ar-button) {
+      background: var(--hm-dark);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+    }
+
+    .artwork-info {
+      padding: 1.25rem;
+    }
+
+    .artwork-info h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+      color: var(--hm-text);
+    }
+
+    .artwork-info h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .artwork-info h3 a:hover {
+      color: var(--hm-text-light);
+    }
+
+    .artwork-info .artist {
+      font-size: 0.9rem;
+      color: var(--hm-text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .artwork-info .artist a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .artwork-info .artist a:hover {
+      text-decoration: underline;
+    }
+
+    .artwork-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--hm-light-gray);
+    }
+
+    .artwork-meta .dimensions {
+      font-size: 0.8rem;
+      color: var(--hm-text-muted);
+    }
+
+    .artwork-meta .price {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--hm-text);
+    }
+
+    .ar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: var(--hm-dark);
+      color: var(--hm-white);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .cta-section {
+      background: var(--hm-dark);
+      padding: 4rem 2rem;
+      text-align: center;
+      color: var(--hm-white);
+    }
+
+    .cta-section h2 {
+      font-weight: 300;
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      opacity: 0.8;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+    }
+
+    .cta-section .btn {
+      background: var(--hm-white);
+      color: var(--hm-dark);
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--hm-text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .gallery-hero {
+        padding: 6rem 1.5rem 3rem;
+      }
+
+      .gallery-hero h1 {
+        font-size: 2rem;
+      }
+
+      .gallery-container {
+        padding: 2rem 1rem;
+      }
+
+      .artwork-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .artwork-card model-viewer {
+        height: 280px;
+      }
+
+      .filter-btn {
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Navigation -->
@@ -12,371 +226,236 @@
     <a href="/" class="logo">
       <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
     </a>
-    <div class="nav-links">
+    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <div class="nav-links" id="navLinks">
       <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/contact.html">Contact</a>
       <a href="/pages/auth/login.html">Subscribe</a>
     </div>
   </nav>
 
-  <!-- Gallery Header -->
-  <div class="gallery-header" id="galleryHeader">
-    <h1 id="galleryName">Loading...</h1>
-    <p class="location" id="galleryLocation"></p>
+  <!-- Hero -->
+  <section class="gallery-hero">
+    <h1>Discover Art in AR</h1>
+    <p>Browse artwork from independent artists worldwide. Tap the AR button on mobile to see any piece at true scale on your wall.</p>
+  </section>
+
+  <!-- Filters -->
+  <div class="gallery-filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="paintings">Paintings</button>
+    <button class="filter-btn" data-filter="photography">Photography</button>
+    <button class="filter-btn" data-filter="digital">Digital Art</button>
+    <button class="filter-btn" data-filter="sculpture">Sculptures</button>
   </div>
 
   <!-- Gallery Grid -->
-  <div class="gallery-grid" id="galleryGrid">
-    <p style="text-align: center; padding: 3rem; color: var(--hm-text-muted);">Loading artworks...</p>
+  <div class="gallery-container">
+    <div class="artwork-grid" id="artworkGrid">
+      <!-- Artworks loaded dynamically or shown as samples -->
+    </div>
   </div>
 
-  <!-- Contact Section -->
-  <div id="contactSection" style="display: none; padding: 3rem 2rem; background: var(--hm-light-gray); text-align: center;">
-    <h2 style="margin-bottom: 1rem;">Interested in an artwork?</h2>
-    <p style="color: var(--hm-text-muted); margin-bottom: 1.5rem;">Contact the artist directly to inquire about purchase.</p>
-    <button class="btn btn-dark" onclick="showContactForm()">Contact Artist</button>
-  </div>
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Are You an Artist?</h2>
+    <p>Share your work with collectors worldwide through AR technology.</p>
+    <a href="/pages/auth/signup.html" class="btn">Start Your Gallery</a>
+  </section>
 
   <!-- Footer -->
   <footer class="public-footer">
     <div class="footer-links">
       <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
       <a href="/pages/public/about.html">About</a>
-      <a href="/pages/public/privacy.html">Privacy</a>
+      <a href="/pages/public/contact.html">Contact</a>
     </div>
-    <p class="copyright">&copy; 2026 by HiveMindAR.</p>
+    <p class="copyright">&copy; 2026 HiveMind AR.</p>
   </footer>
 
-  <!-- Contact Modal -->
-  <div class="modal-overlay" id="contactModal">
-    <div class="modal" style="max-width: 500px;">
-      <div class="modal-header">
-        <h2>Contact Artist</h2>
-        <button class="modal-close" onclick="hideContactForm()">&times;</button>
-      </div>
-      <form id="contactForm" onsubmit="handleContact(event)">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" id="contactName" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label>Your Email</label>
-          <input type="email" id="contactEmail" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label>Subject</label>
-          <input type="text" id="contactSubject" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label>Message</label>
-          <textarea id="contactMessage" class="form-control" rows="4" required></textarea>
-        </div>
-        <input type="hidden" id="contactArtworkId">
-        <p class="error-text" id="contactError"></p>
-        <p id="contactSuccess" style="color: var(--hm-success);"></p>
-        <button type="submit" class="btn btn-dark btn-block" id="contactSubmitBtn">Send Message</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- AR Viewer Modal -->
-  <div class="ar-viewer-container" id="arViewer" style="display: none;">
-    <div class="ar-viewer-header">
-      <h3 id="arArtworkTitle">Artwork</h3>
-      <button class="ar-close-btn" onclick="closeAR()">&times;</button>
-    </div>
-    <div id="arViewport" style="width: 100%; height: 100%;"></div>
-    <div class="ar-viewer-footer">
-      <div class="ar-artwork-info">
-        <h4 id="arArtworkName"></h4>
-        <p id="arArtworkDetails"></p>
-      </div>
-      <div class="ar-actions">
-        <button class="btn btn-dark" onclick="contactAboutArtwork()">Inquire</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
   <script type="module">
-    import { supabase } from '/src/supabase.js';
+    // Sample artwork data (will be replaced with Supabase data in production)
+    const sampleArtworks = [
+      {
+        id: '1',
+        title: 'HiveMind Collective',
+        artist: 'Demo Artist',
+        artistSlug: 'demo-artist',
+        dimensions: '24" x 24"',
+        price: '$850',
+        category: 'digital',
+        glbUrl: '/models/sample-artwork.glb',
+        usdzUrl: null
+      },
+      {
+        id: '2',
+        title: 'HiveMind Classic',
+        artist: 'Demo Artist',
+        artistSlug: 'demo-artist',
+        dimensions: '18" x 18"',
+        price: '$650',
+        category: 'digital',
+        glbUrl: '/models/hivemind-logo.glb',
+        usdzUrl: null
+      },
+      {
+        id: '3',
+        title: 'The Astronaut',
+        artist: 'Space Sculptor',
+        artistSlug: 'space-sculptor',
+        dimensions: '3D Sculpture',
+        price: '$2,400',
+        category: 'sculpture',
+        glbUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
+        usdzUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz'
+      }
+    ];
 
-    let currentArtist = null;
-    let artworks = [];
-    let selectedArtwork = null;
+    // Render artwork card
+    function renderArtworkCard(artwork) {
+      const usdzAttr = artwork.usdzUrl ? `ios-src="${artwork.usdzUrl}"` : '';
+      const autoRotate = artwork.category === 'sculpture' ? 'auto-rotate' : '';
 
-    // Get slug from URL
-    function getSlug() {
-      const path = window.location.pathname;
-      const parts = path.split('/').filter(p => p);
-      // Expecting /gallery/[slug] or /pages/gallery/index.html?slug=[slug]
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('slug') || parts[parts.length - 1];
+      return `
+        <div class="artwork-card" data-category="${artwork.category}">
+          <model-viewer
+            src="${artwork.glbUrl}"
+            ${usdzAttr}
+            alt="${artwork.title}"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            ar-scale="fixed"
+            camera-controls
+            touch-action="pan-y"
+            shadow-intensity="0.3"
+            exposure="1.1"
+            ${autoRotate}>
+          </model-viewer>
+          <div class="artwork-info">
+            <span class="ar-badge">AR Ready</span>
+            <h3><a href="/pages/gallery/artwork.html?id=${artwork.id}">${artwork.title}</a></h3>
+            <p class="artist">by <a href="/pages/gallery/artist.html?slug=${artwork.artistSlug}">${artwork.artist}</a></p>
+            <div class="artwork-meta">
+              <span class="dimensions">${artwork.dimensions}</span>
+              <span class="price">${artwork.price}</span>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
-    // Load gallery
-    async function loadGallery() {
-      const slug = getSlug();
-
-      if (!slug || slug === 'index.html') {
-        document.getElementById('galleryName').textContent = 'Gallery Not Found';
-        document.getElementById('galleryGrid').innerHTML =
-          '<p style="text-align: center; padding: 3rem; color: var(--hm-text-muted);">Please provide a gallery slug in the URL.</p>';
-        return;
-      }
-
-      // Get artist by slug
-      const { data: artist, error } = await supabase
-        .from('artists')
-        .select('*')
-        .eq('slug', slug)
-        .eq('is_active', true)
-        .single();
-
-      if (error || !artist) {
-        document.getElementById('galleryName').textContent = 'Gallery Not Found';
-        document.getElementById('galleryGrid').innerHTML =
-          '<p style="text-align: center; padding: 3rem; color: var(--hm-text-muted);">This gallery does not exist or is no longer active.</p>';
-        return;
-      }
-
-      currentArtist = artist;
-      document.getElementById('galleryName').textContent = artist.gallery_name;
-      document.getElementById('galleryLocation').textContent = artist.location || '';
-      document.title = `${artist.gallery_name} - HiveMind AR`;
-
-      // Get artworks
-      const { data: artworkData } = await supabase
-        .from('artworks')
-        .select('*')
-        .eq('artist_id', artist.id)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
-
-      artworks = artworkData || [];
-
-      if (artworks.length === 0) {
-        document.getElementById('galleryGrid').innerHTML =
-          '<p style="text-align: center; padding: 3rem; color: var(--hm-text-muted);">No artworks in this gallery yet.</p>';
-        return;
-      }
-
-      document.getElementById('contactSection').style.display = 'block';
-
-      // Render artworks
-      document.getElementById('galleryGrid').innerHTML = artworks.map(artwork => `
-        <div class="gallery-item" onclick="viewArtwork('${artwork.id}')">
-          <div class="gallery-item-image">
-            <img src="${artwork.thumbnail_url || artwork.image_url || '/images/placeholder.png'}" alt="${artwork.title}">
+    // Render placeholder card
+    function renderPlaceholderCard() {
+      return `
+        <div class="artwork-card" style="opacity: 0.6;">
+          <div style="height: 300px; background: linear-gradient(135deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: #888; text-align: center; padding: 2rem;">
+            <div>
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">+</div>
+              <span>More artwork coming soon</span>
+            </div>
           </div>
-          <div class="gallery-item-info">
-            <h3>${artwork.title}</h3>
-            <p class="artist">${artwork.creator || artist.gallery_name}</p>
-            <p class="price">${artwork.price_usd ? '$' + artwork.price_usd.toFixed(2) : 'Price on request'}</p>
-          </div>
-          <div class="gallery-item-actions">
-            <button class="btn btn-outline" onclick="event.stopPropagation(); viewInAR('${artwork.id}')">View in AR</button>
-            <button class="btn btn-dark" onclick="event.stopPropagation(); inquireAbout('${artwork.id}')">Inquire</button>
+          <div class="artwork-info">
+            <h3>Your Art Here</h3>
+            <p class="artist">by <a href="/pages/auth/signup.html">Become a Subscriber</a></p>
+            <div class="artwork-meta">
+              <span class="dimensions">Any size</span>
+              <span class="price">Your price</span>
+            </div>
           </div>
         </div>
-      `).join('');
+      `;
+    }
 
-      // Track view
-      artworks.forEach(async (artwork) => {
-        await supabase.from('artwork_views').insert({
-          artwork_id: artwork.id
+    // Load and display artworks
+    async function loadArtworks() {
+      const grid = document.getElementById('artworkGrid');
+
+      // Try to load from Supabase first (for production)
+      try {
+        const { supabase } = await import('/src/supabase.js');
+
+        const { data: artworks, error } = await supabase
+          .from('artworks')
+          .select(`
+            id,
+            title,
+            width_inches,
+            height_inches,
+            price_usd,
+            category,
+            glb_url,
+            usdz_url,
+            artists (
+              gallery_name,
+              slug
+            )
+          `)
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+          .limit(20);
+
+        if (!error && artworks && artworks.length > 0) {
+          const formattedArtworks = artworks.map(a => ({
+            id: a.id,
+            title: a.title,
+            artist: a.artists?.gallery_name || 'Unknown Artist',
+            artistSlug: a.artists?.slug || 'unknown',
+            dimensions: `${a.width_inches}" x ${a.height_inches}"`,
+            price: a.price_usd ? `$${a.price_usd.toLocaleString()}` : 'Price on request',
+            category: a.category || 'paintings',
+            glbUrl: a.glb_url,
+            usdzUrl: a.usdz_url
+          }));
+
+          grid.innerHTML = formattedArtworks.map(renderArtworkCard).join('') + renderPlaceholderCard();
+          return;
+        }
+      } catch (e) {
+        console.log('Supabase not configured, using sample data');
+      }
+
+      // Fall back to sample data
+      grid.innerHTML = sampleArtworks.map(renderArtworkCard).join('') + renderPlaceholderCard();
+    }
+
+    // Filter functionality
+    function setupFilters() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Update active state
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Filter artworks
+          const filter = btn.dataset.filter;
+          const cards = document.querySelectorAll('.artwork-card');
+
+          cards.forEach(card => {
+            if (filter === 'all' || card.dataset.category === filter) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
         });
       });
     }
 
-    window.viewArtwork = function(id) {
-      const artwork = artworks.find(a => a.id === id);
-      if (!artwork) return;
-
-      selectedArtwork = artwork;
-
-      // Could show a detail modal - for now, open AR
-      viewInAR(id);
-    };
-
-    window.viewInAR = function(id) {
-      const artwork = artworks.find(a => a.id === id);
-      if (!artwork) return;
-
-      selectedArtwork = artwork;
-
-      // Calculate AR scale based on physical dimensions
-      const widthM = (artwork.width_cm || 50) / 100; // Convert cm to meters
-      const heightM = (artwork.height_cm || 70) / 100;
-
-      document.getElementById('arArtworkTitle').textContent = artwork.title;
-      document.getElementById('arArtworkName').textContent = artwork.title;
-      document.getElementById('arArtworkDetails').textContent =
-        `${artwork.creator || ''} ${artwork.year_created ? '(' + artwork.year_created + ')' : ''} - ${artwork.width_cm || '?'}cm x ${artwork.height_cm || '?'}cm`;
-
-      // Create AR scene
-      const viewport = document.getElementById('arViewport');
-      viewport.innerHTML = `
-        <a-scene
-          mindar-image="imageTargetSrc: /ar/targets/targets.mind; showStats: false; uiLoading: no; uiScanning: yes; uiError: no;"
-          color-space="sRGB"
-          vr-mode-ui="enabled: false"
-          device-orientation-permission-ui="enabled: false"
-          style="width: 100%; height: 100%;"
-        >
-          <a-assets>
-            <img id="artworkImage" src="${artwork.image_url}" crossorigin="anonymous">
-          </a-assets>
-
-          <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-          <a-entity mindar-image-target="targetIndex: 0">
-            <!-- Artwork displayed at true scale -->
-            <a-plane
-              src="#artworkImage"
-              position="0 ${heightM/2} 0"
-              width="${widthM}"
-              height="${heightM}"
-              material="shader: flat;"
-            ></a-plane>
-
-            <!-- Frame around artwork -->
-            <a-box
-              position="0 ${heightM/2} -0.01"
-              width="${widthM + 0.04}"
-              height="${heightM + 0.04}"
-              depth="0.02"
-              color="#333333"
-              material="shader: flat;"
-            ></a-box>
-          </a-entity>
-        </a-scene>
-      `;
-
-      document.getElementById('arViewer').style.display = 'block';
-      document.body.style.overflow = 'hidden';
-    };
-
-    window.closeAR = function() {
-      document.getElementById('arViewer').style.display = 'none';
-      document.getElementById('arViewport').innerHTML = '';
-      document.body.style.overflow = '';
-    };
-
-    window.inquireAbout = function(id) {
-      const artwork = artworks.find(a => a.id === id);
-      if (!artwork) return;
-
-      selectedArtwork = artwork;
-      document.getElementById('contactSubject').value = `Inquiry about: ${artwork.title}`;
-      document.getElementById('contactArtworkId').value = id;
-      showContactForm();
-    };
-
-    window.contactAboutArtwork = function() {
-      if (selectedArtwork) {
-        inquireAbout(selectedArtwork.id);
-      }
-    };
-
-    window.showContactForm = function() {
-      document.getElementById('contactModal').classList.add('active');
-    };
-
-    window.hideContactForm = function() {
-      document.getElementById('contactModal').classList.remove('active');
-    };
-
-    window.handleContact = async function(event) {
-      event.preventDefault();
-
-      const name = document.getElementById('contactName').value.trim();
-      const email = document.getElementById('contactEmail').value.trim();
-      const subject = document.getElementById('contactSubject').value.trim();
-      const message = document.getElementById('contactMessage').value.trim();
-      const artworkId = document.getElementById('contactArtworkId').value;
-      const submitBtn = document.getElementById('contactSubmitBtn');
-      const errorEl = document.getElementById('contactError');
-      const successEl = document.getElementById('contactSuccess');
-
-      errorEl.textContent = '';
-      successEl.textContent = '';
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending...';
-
-      try {
-        const { error } = await supabase
-          .from('messages')
-          .insert({
-            artist_id: currentArtist.id,
-            artwork_id: artworkId || null,
-            from_name: name,
-            from_email: email,
-            subject: subject,
-            message: message
-          });
-
-        if (error) throw error;
-
-        successEl.textContent = 'Message sent successfully! The artist will respond to your email.';
-        document.getElementById('contactForm').reset();
-
-        setTimeout(() => {
-          hideContactForm();
-          successEl.textContent = '';
-        }, 3000);
-
-      } catch (err) {
-        console.error('Error:', err);
-        errorEl.textContent = err.message || 'Failed to send message. Please try again.';
-      }
-
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Send Message';
-    };
-
-    loadGallery();
+    // Initialize
+    loadArtworks();
+    setupFilters();
   </script>
 
-  <style>
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 200;
-      justify-content: center;
-      align-items: center;
+  <script>
+    function toggleMobileNav() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
     }
-    .modal-overlay.active {
-      display: flex;
-    }
-    .modal {
-      background: white;
-      border-radius: 8px;
-      padding: 2rem;
-      max-width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--hm-text-muted);
-    }
-  </style>
+  </script>
 </body>
 </html>

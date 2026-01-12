@@ -1,151 +1,837 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Users/Accounts - HiveMind AR</title>
- <link rel="stylesheet" href="/styles/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users - HiveMind AR Admin</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .admin-sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 100;
+    }
+
+    .admin-sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .admin-sidebar-header h2 {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+
+    .admin-sidebar-header span {
+      font-size: 0.75rem;
+      background: #dc3545;
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      margin-left: 0.5rem;
+    }
+
+    .admin-nav {
+      flex: 1;
+      padding: 1rem 0;
+    }
+
+    .admin-nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .admin-nav a:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .admin-nav a.active {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left: 3px solid #667eea;
+    }
+
+    .admin-sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .admin-sidebar-footer a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .admin-main {
+      flex: 1;
+      margin-left: 260px;
+      background: var(--hm-light-gray);
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background: white;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--hm-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    .admin-content {
+      padding: 2rem;
+    }
+
+    .filters-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      padding-left: 2.5rem;
+      border: 1px solid var(--hm-border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.9rem;
+    }
+
+    .filter-select {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--hm-border);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: white;
+      min-width: 150px;
+    }
+
+    .users-table {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--hm-border);
+    }
+
+    th {
+      background: var(--hm-light-gray);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--hm-text-muted);
+    }
+
+    tr:hover {
+      background: #fafafa;
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--hm-light-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--hm-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+    }
+
+    .user-email {
+      font-size: 0.8rem;
+      color: var(--hm-text-muted);
+    }
+
+    .badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-free { background: #e2e8f0; color: #64748b; }
+    .badge-basic { background: #dbeafe; color: #1d4ed8; }
+    .badge-pro { background: #fef3c7; color: #d97706; }
+    .badge-studio { background: #dcfce7; color: #16a34a; }
+    .badge-active { background: #dcfce7; color: #16a34a; }
+    .badge-inactive { background: #fee2e2; color: #dc2626; }
+
+    .actions-cell {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--hm-border);
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      background: var(--hm-light-gray);
+    }
+
+    .btn-icon:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-top: 1px solid var(--hm-border);
+    }
+
+    .pagination-info {
+      font-size: 0.875rem;
+      color: var(--hm-text-muted);
+    }
+
+    .pagination-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+      }
+      .admin-sidebar.open {
+        transform: translateX(0);
+      }
+      .admin-main {
+        margin-left: 0;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .mobile-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 99;
+      }
+      .mobile-overlay.active {
+        display: block;
+      }
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal h2 {
+      margin: 0 0 1.5rem 0;
+      font-size: 1.25rem;
+    }
+
+    .modal-user-info {
+      background: var(--hm-light-gray);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+    }
+  </style>
 </head>
 <body>
- <div class="sidebar-overlay"></div>
- <div class="app-layout">
- <aside class="sidebar">
- <div class="sidebar-header">
- <h2>HiveMind AR</h2>
- <span>Subscriber Admin</span>
- </div>
- <nav class="sidebar-nav">
- <a href="/pages/subscriber-admin/dashboard.html">Dashboard</a>
- <a href="/pages/subscriber-admin/users.html" class="active">Users/Accounts</a>
- <a href="/pages/subscriber-admin/analytics.html">Analytics</a>
- <a href="/pages/subscriber-admin/mini-crm.html">Mini CRM</a>
- <a href="/pages/subscriber-admin/payments.html">Payments</a>
- <a href="/pages/subscriber-admin/contact-us.html">Contact Us</a>
- <a href="/pages/subscriber-admin/gallery.html">Gallery Showcase</a>
- <a href="/pages/subscriber-admin/about-us.html">About Us</a>
- <a href="/pages/subscriber-admin/augmented-reality.html">Augmented Reality</a>
- </nav>
- <div class="sidebar-footer">
- <a href="#" class="logout-btn" onclick="logout()">Logout</a>
- </div>
- </aside>
- <main class="main-content">
- <header class="header">
- <button class="menu-toggle">☰</button>
- <h1>Users/Accounts</h1>
- <div></div>
- </header>
- <div class="page-content">
- <div class="card">
- <div class="card-header">
- <h3 class="card-title">My Team Users</h3>
- <button class="btn btn-primary" onclick="showCreateModal()">+ Add User</button>
- </div>
- <div class="table-container">
- <table>
- <thead>
- <tr>
- <th>ID</th>
- <th>Name</th>
- <th>Email</th>
- <th>Role</th>
- <th>Status</th>
- <th>Actions</th>
- </tr>
- </thead>
- <tbody>
- <tr>
- <td>1</td>
- <td>Emily Chen</td>
- <td>emily@example.com</td>
- <td>Sales Agent</td>
- <td><span class="badge badge-success">Active</span></td>
- <td>
- <div class="btn-group">
- <button class="btn btn-sm btn-primary" onclick="showEditModal(1)">Edit</button>
- <button class="btn btn-sm btn-warning" onclick="toggleStatus(1)">Deactivate</button>
- </div>
- </td>
- </tr>
- <tr>
- <td>2</td>
- <td>Mark Thompson</td>
- <td>mark@example.com</td>
- <td>Sales Agent</td>
- <td><span class="badge badge-success">Active</span></td>
- <td>
- <div class="btn-group">
- <button class="btn btn-sm btn-primary" onclick="showEditModal(2)">Edit</button>
- <button class="btn btn-sm btn-warning" onclick="toggleStatus(2)">Deactivate</button>
- </div>
- </td>
- </tr>
- </tbody>
- </table>
- </div>
- </div>
- </div>
- <footer class="footer">
- <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
- </footer>
- </main>
- </div>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
 
- <div class="modal-overlay" id="createModal">
- <div class="modal">
- <div class="modal-header">
- <h3>Add New User</h3>
- <button class="modal-close">&times;</button>
- </div>
- <form id="createForm">
- <div class="form-group">
- <label>Full Name</label>
- <input type="text" class="form-control" placeholder="Enter full name">
- </div>
- <div class="form-group">
- <label>Email</label>
- <input type="email" class="form-control" placeholder="Enter email">
- </div>
- <div class="form-group">
- <label>Role</label>
- <select class="form-control">
- <option>Sales Agent</option>
- <option>Client</option>
- </select>
- </div>
- <div class="form-group">
- <label>Password</label>
- <input type="password" class="form-control" placeholder="Enter password">
- </div>
- <button type="button" class="btn btn-primary" onclick="submitForm('createForm')">Create User</button>
- </form>
- </div>
- </div>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="sidebar">
+      <div class="admin-sidebar-header">
+        <h2>HiveMind AR <span>ADMIN</span></h2>
+      </div>
 
- <div class="modal-overlay" id="editModal">
- <div class="modal">
- <div class="modal-header">
- <h3>Edit User</h3>
- <button class="modal-close">&times;</button>
- </div>
- <form id="editForm">
- <div class="form-group">
- <label>Full Name</label>
- <input type="text" class="form-control" value="Emily Chen">
- </div>
- <div class="form-group">
- <label>Email</label>
- <input type="email" class="form-control" value="emily@example.com">
- </div>
- <div class="form-group">
- <label>New Password (leave blank to keep current)</label>
- <input type="password" class="form-control" placeholder="Enter new password">
- </div>
- <button type="button" class="btn btn-primary" onclick="submitForm('editForm')">Save Changes</button>
- </form>
- </div>
- </div>
+      <nav class="admin-nav">
+        <a href="/pages/subscriber-admin/dashboard.html">
+          <span>📊</span> Dashboard
+        </a>
+        <a href="/pages/subscriber-admin/users.html" class="active">
+          <span>👥</span> Users
+        </a>
+        <a href="/pages/subscriber-admin/subscriptions.html">
+          <span>💳</span> Subscriptions
+        </a>
+        <a href="/pages/subscriber-admin/artworks.html">
+          <span>🖼️</span> Artworks
+        </a>
+        <a href="/pages/subscriber-admin/messages.html">
+          <span>✉️</span> Messages
+        </a>
+        <a href="/pages/subscriber-admin/analytics.html">
+          <span>📈</span> Analytics
+        </a>
+      </nav>
 
- <script type="module" src="/src/main.js"></script>
+      <div class="admin-sidebar-footer">
+        <a href="/pages/subscriber/dashboard.html">← Back to User View</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+          <h1>Manage Users</h1>
+        </div>
+        <span id="userCount" style="font-size: 0.875rem; color: var(--hm-text-muted);"></span>
+      </header>
+
+      <div class="admin-content">
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search by name or email..." onkeyup="handleSearch()">
+          </div>
+          <select class="filter-select" id="planFilter" onchange="handleFilter()">
+            <option value="">All Plans</option>
+            <option value="free">Free</option>
+            <option value="basic">Basic</option>
+            <option value="pro">Pro</option>
+            <option value="studio">Studio</option>
+          </select>
+          <select class="filter-select" id="sortBy" onchange="handleFilter()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="name">Name A-Z</option>
+            <option value="artworks">Most Artworks</option>
+          </select>
+        </div>
+
+        <!-- Users Table -->
+        <div class="users-table">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Plan</th>
+                  <th>Artworks</th>
+                  <th>Joined</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: var(--hm-text-muted); padding: 2rem;">
+                    Loading users...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <div class="pagination-info" id="paginationInfo">Showing 0 users</div>
+            <div class="pagination-buttons">
+              <button class="btn btn-outline" id="prevBtn" onclick="prevPage()" disabled>Previous</button>
+              <button class="btn btn-outline" id="nextBtn" onclick="nextPage()" disabled>Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <h2>Edit User</h2>
+      <div class="modal-user-info">
+        <strong id="modalUserName">User Name</strong>
+        <p style="margin: 0.25rem 0 0; font-size: 0.875rem; color: var(--hm-text-muted);" id="modalUserEmail">email@example.com</p>
+      </div>
+
+      <div class="form-group">
+        <label>Subscription Plan</label>
+        <select class="form-control" id="modalPlanSelect">
+          <option value="">Loading plans...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select class="form-control" id="modalStatusSelect">
+          <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-light" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-dark" onclick="saveUserChanges()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let allUsers = [];
+    let filteredUsers = [];
+    let plans = [];
+    let currentPage = 1;
+    const pageSize = 20;
+    let editingUserId = null;
+
+    // Check admin auth
+    async function checkAdminAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Load plans
+    async function loadPlans() {
+      const { data, error } = await supabase
+        .from('subscription_plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('price_monthly', { ascending: true });
+
+      if (!error) {
+        plans = data || [];
+        // Populate modal select
+        const select = document.getElementById('modalPlanSelect');
+        select.innerHTML = plans.map(p =>
+          `<option value="${p.id}">${p.name} - $${p.price_monthly}/mo (${p.artwork_limit} artworks)</option>`
+        ).join('');
+      }
+    }
+
+    // Load users
+    async function loadUsers() {
+      try {
+        // Get profiles with their subscriptions
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (profilesError) throw profilesError;
+
+        // Get subscriptions
+        const { data: subscriptions } = await supabase
+          .from('subscriptions')
+          .select(`
+            user_id,
+            status,
+            plan_id,
+            subscription_plans (id, name, slug)
+          `);
+
+        const subMap = {};
+        subscriptions?.forEach(s => {
+          subMap[s.user_id] = s;
+        });
+
+        // Get artwork counts
+        const { data: artworkCounts } = await supabase
+          .from('artworks')
+          .select('user_id');
+
+        const artworkMap = {};
+        artworkCounts?.forEach(a => {
+          artworkMap[a.user_id] = (artworkMap[a.user_id] || 0) + 1;
+        });
+
+        // Combine data
+        allUsers = profiles.map(p => ({
+          id: p.id,
+          name: p.full_name || p.gallery_name || 'Unnamed',
+          email: p.email || '',
+          galleryName: p.gallery_name,
+          gallerySlug: p.gallery_slug,
+          createdAt: p.created_at,
+          subscription: subMap[p.id] || null,
+          artworkCount: artworkMap[p.id] || 0
+        }));
+
+        document.getElementById('userCount').textContent = `${allUsers.length} users`;
+
+        filterAndRender();
+
+      } catch (err) {
+        console.error('Error loading users:', err);
+        document.getElementById('usersTableBody').innerHTML = `
+          <tr><td colspan="6" style="text-align: center; color: #dc3545; padding: 2rem;">
+            Error loading users: ${err.message}
+          </td></tr>
+        `;
+      }
+    }
+
+    // Filter and render
+    function filterAndRender() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const planFilter = document.getElementById('planFilter').value;
+      const sortBy = document.getElementById('sortBy').value;
+
+      filteredUsers = allUsers.filter(user => {
+        // Search filter
+        if (search && !user.name.toLowerCase().includes(search) && !user.email.toLowerCase().includes(search)) {
+          return false;
+        }
+        // Plan filter
+        if (planFilter) {
+          const userPlan = user.subscription?.subscription_plans?.slug || 'free';
+          if (userPlan !== planFilter) return false;
+        }
+        return true;
+      });
+
+      // Sort
+      filteredUsers.sort((a, b) => {
+        switch (sortBy) {
+          case 'oldest':
+            return new Date(a.createdAt) - new Date(b.createdAt);
+          case 'name':
+            return a.name.localeCompare(b.name);
+          case 'artworks':
+            return b.artworkCount - a.artworkCount;
+          default: // newest
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+      });
+
+      currentPage = 1;
+      renderUsers();
+    }
+
+    // Render users table
+    function renderUsers() {
+      const tbody = document.getElementById('usersTableBody');
+      const start = (currentPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageUsers = filteredUsers.slice(start, end);
+
+      if (pageUsers.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="6" style="text-align: center; color: var(--hm-text-muted); padding: 2rem;">
+            No users found
+          </td></tr>
+        `;
+        updatePagination();
+        return;
+      }
+
+      tbody.innerHTML = pageUsers.map(user => {
+        const plan = user.subscription?.subscription_plans || { name: 'Free', slug: 'free' };
+        const status = user.subscription?.status || 'active';
+        const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        const joinDate = new Date(user.createdAt).toLocaleDateString();
+
+        return `
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="user-avatar">${initials}</div>
+                <div>
+                  <div class="user-name">${escapeHtml(user.name)}</div>
+                  <div class="user-email">${escapeHtml(user.email)}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-${plan.slug}">${plan.name}</span></td>
+            <td>${user.artworkCount}</td>
+            <td>${joinDate}</td>
+            <td><span class="badge badge-${status}">${status}</span></td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn-icon" onclick="editUser('${user.id}')" title="Edit">✏️</button>
+                <button class="btn-icon" onclick="viewGallery('${user.gallerySlug}')" title="View Gallery" ${!user.gallerySlug ? 'disabled' : ''}>🔗</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      updatePagination();
+    }
+
+    // Update pagination
+    function updatePagination() {
+      const totalPages = Math.ceil(filteredUsers.length / pageSize);
+      const start = (currentPage - 1) * pageSize + 1;
+      const end = Math.min(currentPage * pageSize, filteredUsers.length);
+
+      document.getElementById('paginationInfo').textContent =
+        filteredUsers.length > 0
+          ? `Showing ${start}-${end} of ${filteredUsers.length} users`
+          : 'No users found';
+
+      document.getElementById('prevBtn').disabled = currentPage <= 1;
+      document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+    }
+
+    // Pagination handlers
+    window.prevPage = function() {
+      if (currentPage > 1) {
+        currentPage--;
+        renderUsers();
+      }
+    };
+
+    window.nextPage = function() {
+      const totalPages = Math.ceil(filteredUsers.length / pageSize);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderUsers();
+      }
+    };
+
+    // Search/filter handlers
+    window.handleSearch = function() {
+      clearTimeout(window.searchTimeout);
+      window.searchTimeout = setTimeout(filterAndRender, 300);
+    };
+
+    window.handleFilter = filterAndRender;
+
+    // Edit user
+    window.editUser = function(userId) {
+      const user = allUsers.find(u => u.id === userId);
+      if (!user) return;
+
+      editingUserId = userId;
+      document.getElementById('modalUserName').textContent = user.name;
+      document.getElementById('modalUserEmail').textContent = user.email;
+
+      // Set current plan
+      const currentPlanId = user.subscription?.plan_id || plans.find(p => p.slug === 'free')?.id;
+      document.getElementById('modalPlanSelect').value = currentPlanId;
+
+      // Set status
+      document.getElementById('modalStatusSelect').value = user.subscription?.status || 'active';
+
+      document.getElementById('editModal').classList.add('active');
+    };
+
+    // Save user changes
+    window.saveUserChanges = async function() {
+      if (!editingUserId) return;
+
+      const planId = document.getElementById('modalPlanSelect').value;
+      const status = document.getElementById('modalStatusSelect').value;
+
+      try {
+        // Check if subscription exists
+        const { data: existingSub } = await supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('user_id', editingUserId)
+          .single();
+
+        if (existingSub) {
+          // Update existing
+          const { error } = await supabase
+            .from('subscriptions')
+            .update({
+              plan_id: planId,
+              status: status,
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', editingUserId);
+
+          if (error) throw error;
+        } else {
+          // Create new
+          const { error } = await supabase
+            .from('subscriptions')
+            .insert({
+              user_id: editingUserId,
+              plan_id: planId,
+              status: status
+            });
+
+          if (error) throw error;
+        }
+
+        alert('User updated successfully');
+        closeModal();
+        await loadUsers();
+
+      } catch (err) {
+        console.error('Error updating user:', err);
+        alert('Failed to update user: ' + err.message);
+      }
+    };
+
+    // View gallery
+    window.viewGallery = function(slug) {
+      if (slug) {
+        window.open(`/pages/gallery/artist.html?slug=${slug}`, '_blank');
+      }
+    };
+
+    // Close modal
+    window.closeModal = function() {
+      document.getElementById('editModal').classList.remove('active');
+      editingUserId = null;
+    };
+
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    // Mobile sidebar
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    // Close modal on overlay click
+    document.getElementById('editModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Initialize
+    async function init() {
+      const user = await checkAdminAuth();
+      if (!user) return;
+
+      await loadPlans();
+      await loadUsers();
+    }
+
+    init();
+  </script>
 </body>
 </html>

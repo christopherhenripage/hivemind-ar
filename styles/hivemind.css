@@ -179,6 +179,14 @@ a {
   margin-bottom: 1.5rem;
 }
 
+/* SVG illustrations - show full artwork without cropping */
+.feature-card img[src$=".svg"] {
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  background: #0a0a0a;
+}
+
 .feature-card h3 {
   font-size: 1.25rem;
   margin-bottom: 1rem;
@@ -1262,6 +1270,11 @@ textarea.form-control {
   .features-grid,
   .steps-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* SVG illustrations - larger on mobile single column */
+  .feature-card img[src$=".svg"] {
+    max-width: 100%;
   }
 
   .sidebar {
