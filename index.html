@@ -137,7 +137,27 @@
       .hero-logo-bg {
         width: 400px;
         height: 400px;
-        opacity: 0.3;
+      }
+
+      .hero-logo-bg img {
+        filter: drop-shadow(0 0 50px rgba(201, 162, 39, 0.8))
+                drop-shadow(0 0 100px rgba(201, 162, 39, 0.6))
+                drop-shadow(0 0 150px rgba(201, 162, 39, 0.4));
+      }
+
+      @keyframes logoGlow {
+        0%, 100% {
+          opacity: 0.5;
+          filter: drop-shadow(0 0 50px rgba(201, 162, 39, 0.8))
+                  drop-shadow(0 0 100px rgba(201, 162, 39, 0.6))
+                  drop-shadow(0 0 150px rgba(201, 162, 39, 0.4));
+        }
+        50% {
+          opacity: 0.75;
+          filter: drop-shadow(0 0 70px rgba(201, 162, 39, 1))
+                  drop-shadow(0 0 140px rgba(201, 162, 39, 0.8))
+                  drop-shadow(0 0 210px rgba(201, 162, 39, 0.6));
+        }
       }
     }
 
