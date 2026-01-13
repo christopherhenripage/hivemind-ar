@@ -5,14 +5,238 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign In - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    /* Enhanced Auth Page Styling */
+    body {
+      background: radial-gradient(ellipse at top, #2d2d2d 0%, #1a1a1a 50%, #0a0a0a 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      padding-top: 70px;
+    }
+
+    /* Background Logo Watermark */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background-image: url('/images/brand/HMC_Logo_AR.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
+      animation: logoBreath 6s ease-in-out infinite;
+      filter: drop-shadow(0 0 40px rgba(220, 200, 170, 0.4))
+              drop-shadow(0 0 80px rgba(220, 200, 170, 0.3))
+              drop-shadow(0 0 120px rgba(220, 200, 170, 0.2))
+              sepia(0.3)
+              hue-rotate(20deg)
+              brightness(1.2);
+    }
+
+    @keyframes logoBreath {
+      0%, 100% {
+        opacity: 0.06;
+        transform: translate(-50%, -50%) scale(1);
+        filter: drop-shadow(0 0 30px rgba(220, 200, 170, 0.3))
+                drop-shadow(0 0 60px rgba(220, 200, 170, 0.2))
+                drop-shadow(0 0 100px rgba(220, 200, 170, 0.1));
+      }
+      50% {
+        opacity: 0.12;
+        transform: translate(-50%, -50%) scale(1.05);
+        filter: drop-shadow(0 0 50px rgba(220, 200, 170, 0.5))
+                drop-shadow(0 0 100px rgba(220, 200, 170, 0.4))
+                drop-shadow(0 0 150px rgba(220, 200, 170, 0.3));
+      }
+    }
+
+    .auth-container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Glassmorphism Auth Box */
+    .auth-box {
+      background: rgba(26, 26, 26, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      animation: scaleIn 0.6s ease-out;
+      color: var(--hm-white);
+    }
+
+    .auth-box h1 {
+      color: var(--hm-white);
+    }
+
+    .auth-box .subtitle {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .auth-logo {
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .auth-logo img {
+      transition: transform 0.3s ease;
+      animation: logoPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes logoPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.03);
+      }
+    }
+
+    .auth-logo img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Enhanced Form Inputs */
+    .auth-form .form-control {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--hm-white);
+      transition: all 0.3s ease;
+    }
+
+    .auth-form .form-control:focus {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(220, 200, 170, 0.7);
+      box-shadow: 0 0 0 3px rgba(220, 200, 170, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .auth-form .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .auth-form label {
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 500;
+    }
+
+    .form-hint {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Enhanced Button */
+    .btn-auth {
+      background: linear-gradient(135deg, rgba(220, 200, 170, 0.9) 0%, rgba(200, 180, 140, 0.9) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-auth::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-auth:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .btn-auth:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(220, 200, 170, 0.4);
+    }
+
+    .btn-auth:active {
+      transform: translateY(0);
+    }
+
+    .auth-links a {
+      color: rgba(220, 200, 170, 0.9);
+      transition: color 0.2s ease;
+    }
+
+    .auth-links a:hover {
+      color: rgba(220, 200, 170, 1);
+    }
+
+    .auth-links .signup-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 200, 170, 0.4);
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+      body::before,
+      .auth-box,
+      .auth-logo,
+      .auth-logo img {
+        animation: none !important;
+      }
+      .auth-form .form-control,
+      .btn-auth {
+        transition: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Navigation -->
+  <nav class="public-nav">
+    <a href="/" class="logo">
+      <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
+    </a>
+    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/pages/public/how-it-works.html">How It Works</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/contact.html">Contact</a>
+      <a href="/pages/auth/login.html" class="active">Sign Up / Login</a>
+    </div>
+  </nav>
+
   <div class="auth-container">
     <div class="auth-box">
       <div class="auth-logo">
-        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR" style="background: #1a1a1a; padding: 10px; border-radius: 8px;">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR" style="background: #1a1a1a; padding: 15px; border-radius: 8px; height: 80px;">
       </div>
-      <h1>Sign In</h1>
+      <h1>Login</h1>
       <p class="subtitle">Access your HiveMind gallery</p>
 
       <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
@@ -30,12 +254,15 @@
 
         <p class="error-text" id="generalError"></p>
 
-        <button type="submit" class="btn-auth" id="submitBtn">Sign In</button>
+        <button type="submit" class="btn-auth" id="submitBtn">Login</button>
       </form>
 
       <div class="auth-links">
         <p><a href="/pages/auth/forgot-password.html">Forgot Password?</a></p>
-        <p style="margin-top: 1rem;">No Account Yet? <a href="/pages/auth/signup.html">Register here</a></p>
+        <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(220, 200, 170, 0.15); border-radius: 12px; border: 1px solid rgba(220, 200, 170, 0.3); text-align: center;">
+          <p style="margin: 0; font-size: 1.05rem; color: rgba(255, 255, 255, 0.95);">No Account Yet?</p>
+          <a href="/pages/auth/signup.html" class="signup-cta" style="display: inline-block; margin-top: 0.75rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, rgba(220, 200, 170, 0.9) 0%, rgba(200, 180, 140, 0.9) 100%); color: #1a1a1a; font-weight: 600; border-radius: 8px; text-decoration: none; transition: all 0.3s ease;">Create Account</a>
+        </div>
       </div>
     </div>
   </div>
@@ -68,7 +295,7 @@
 
       // Disable button
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Signing in...';
+      submitBtn.textContent = 'Logging in...';
 
       try {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -79,7 +306,7 @@
         if (error) {
           generalError.textContent = error.message;
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Sign In';
+          submitBtn.textContent = 'Login';
           return;
         }
 
@@ -88,9 +315,22 @@
       } catch (err) {
         generalError.textContent = 'An error occurred. Please try again.';
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Sign In';
+        submitBtn.textContent = 'Login';
       }
     };
+
+    function toggleMobileNav() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('active');
+    }
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        const menu = document.getElementById('navLinks');
+        menu.classList.remove('active');
+      });
+    });
   </script>
 </body>
 </html>

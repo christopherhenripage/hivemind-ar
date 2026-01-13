@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="/styles/hivemind.css">
   <style>
     .about-hero {
-      background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 100%);
-      min-height: 60vh;
+      background: #000000;
+      min-height: 50vh;
       position: relative;
       overflow: hidden;
     }
@@ -19,7 +19,6 @@
       transform: translate(-50%, -50%);
       width: 550px;
       height: 550px;
-      opacity: 0.35;
       pointer-events: none;
       z-index: 0;
     }
@@ -27,6 +26,27 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
+      filter: drop-shadow(0 0 40px rgba(192, 192, 192, 0.6))
+              drop-shadow(0 0 80px rgba(192, 192, 192, 0.4))
+              drop-shadow(0 0 120px rgba(192, 192, 192, 0.2));
+      clip-path: inset(23% 0 0 0);
+      mix-blend-mode: lighten;
+      animation: logoGlowSilver 4s ease-in-out infinite;
+    }
+
+    @keyframes logoGlowSilver {
+      0%, 100% {
+        opacity: 0.3;
+        filter: drop-shadow(0 0 40px rgba(192, 192, 192, 0.6))
+                drop-shadow(0 0 80px rgba(192, 192, 192, 0.4))
+                drop-shadow(0 0 120px rgba(192, 192, 192, 0.2));
+      }
+      50% {
+        opacity: 0.6;
+        filter: drop-shadow(0 0 60px rgba(192, 192, 192, 0.8))
+                drop-shadow(0 0 120px rgba(192, 192, 192, 0.6))
+                drop-shadow(0 0 180px rgba(192, 192, 192, 0.4));
+      }
     }
     .about-hero .hero-content {
       position: relative;
@@ -37,6 +57,13 @@
         width: 350px;
         height: 350px;
         opacity: 0.25;
+      }
+    }
+
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-logo-bg {
+        animation: none !important;
       }
     }
     .about-content {
@@ -184,8 +211,19 @@
   <script>
     function toggleMobileNav() {
       const navLinks = document.getElementById('navLinks');
-      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+      navLinks.classList.toggle('active');
     }
+
+    // Close mobile menu when clicking a link
+    document.addEventListener('DOMContentLoaded', function() {
+      const navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          const menu = document.getElementById('navLinks');
+          menu.classList.remove('active');
+        });
+      });
+    });
   </script>
 </body>
 </html>
