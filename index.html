@@ -492,9 +492,7 @@
           const parallaxSpeed = 0.5;
           heroLogo.style.transform = `translate(-50%, calc(-50% + ${scrolled * parallaxSpeed}px))`;
 
-          // Optional: Fade out logo as you scroll
-          const opacity = Math.max(0.35 - (scrolled / heroHeight) * 0.35, 0);
-          heroLogo.style.opacity = opacity;
+          // Logo stays at full opacity - no fade out
         }
       });
     }
