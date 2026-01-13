@@ -502,6 +502,10 @@
 
       if (!heroLogo || !heroSection) return;
 
+      // Disable parallax on mobile devices
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) return;
+
       window.addEventListener('scroll', () => {
         const scrolled = window.pageYOffset;
         const heroHeight = heroSection.offsetHeight;
