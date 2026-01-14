@@ -9,11 +9,14 @@
     .about-hero {
       background: #000000;
       min-height: 50vh;
+      color: var(--hm-white);
       position: relative;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
+      padding: 2rem;
     }
     .hero-logo-bg {
       position: absolute;
@@ -54,8 +57,27 @@
     .about-hero .hero-content {
       position: relative;
       z-index: 1;
+      max-width: 100%;
+      width: 100%;
     }
+
+    .about-hero h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+      width: 100%;
+    }
+
     @media (max-width: 768px) {
+      .about-hero {
+        padding: 6rem 1.5rem 3rem;
+      }
+
+      .about-hero h1 {
+        font-size: 2rem;
+      }
+
       .hero-logo-bg {
         width: 350px;
         height: 350px;
