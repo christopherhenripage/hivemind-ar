@@ -1488,8 +1488,19 @@
   <script>
     function toggleMobileNav() {
       const navLinks = document.getElementById('navLinks');
-      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+      navLinks.classList.toggle('active');
     }
+
+    // Close mobile menu when clicking a link
+    document.addEventListener('DOMContentLoaded', function() {
+      const navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          const menu = document.getElementById('navLinks');
+          menu.classList.remove('active');
+        });
+      });
+    });
   </script>
 </body>
 </html>
