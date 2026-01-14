@@ -87,10 +87,368 @@
     }
 
     .artwork-card model-viewer::part(default-ar-button) {
-      background: var(--hm-dark);
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      opacity: 0;
+      pointer-events: all;
+      z-index: 1;
+    }
+
+    .artwork-card-wrapper {
+      position: relative;
+    }
+
+    .custom-ar-button {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+      z-index: 10;
+    }
+
+    .custom-ar-button:hover {
+      transform: translateX(-50%) scale(1.05);
+      box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+    }
+
+    .custom-ar-button:active {
+      transform: translateX(-50%) scale(0.98);
+    }
+
+    .custom-ar-button::before {
+      content: '📱';
+      font-size: 1.5rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .custom-ar-button.pulse {
+      animation: pulse 2s infinite;
+    }
+
+    /* Frame Selector - Compact inline version */
+    .frame-selector-compact {
+      position: absolute;
+      bottom: 85px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 0.5rem;
+      display: flex;
+      gap: 0.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      z-index: 5;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, bottom 0.3s;
+    }
+
+    .artwork-card-wrapper:hover .frame-selector-compact {
+      opacity: 1;
+      pointer-events: all;
+      bottom: 90px;
+    }
+
+    .frame-btn {
+      width: 40px;
+      height: 40px;
       border-radius: 8px;
-      padding: 8px 16px;
-      font-size: 12px;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #f5f5f5;
+      position: relative;
+    }
+
+    .frame-btn:hover {
+      transform: scale(1.1);
+      border-color: #999;
+    }
+
+    .frame-btn.selected {
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+    }
+
+    .frame-btn::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    }
+
+    .frame-btn.no-frame::before {
+      border: 2px dashed #ccc;
+      background: white;
+    }
+
+    .frame-btn.wood-frame::before {
+      border: 4px solid #8B4513;
+    }
+
+    .frame-btn.black-frame::before {
+      border: 4px solid #1a1a1a;
+    }
+
+    .frame-btn.gold-frame::before {
+      border: 4px solid #C9A227;
+      box-shadow: 0 0 5px rgba(201, 162, 39, 0.5);
+    }
+
+    .frame-btn.white-frame::before {
+      border: 4px solid #f8f8f8;
+    }
+
+    .frame-btn.silver-frame::before {
+      border: 4px solid #c0c0c0;
+    }
+
+    .frame-label {
+      position: absolute;
+      bottom: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      white-space: nowrap;
+      color: var(--hm-text-muted);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .frame-btn:hover .frame-label {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .frame-selector-compact {
+        opacity: 1;
+        pointer-events: all;
+        bottom: 85px;
+      }
+
+      .frame-btn {
+        width: 36px;
+        height: 36px;
+      }
+
+      .custom-ar-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Frame Picker Modal - DEPRECATED, using compact selector instead */
+    .frame-picker-overlay {
+      display: none !important;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .frame-picker-overlay.active {
+      display: flex;
+    }
+
+    .frame-picker-modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .frame-picker-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .frame-picker-header h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--hm-dark);
+    }
+
+    .frame-picker-header p {
+      font-size: 0.9rem;
+      color: var(--hm-text-muted);
+    }
+
+    .frame-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--hm-text-muted);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+
+    .frame-close-btn:hover {
+      background: var(--hm-light-gray);
+    }
+
+    .frame-options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .frame-option {
+      background: var(--hm-light-gray);
+      border: 3px solid transparent;
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .frame-option:hover {
+      border-color: var(--hm-text-light);
+      transform: translateY(-2px);
+    }
+
+    .frame-option.selected {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+
+    .frame-preview {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .frame-preview::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+      border-radius: 4px;
+    }
+
+    .frame-option.no-frame .frame-preview::before {
+      border: 2px dashed #ccc;
+      background: white;
+    }
+
+    .frame-option.wood-frame .frame-preview::before {
+      border: 8px solid #8B4513;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .frame-option.black-frame .frame-preview::before {
+      border: 8px solid #1a1a1a;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .frame-option.gold-frame .frame-preview::before {
+      border: 10px solid #C9A227;
+      box-shadow: inset 0 0 10px rgba(201, 162, 39, 0.5), 0 0 10px rgba(201, 162, 39, 0.3);
+    }
+
+    .frame-option.white-frame .frame-preview::before {
+      border: 8px solid #f8f8f8;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .frame-option.silver-frame .frame-preview::before {
+      border: 8px solid #c0c0c0;
+      box-shadow: inset 0 0 10px rgba(192, 192, 192, 0.5);
+    }
+
+    .frame-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--hm-dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .frame-description {
+      font-size: 0.75rem;
+      color: var(--hm-text-muted);
+    }
+
+    .frame-launch-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .frame-launch-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .frame-launch-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+      .frame-picker-modal {
+        padding: 1.5rem;
+      }
+
+      .frame-options-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .artwork-info {
@@ -213,6 +571,11 @@
         height: 280px;
       }
 
+      .custom-ar-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
       .filter-btn {
         padding: 0.4rem 1rem;
         font-size: 0.85rem;
@@ -265,6 +628,60 @@
     <a href="/pages/auth/signup.html" class="btn">Start Your Gallery</a>
   </section>
 
+  <!-- Frame Picker Modal -->
+  <div class="frame-picker-overlay" id="framePickerOverlay" onclick="closeFramePicker()">
+    <div class="frame-picker-modal" onclick="event.stopPropagation()">
+      <button class="frame-close-btn" onclick="closeFramePicker()">&times;</button>
+
+      <div class="frame-picker-header">
+        <h3>Choose Your Frame</h3>
+        <p>Select a frame style to see how this artwork looks in your space</p>
+      </div>
+
+      <div class="frame-options-grid">
+        <div class="frame-option no-frame selected" data-frame="none" onclick="selectFrame(this, 'none')">
+          <div class="frame-preview"></div>
+          <div class="frame-name">No Frame</div>
+          <div class="frame-description">Frameless</div>
+        </div>
+
+        <div class="frame-option wood-frame" data-frame="wood" onclick="selectFrame(this, 'wood')">
+          <div class="frame-preview"></div>
+          <div class="frame-name">Classic Wood</div>
+          <div class="frame-description">Warm oak finish</div>
+        </div>
+
+        <div class="frame-option black-frame" data-frame="black" onclick="selectFrame(this, 'black')">
+          <div class="frame-preview"></div>
+          <div class="frame-name">Modern Black</div>
+          <div class="frame-description">Sleek matte</div>
+        </div>
+
+        <div class="frame-option gold-frame" data-frame="gold" onclick="selectFrame(this, 'gold')">
+          <div class="frame-preview"></div>
+          <div class="frame-name">Ornate Gold</div>
+          <div class="frame-description">Elegant accent</div>
+        </div>
+
+        <div class="frame-option white-frame" data-frame="white" onclick="selectFrame(this, 'white')">
+          <div class="frame-preview"></div>
+          <div class="frame-name">Gallery White</div>
+          <div class="frame-description">Clean & minimal</div>
+        </div>
+
+        <div class="frame-option silver-frame" data-frame="silver" onclick="selectFrame(this, 'silver')">
+          <div class="frame-preview"></div>
+          <div class="frame-name">Brushed Silver</div>
+          <div class="frame-description">Contemporary</div>
+        </div>
+      </div>
+
+      <button class="frame-launch-btn" onclick="launchARWithFrame()">
+        Launch AR with Selected Frame
+      </button>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="public-footer">
     <div class="footer-links">
@@ -277,6 +694,440 @@
   </footer>
 
   <script type="module">
+    // Simple 2D Frame Generator using Canvas
+    class SimpleFrameGenerator {
+      constructor() {
+        this.frameCache = {};
+      }
+
+      // Add 2D frame to an image
+      async addFrameToImage(imageUrl, frameStyle) {
+        const cacheKey = `${imageUrl}_${frameStyle}`;
+
+        // Return cached version if available
+        if (this.frameCache[cacheKey]) {
+          return this.frameCache[cacheKey];
+        }
+
+        // Try multiple methods to load the image
+        return this.loadImageWithFallback(imageUrl).then(img => {
+          try {
+            // Create canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Calculate frame thickness (8% of smallest dimension)
+            const frameThickness = Math.min(img.width, img.height) * 0.08;
+
+            // Set canvas size (image + frame)
+            canvas.width = img.width + (frameThickness * 2);
+            canvas.height = img.height + (frameThickness * 2);
+
+            // Get frame style
+            const style = this.getFrameStyle(frameStyle);
+
+            // Draw frame background
+            ctx.fillStyle = style.color;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add frame texture/pattern if specified
+            if (style.pattern) {
+              this.addFramePattern(ctx, canvas.width, canvas.height, style);
+            }
+
+            // Draw inner shadow for depth
+            if (style.shadow) {
+              ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+              ctx.shadowBlur = frameThickness * 0.3;
+              ctx.shadowOffsetX = 0;
+              ctx.shadowOffsetY = 0;
+            }
+
+            // Draw the artwork image in the center
+            ctx.drawImage(img, frameThickness, frameThickness, img.width, img.height);
+
+            // Add inner bevel effect
+            this.addBevelEffect(ctx, frameThickness, canvas.width, canvas.height, style);
+
+            // Convert to data URL
+            const framedImageUrl = canvas.toDataURL('image/png');
+
+            // Cache it
+            this.frameCache[cacheKey] = framedImageUrl;
+
+            return framedImageUrl;
+          } catch (err) {
+            throw new Error(`Canvas processing failed: ${err.message}`);
+          }
+        });
+      }
+
+      // Load image with multiple fallback methods
+      async loadImageWithFallback(imageUrl) {
+        console.log('Attempting to load image:', imageUrl);
+
+        // Method 1: Try fetch with blob (works for same-origin and CORS-enabled)
+        try {
+          console.log('Method 1: Trying fetch with blob...');
+          const response = await fetch(imageUrl);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+
+          const img = await new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => {
+              URL.revokeObjectURL(blobUrl);
+              resolve(image);
+            };
+            image.onerror = () => {
+              URL.revokeObjectURL(blobUrl);
+              reject(new Error('Image load failed'));
+            };
+            image.src = blobUrl;
+          });
+
+          console.log('Method 1 succeeded');
+          return img;
+        } catch (err) {
+          console.log('Method 1 failed:', err.message);
+        }
+
+        // Method 2: Try direct load with crossOrigin (works if CORS headers present)
+        try {
+          console.log('Method 2: Trying direct load with crossOrigin...');
+          const img = await new Promise((resolve, reject) => {
+            const image = new Image();
+            image.crossOrigin = 'anonymous';
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error('Image load failed'));
+            image.src = imageUrl;
+          });
+
+          console.log('Method 2 succeeded');
+          return img;
+        } catch (err) {
+          console.log('Method 2 failed:', err.message);
+        }
+
+        // Method 3: Try without crossOrigin (tainted canvas, but might work for display)
+        try {
+          console.log('Method 3: Trying direct load without crossOrigin...');
+          const img = await new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error('Image load failed'));
+            image.src = imageUrl;
+          });
+
+          console.log('Method 3 succeeded (canvas will be tainted)');
+          return img;
+        } catch (err) {
+          console.log('Method 3 failed:', err.message);
+        }
+
+        // Method 4: Create a placeholder canvas as fallback
+        console.log('Method 4: Creating placeholder canvas...');
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 800;
+        const ctx = canvas.getContext('2d');
+
+        // Create a gradient background
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#667eea');
+        gradient.addColorStop(1, '#764ba2');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Add text
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 48px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('HiveMind AR', canvas.width / 2, canvas.height / 2 - 30);
+        ctx.font = '24px sans-serif';
+        ctx.fillText('Artwork Preview', canvas.width / 2, canvas.height / 2 + 30);
+
+        // Convert canvas to image
+        return new Promise((resolve) => {
+          const dataUrl = canvas.toDataURL('image/png');
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.src = dataUrl;
+        });
+      }
+
+      // Get frame style properties
+      getFrameStyle(style) {
+        const styles = {
+          wood: {
+            color: '#8B4513',
+            pattern: 'wood',
+            shadow: true
+          },
+          black: {
+            color: '#1a1a1a',
+            pattern: null,
+            shadow: true
+          },
+          gold: {
+            color: '#C9A227',
+            pattern: 'metallic',
+            shadow: true
+          },
+          white: {
+            color: '#f8f8f8',
+            pattern: null,
+            shadow: true
+          },
+          silver: {
+            color: '#c0c0c0',
+            pattern: 'metallic',
+            shadow: true
+          }
+        };
+
+        return styles[style] || { color: '#808080', pattern: null, shadow: false };
+      }
+
+      // Add pattern to frame
+      addFramePattern(ctx, width, height, style) {
+        if (style.pattern === 'wood') {
+          // Add wood grain texture
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+          ctx.lineWidth = 2;
+          for (let i = 0; i < width; i += 20) {
+            ctx.beginPath();
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i + Math.random() * 10, height);
+            ctx.stroke();
+          }
+        } else if (style.pattern === 'metallic') {
+          // Add metallic shine
+          const gradient = ctx.createLinearGradient(0, 0, width, height);
+          gradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+          gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+          gradient.addColorStop(1, 'rgba(255, 255, 255, 0.1)');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, width, height);
+        }
+      }
+
+      // Add bevel effect for depth
+      addBevelEffect(ctx, frameThickness, width, height, style) {
+        const bevelSize = frameThickness * 0.2;
+
+        // Highlight (top-left)
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.lineWidth = bevelSize;
+        ctx.strokeRect(bevelSize / 2, bevelSize / 2, width - bevelSize, height - bevelSize);
+
+        // Shadow (bottom-right)
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.lineWidth = bevelSize;
+        ctx.strokeRect(
+          frameThickness - bevelSize / 2,
+          frameThickness - bevelSize / 2,
+          width - frameThickness * 2 + bevelSize,
+          height - frameThickness * 2 + bevelSize
+        );
+      }
+
+      // Generate a simple GLB file from a framed image for AR display
+      async generateGLBFromImage(framedImageDataUrl, widthInches, heightInches) {
+        // Convert inches to meters for AR (1 inch = 0.0254 meters)
+        const widthMeters = widthInches * 0.0254;
+        const heightMeters = heightInches * 0.0254;
+
+        // Create a simple plane geometry with the image as texture
+        // This uses a minimal glTF 2.0 structure
+        const imageBase64 = framedImageDataUrl.split(',')[1];
+        const imageBytes = atob(imageBase64);
+        const imageBuffer = new Uint8Array(imageBytes.length);
+        for (let i = 0; i < imageBytes.length; i++) {
+          imageBuffer[i] = imageBytes.charCodeAt(i);
+        }
+
+        // Create a simple plane geometry
+        const positions = new Float32Array([
+          -widthMeters/2, -heightMeters/2, 0,
+          widthMeters/2, -heightMeters/2, 0,
+          widthMeters/2, heightMeters/2, 0,
+          -widthMeters/2, heightMeters/2, 0
+        ]);
+
+        const normals = new Float32Array([
+          0, 0, 1,
+          0, 0, 1,
+          0, 0, 1,
+          0, 0, 1
+        ]);
+
+        const texCoords = new Float32Array([
+          0, 0,
+          1, 0,
+          1, 1,
+          0, 1
+        ]);
+
+        const indices = new Uint16Array([
+          0, 1, 2,
+          0, 2, 3
+        ]);
+
+        // Combine all buffers
+        const positionsBytes = new Uint8Array(positions.buffer);
+        const normalsBytes = new Uint8Array(normals.buffer);
+        const texCoordsBytes = new Uint8Array(texCoords.buffer);
+        const indicesBytes = new Uint8Array(indices.buffer);
+
+        // Calculate buffer offsets
+        let offset = 0;
+        const positionsOffset = offset;
+        offset += positionsBytes.length;
+
+        // Align to 4 bytes
+        while (offset % 4 !== 0) offset++;
+        const normalsOffset = offset;
+        offset += normalsBytes.length;
+
+        while (offset % 4 !== 0) offset++;
+        const texCoordsOffset = offset;
+        offset += texCoordsBytes.length;
+
+        while (offset % 4 !== 0) offset++;
+        const indicesOffset = offset;
+        offset += indicesBytes.length;
+
+        while (offset % 4 !== 0) offset++;
+        const imageOffset = offset;
+
+        const totalBufferSize = imageOffset + imageBuffer.length;
+
+        // Create combined buffer
+        const combinedBuffer = new Uint8Array(totalBufferSize);
+        combinedBuffer.set(positionsBytes, positionsOffset);
+        combinedBuffer.set(normalsBytes, normalsOffset);
+        combinedBuffer.set(texCoordsBytes, texCoordsOffset);
+        combinedBuffer.set(indicesBytes, indicesOffset);
+        combinedBuffer.set(imageBuffer, imageOffset);
+
+        // Create glTF JSON
+        const gltf = {
+          asset: { version: "2.0" },
+          scene: 0,
+          scenes: [{ nodes: [0] }],
+          nodes: [{ mesh: 0 }],
+          meshes: [{
+            primitives: [{
+              attributes: {
+                POSITION: 0,
+                NORMAL: 1,
+                TEXCOORD_0: 2
+              },
+              indices: 3,
+              material: 0
+            }]
+          }],
+          materials: [{
+            pbrMetallicRoughness: {
+              baseColorTexture: { index: 0 },
+              metallicFactor: 0,
+              roughnessFactor: 1
+            },
+            doubleSided: true
+          }],
+          textures: [{ source: 0 }],
+          images: [{
+            mimeType: "image/png",
+            bufferView: 4
+          }],
+          accessors: [
+            {
+              bufferView: 0,
+              componentType: 5126,
+              count: 4,
+              type: "VEC3",
+              max: [widthMeters/2, heightMeters/2, 0],
+              min: [-widthMeters/2, -heightMeters/2, 0]
+            },
+            {
+              bufferView: 1,
+              componentType: 5126,
+              count: 4,
+              type: "VEC3"
+            },
+            {
+              bufferView: 2,
+              componentType: 5126,
+              count: 4,
+              type: "VEC2"
+            },
+            {
+              bufferView: 3,
+              componentType: 5123,
+              count: 6,
+              type: "SCALAR"
+            }
+          ],
+          bufferViews: [
+            { buffer: 0, byteOffset: positionsOffset, byteLength: positionsBytes.length },
+            { buffer: 0, byteOffset: normalsOffset, byteLength: normalsBytes.length },
+            { buffer: 0, byteOffset: texCoordsOffset, byteLength: texCoordsBytes.length },
+            { buffer: 0, byteOffset: indicesOffset, byteLength: indicesBytes.length },
+            { buffer: 0, byteOffset: imageOffset, byteLength: imageBuffer.length }
+          ],
+          buffers: [{ byteLength: totalBufferSize }]
+        };
+
+        // Create GLB file
+        const gltfJson = JSON.stringify(gltf);
+        const gltfJsonBytes = new TextEncoder().encode(gltfJson);
+
+        // Pad JSON to 4-byte alignment
+        const gltfJsonPadded = new Uint8Array(Math.ceil(gltfJsonBytes.length / 4) * 4);
+        gltfJsonPadded.set(gltfJsonBytes);
+        for (let i = gltfJsonBytes.length; i < gltfJsonPadded.length; i++) {
+          gltfJsonPadded[i] = 0x20; // Space character for padding
+        }
+
+        // GLB header
+        const headerSize = 12;
+        const jsonChunkHeader = 8;
+        const binChunkHeader = 8;
+        const totalSize = headerSize + jsonChunkHeader + gltfJsonPadded.length + binChunkHeader + combinedBuffer.length;
+
+        const glb = new Uint8Array(totalSize);
+        const view = new DataView(glb.buffer);
+
+        // GLB header
+        view.setUint32(0, 0x46546C67, true); // 'glTF' magic
+        view.setUint32(4, 2, true); // version
+        view.setUint32(8, totalSize, true); // total length
+
+        // JSON chunk header
+        let offset2 = 12;
+        view.setUint32(offset2, gltfJsonPadded.length, true); // chunk length
+        view.setUint32(offset2 + 4, 0x4E4F534A, true); // 'JSON' type
+        glb.set(gltfJsonPadded, offset2 + 8);
+
+        // BIN chunk header
+        offset2 += 8 + gltfJsonPadded.length;
+        view.setUint32(offset2, combinedBuffer.length, true); // chunk length
+        view.setUint32(offset2 + 4, 0x004E4942, true); // 'BIN\0' type
+        glb.set(combinedBuffer, offset2 + 8);
+
+        // Create blob and object URL
+        const blob = new Blob([glb], { type: 'model/gltf-binary' });
+        return URL.createObjectURL(blob);
+      }
+    }
+
+    // Initialize frame generator
+    const frameGenerator = new SimpleFrameGenerator();
+    window.frameGenerator = frameGenerator;
+
     // Sample artwork data (will be replaced with Supabase data in production)
     const sampleArtworks = [
       {
@@ -285,10 +1136,13 @@
         artist: 'Demo Artist',
         artistSlug: 'demo-artist',
         dimensions: '24" x 24"',
+        widthInches: 24,
+        heightInches: 24,
         price: '$850',
         category: 'digital',
         glbUrl: '/models/sample-artwork.glb',
-        usdzUrl: null
+        usdzUrl: null,
+        posterUrl: '/images/brand/HMC_Logo_AR.png'
       },
       {
         id: '2',
@@ -296,10 +1150,13 @@
         artist: 'Demo Artist',
         artistSlug: 'demo-artist',
         dimensions: '18" x 18"',
+        widthInches: 18,
+        heightInches: 18,
         price: '$650',
         category: 'digital',
         glbUrl: '/models/hivemind-logo.glb',
-        usdzUrl: null
+        usdzUrl: null,
+        posterUrl: '/images/brand/HMC_Logo_04.png'
       },
       {
         id: '3',
@@ -307,10 +1164,13 @@
         artist: 'Space Sculptor',
         artistSlug: 'space-sculptor',
         dimensions: '3D Sculpture',
+        widthInches: null,
+        heightInches: null,
         price: '$2,400',
         category: 'sculpture',
         glbUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
-        usdzUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz'
+        usdzUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
+        posterUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.webp'
       }
     ];
 
@@ -318,22 +1178,39 @@
     function renderArtworkCard(artwork) {
       const usdzAttr = artwork.usdzUrl ? `ios-src="${artwork.usdzUrl}"` : '';
       const autoRotate = artwork.category === 'sculpture' ? 'auto-rotate' : '';
+      const posterUrl = artwork.posterUrl || 'https://via.placeholder.com/400x400/667eea/ffffff?text=Tap+to+View+AR';
 
       return `
         <div class="artwork-card" data-category="${artwork.category}">
-          <model-viewer
-            src="${artwork.glbUrl}"
-            ${usdzAttr}
-            alt="${artwork.title}"
-            ar
-            ar-modes="webxr scene-viewer quick-look"
-            ar-scale="fixed"
-            camera-controls
-            touch-action="pan-y"
-            shadow-intensity="0.3"
-            exposure="1.1"
-            ${autoRotate}>
-          </model-viewer>
+          <div class="artwork-card-wrapper" data-artwork-id="${artwork.id}" data-width-inches="${artwork.widthInches || 24}" data-height-inches="${artwork.heightInches || 24}">
+            <model-viewer
+              src="${artwork.glbUrl}"
+              ${usdzAttr}
+              poster="${posterUrl}"
+              alt="${artwork.title}"
+              ar
+              ar-modes="webxr scene-viewer quick-look"
+              ar-scale="fixed"
+              camera-controls
+              touch-action="pan-y"
+              shadow-intensity="0.3"
+              exposure="1.1"
+              loading="lazy"
+              data-base-glb="${artwork.glbUrl}"
+              ${autoRotate}>
+            </model-viewer>
+            <div class="frame-selector-compact">
+              <button class="frame-btn no-frame selected" data-frame="none" onclick="selectFrameCompact(this, '${artwork.id}', 'none')" title="No Frame"></button>
+              <button class="frame-btn wood-frame" data-frame="wood" onclick="selectFrameCompact(this, '${artwork.id}', 'wood')" title="Wood Frame"></button>
+              <button class="frame-btn black-frame" data-frame="black" onclick="selectFrameCompact(this, '${artwork.id}', 'black')" title="Black Frame"></button>
+              <button class="frame-btn gold-frame" data-frame="gold" onclick="selectFrameCompact(this, '${artwork.id}', 'gold')" title="Gold Frame"></button>
+              <button class="frame-btn white-frame" data-frame="white" onclick="selectFrameCompact(this, '${artwork.id}', 'white')" title="White Frame"></button>
+              <button class="frame-btn silver-frame" data-frame="silver" onclick="selectFrameCompact(this, '${artwork.id}', 'silver')" title="Silver Frame"></button>
+            </div>
+            <button class="custom-ar-button pulse" onclick="activateAR(this)" id="custom-ar-btn">
+              View in AR
+            </button>
+          </div>
           <div class="artwork-info">
             <span class="ar-badge">AR Ready</span>
             <h3><a href="/pages/gallery/artwork.html?id=${artwork.id}">${artwork.title}</a></h3>
@@ -407,7 +1284,8 @@
             price: a.price_usd ? `$${a.price_usd.toLocaleString()}` : 'Price on request',
             category: a.category || 'paintings',
             glbUrl: a.glb_url,
-            usdzUrl: a.usdz_url
+            usdzUrl: a.usdz_url,
+            posterUrl: a.thumbnail_url || a.image_url || null
           }));
 
           grid.innerHTML = formattedArtworks.map(renderArtworkCard).join('') + renderPlaceholderCard();
@@ -445,6 +1323,216 @@
         });
       });
     }
+
+    // Frame selection state - track per artwork
+    const artworkFrameSelections = {};
+    const originalPosters = {}; // Store original poster URLs
+    const originalGLBs = {}; // Store original GLB URLs
+    const framedGLBs = {}; // Store generated framed GLB URLs
+
+    // Select frame from compact selector
+    window.selectFrameCompact = async function(button, artworkId, frameType) {
+      // Remove selected class from all frame buttons in this artwork card
+      const wrapper = button.closest('.artwork-card-wrapper');
+      wrapper.querySelectorAll('.frame-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+
+      // Add selected class to clicked button
+      button.classList.add('selected');
+
+      // Store the selection for this artwork
+      artworkFrameSelections[artworkId] = frameType;
+
+      const modelViewer = wrapper.querySelector('model-viewer');
+
+      // Store original poster and GLB if not already stored
+      if (!originalPosters[artworkId]) {
+        originalPosters[artworkId] = modelViewer.getAttribute('poster');
+      }
+      if (!originalGLBs[artworkId]) {
+        originalGLBs[artworkId] = modelViewer.getAttribute('src');
+      }
+
+      if (frameType === 'none') {
+        // Reset to original poster and GLB
+        modelViewer.setAttribute('poster', originalPosters[artworkId]);
+        modelViewer.setAttribute('src', originalGLBs[artworkId]);
+        console.log('Frame removed, showing original artwork');
+      } else {
+        try {
+          // Show loading state
+          button.style.opacity = '0.5';
+          console.log(`Starting frame generation: ${frameType} for artwork ${artworkId}`);
+
+          // Try to get the image from the model-viewer's internal poster if available
+          let imageSource = originalPosters[artworkId];
+
+          // Check if model-viewer has already loaded the poster internally
+          const posterSlot = modelViewer.shadowRoot?.querySelector('.poster');
+          if (posterSlot && posterSlot.complete) {
+            console.log('Using loaded poster from model-viewer');
+            // We'll still use the URL but this confirms it's loaded
+          }
+
+          console.log('Original poster URL:', imageSource);
+
+          const framedImageUrl = await window.frameGenerator.addFrameToImage(imageSource, frameType);
+          console.log('Framed poster image generated successfully');
+
+          // Update model-viewer poster
+          modelViewer.setAttribute('poster', framedImageUrl);
+
+          // Get artwork dimensions
+          const widthInches = parseFloat(wrapper.getAttribute('data-width-inches')) || 24;
+          const heightInches = parseFloat(wrapper.getAttribute('data-height-inches')) || 24;
+
+          console.log(`Generating framed GLB for ${widthInches}" x ${heightInches}" artwork`);
+
+          // Generate framed GLB for AR
+          const cacheKey = `${artworkId}_${frameType}`;
+          if (!framedGLBs[cacheKey]) {
+            const framedGLBUrl = await window.frameGenerator.generateGLBFromImage(framedImageUrl, widthInches, heightInches);
+            framedGLBs[cacheKey] = framedGLBUrl;
+            console.log('Framed GLB generated successfully');
+          }
+
+          // Update model-viewer src to use framed GLB
+          modelViewer.setAttribute('src', framedGLBs[cacheKey]);
+
+          // Restore button
+          button.style.opacity = '1';
+
+          // Show success notification
+          const notification = document.createElement('div');
+          notification.textContent = `${frameType.charAt(0).toUpperCase() + frameType.slice(1)} frame applied!`;
+          notification.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(102, 126, 234, 0.95); color: white; padding: 12px 24px; border-radius: 8px; z-index: 10000; font-size: 14px;';
+          document.body.appendChild(notification);
+          setTimeout(() => notification.remove(), 2000);
+
+          console.log(`${frameType} frame applied to artwork ${artworkId}`);
+        } catch (err) {
+          console.error('Frame generation failed:', err);
+          console.error('Error details:', err.message, err.stack);
+          button.style.opacity = '1';
+
+          // Show error notification
+          const notification = document.createElement('div');
+          notification.textContent = `Frame generation failed: ${err.message}`;
+          notification.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(220, 53, 69, 0.95); color: white; padding: 12px 24px; border-radius: 8px; z-index: 10000; font-size: 14px;';
+          document.body.appendChild(notification);
+          setTimeout(() => notification.remove(), 3000);
+
+          // Fallback to no frame
+          artworkFrameSelections[artworkId] = 'none';
+          button.classList.remove('selected');
+          wrapper.querySelector('.frame-btn.no-frame').classList.add('selected');
+          modelViewer.setAttribute('poster', originalPosters[artworkId]);
+          modelViewer.setAttribute('src', originalGLBs[artworkId]);
+        }
+      }
+
+      // Stop event propagation
+      event?.stopPropagation();
+      return false;
+    };
+
+    // Activate AR function
+    window.activateAR = function(button, event) {
+      const wrapper = button.closest('.artwork-card-wrapper');
+      const modelViewer = wrapper.querySelector('model-viewer');
+      const artworkId = wrapper.getAttribute('data-artwork-id');
+
+      if (modelViewer && modelViewer.tagName === 'MODEL-VIEWER') {
+        const selectedFrame = artworkFrameSelections[artworkId] || 'none';
+        console.log('Launching AR with selected frame:', selectedFrame);
+
+        // Launch AR directly
+        try {
+          modelViewer.activateAR();
+        } catch(err) {
+          console.error('AR activation failed:', err);
+          alert('AR activation failed. Please try again.');
+        }
+
+        return false;
+      }
+    };
+
+    // Select frame
+    window.selectFrame = function(element, frameType) {
+      // Remove selected class from all options
+      document.querySelectorAll('.frame-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+
+      // Add selected class to clicked option
+      element.classList.add('selected');
+      selectedFrameType = frameType;
+    };
+
+    // Close frame picker
+    window.closeFramePicker = function() {
+      document.getElementById('framePickerOverlay').classList.remove('active');
+      document.body.style.overflow = ''; // Restore scroll
+      currentModelViewer = null;
+    };
+
+    // Launch AR with selected frame
+    window.launchARWithFrame = function() {
+      if (!currentModelViewer) return;
+
+      // Close the modal
+      closeFramePicker();
+
+      // Get the base GLB URL
+      const baseGlbUrl = currentModelViewer.getAttribute('data-base-glb') || currentModelViewer.getAttribute('src');
+
+      // Store base URL if not already stored
+      if (!currentModelViewer.getAttribute('data-base-glb')) {
+        currentModelViewer.setAttribute('data-base-glb', baseGlbUrl);
+      }
+
+      // For now, always use original GLB until framed versions are created
+      // TODO: Once framed GLBs exist, uncomment the logic below
+      /*
+      let framedGlbUrl = baseGlbUrl;
+      if (selectedFrameType !== 'none') {
+        framedGlbUrl = baseGlbUrl.replace('.glb', `_frame_${selectedFrameType}.glb`);
+        currentModelViewer.setAttribute('src', framedGlbUrl);
+      }
+      */
+
+      // Show notification about frame selection
+      if (selectedFrameType !== 'none') {
+        const notification = document.createElement('div');
+        notification.textContent = `${selectedFrameType.charAt(0).toUpperCase() + selectedFrameType.slice(1)} frame selected - launching AR`;
+        notification.style.cssText = 'position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(102, 126, 234, 0.95); color: white; padding: 12px 24px; border-radius: 8px; z-index: 10000; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 2500);
+      }
+
+      // IMPORTANT: Launch AR by clicking the invisible default AR button
+      // This preserves the user gesture and ensures compatibility
+      try {
+        // Find and click the model-viewer's default AR button (which is invisible but functional)
+        const arButton = currentModelViewer.shadowRoot?.querySelector('[slot="ar-button"]');
+        if (arButton) {
+          arButton.click();
+        } else {
+          // Fallback to activateAR method
+          if (typeof currentModelViewer.activateAR === 'function') {
+            currentModelViewer.activateAR();
+          } else {
+            console.error('No AR activation method available');
+            alert('AR could not be activated. Please refresh and try again.');
+          }
+        }
+      } catch (err) {
+        console.error('AR activation error:', err);
+        alert('AR is not available on this device. Please use iOS Safari or Android Chrome.');
+      }
+    };
 
     // Initialize
     loadArtworks();
