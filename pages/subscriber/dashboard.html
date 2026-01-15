@@ -73,7 +73,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
             <div>
               <h3 style="margin-bottom: 0.25rem;"><span id="planName">Free</span> Plan</h3>
-              <p style="opacity: 0.8; font-size: 0.9rem;"><span id="artworkUsage">0</span> of <span id="artworkLimit">3</span> artworks used</p>
+              <p style="opacity: 0.8; font-size: 0.9rem;"><span id="artworkUsage">0</span> of <span id="artworkLimit">5</span> artworks used</p>
             </div>
             <a href="/pages/subscriber/upgrade.html" class="btn" style="background: white; color: #1a1a1a;" id="upgradeBtn">Upgrade Plan</a>
           </div>
@@ -159,17 +159,69 @@
       return user;
     }
 
+    // Create missing profile and subscription (fallback if trigger failed)
+    async function ensureProfileExists(user) {
+      // Check if profile exists
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError && profileError.code === 'PGRST116') {
+        // Profile doesn't exist - create it
+        console.log('Creating missing profile for user:', user.id);
+        const { error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            email: user.email,
+            full_name: user.user_metadata?.full_name || '',
+            created_at: new Date().toISOString()
+          });
+
+        if (createError) {
+          console.error('Failed to create profile:', createError);
+        }
+
+        // Also create subscription
+        const { data: freePlan } = await supabase
+          .from('subscription_plans')
+          .select('id')
+          .eq('slug', 'free')
+          .single();
+
+        if (freePlan) {
+          await supabase
+            .from('subscriptions')
+            .insert({
+              user_id: user.id,
+              plan_id: freePlan.id,
+              status: 'active',
+              created_at: new Date().toISOString()
+            });
+        }
+
+        // Fetch the newly created profile
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        return newProfile;
+      }
+
+      return profile;
+    }
+
     // Load dashboard data
     async function loadDashboard() {
       currentUser = await checkAuth();
       if (!currentUser) return;
 
-      // Get profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', currentUser.id)
-        .single();
+      // Get profile (with auto-creation fallback)
+      const profile = await ensureProfileExists(currentUser);
 
       userProfile = profile;
 

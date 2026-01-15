@@ -285,25 +285,86 @@
       return user;
     }
 
+    // Create missing profile and subscription (fallback if trigger failed)
+    async function ensureProfileExists(user) {
+      // Check if profile exists
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError && profileError.code === 'PGRST116') {
+        // Profile doesn't exist - create it
+        console.log('Creating missing profile for user:', user.id);
+        const { error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            email: user.email,
+            full_name: user.user_metadata?.full_name || '',
+            created_at: new Date().toISOString()
+          });
+
+        if (createError) {
+          console.error('Failed to create profile:', createError);
+          return null;
+        }
+
+        // Also create subscription
+        const { data: freePlan } = await supabase
+          .from('subscription_plans')
+          .select('id')
+          .eq('slug', 'free')
+          .single();
+
+        if (freePlan) {
+          await supabase
+            .from('subscriptions')
+            .insert({
+              user_id: user.id,
+              plan_id: freePlan.id,
+              status: 'active',
+              created_at: new Date().toISOString()
+            });
+        }
+
+        // Fetch the newly created profile
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        return newProfile;
+      }
+
+      return profile;
+    }
+
     // Load profile
     async function loadProfile() {
       currentUser = await checkAuth();
       if (!currentUser) return;
 
-      // Get profile and subscription in parallel
-      const [profileResult, subscriptionResult] = await Promise.all([
-        supabase.from('profiles').select('*').eq('id', currentUser.id).single(),
-        supabase.from('subscriptions').select('*, subscription_plans(*)').eq('user_id', currentUser.id).single()
-      ]);
+      // Get profile with auto-creation fallback
+      const profile = await ensureProfileExists(currentUser);
 
-      if (profileResult.error) {
-        console.error('Error loading profile:', profileResult.error);
-        document.getElementById('galleryName').textContent = 'Error loading profile';
+      if (!profile) {
+        console.error('Could not load or create profile');
+        document.getElementById('galleryName').textContent = 'Error loading profile. Please refresh.';
         return;
       }
 
-      currentProfile = profileResult.data;
-      currentPlan = subscriptionResult.data?.subscription_plans || { slug: 'free', social_links: false };
+      // Get subscription
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('*, subscription_plans(*)')
+        .eq('user_id', currentUser.id)
+        .single();
+
+      currentProfile = profile;
+      currentPlan = subscription?.subscription_plans || { slug: 'free', social_links: false };
 
       // Gate social links by plan
       const canUseSocialLinks = currentPlan.social_links || currentPlan.slug === 'artist' || currentPlan.slug === 'professional';
@@ -313,43 +374,42 @@
       }
 
       // Update UI
-      const profile = currentProfile;
-      document.getElementById('galleryName').textContent = profile.gallery_name || 'Your Gallery';
-      document.getElementById('fullName').textContent = profile.full_name || '-';
-      document.getElementById('location').textContent = profile.location || '';
+      document.getElementById('galleryName').textContent = currentProfile.gallery_name || 'Your Gallery';
+      document.getElementById('fullName').textContent = currentProfile.full_name || '-';
+      document.getElementById('location').textContent = currentProfile.location || '';
       document.getElementById('email').textContent = currentUser.email;
-      document.getElementById('phone').textContent = profile.phone || '-';
-      document.getElementById('website').textContent = profile.website || '-';
-      document.getElementById('bio').textContent = profile.bio || '-';
+      document.getElementById('phone').textContent = currentProfile.phone || '-';
+      document.getElementById('website').textContent = currentProfile.website || '-';
+      document.getElementById('bio').textContent = currentProfile.bio || '-';
 
       // Avatar
-      if (profile.avatar_url) {
-        document.getElementById('avatarImage').src = profile.avatar_url;
+      if (currentProfile.avatar_url) {
+        document.getElementById('avatarImage').src = currentProfile.avatar_url;
       }
 
       // Banner
-      if (profile.banner_url) {
+      if (currentProfile.banner_url) {
         const bannerImg = document.getElementById('bannerImage');
-        bannerImg.src = profile.banner_url;
+        bannerImg.src = currentProfile.banner_url;
         bannerImg.style.display = 'block';
         document.getElementById('bannerPlaceholder').style.display = 'none';
         document.getElementById('bannerUploadBtn').style.display = 'none';
         document.getElementById('bannerControls').style.display = 'flex';
 
         // Apply saved position (default 50%)
-        const position = profile.banner_position || 50;
+        const position = currentProfile.banner_position || 50;
         bannerImg.style.objectPosition = `center ${position}%`;
         document.getElementById('bannerPosition').value = position;
       }
 
       // Social links display
       const socialLinks = [];
-      if (profile.instagram_url) socialLinks.push(`<a href="${profile.instagram_url}" target="_blank" class="social-icon" title="Instagram">📷</a>`);
-      if (profile.facebook_url) socialLinks.push(`<a href="${profile.facebook_url}" target="_blank" class="social-icon" title="Facebook">📘</a>`);
-      if (profile.twitter_url) socialLinks.push(`<a href="${profile.twitter_url}" target="_blank" class="social-icon" title="Twitter/X">🐦</a>`);
-      if (profile.tiktok_url) socialLinks.push(`<a href="${profile.tiktok_url}" target="_blank" class="social-icon" title="TikTok">🎵</a>`);
-      if (profile.youtube_url) socialLinks.push(`<a href="${profile.youtube_url}" target="_blank" class="social-icon" title="YouTube">▶️</a>`);
-      if (profile.etsy_url) socialLinks.push(`<a href="${profile.etsy_url}" target="_blank" class="social-icon" title="Etsy">🛒</a>`);
+      if (currentProfile.instagram_url) socialLinks.push(`<a href="${currentProfile.instagram_url}" target="_blank" class="social-icon" title="Instagram">📷</a>`);
+      if (currentProfile.facebook_url) socialLinks.push(`<a href="${currentProfile.facebook_url}" target="_blank" class="social-icon" title="Facebook">📘</a>`);
+      if (currentProfile.twitter_url) socialLinks.push(`<a href="${currentProfile.twitter_url}" target="_blank" class="social-icon" title="Twitter/X">🐦</a>`);
+      if (currentProfile.tiktok_url) socialLinks.push(`<a href="${currentProfile.tiktok_url}" target="_blank" class="social-icon" title="TikTok">🎵</a>`);
+      if (currentProfile.youtube_url) socialLinks.push(`<a href="${currentProfile.youtube_url}" target="_blank" class="social-icon" title="YouTube">▶️</a>`);
+      if (currentProfile.etsy_url) socialLinks.push(`<a href="${currentProfile.etsy_url}" target="_blank" class="social-icon" title="Etsy">🛒</a>`);
 
       const socialDisplay = document.getElementById('socialLinksDisplay');
       if (socialLinks.length > 0) {
@@ -359,8 +419,8 @@
       }
 
       // Gallery link and QR code
-      if (profile.gallery_slug) {
-        const galleryUrl = `${window.location.origin}/pages/gallery/artist.html?slug=${profile.gallery_slug}`;
+      if (currentProfile.gallery_slug) {
+        const galleryUrl = `${window.location.origin}/pages/gallery/artist.html?slug=${currentProfile.gallery_slug}`;
         const galleryLink = document.getElementById('galleryLink');
         galleryLink.href = galleryUrl;
         galleryLink.textContent = galleryUrl;
