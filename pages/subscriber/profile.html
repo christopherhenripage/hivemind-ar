@@ -365,9 +365,17 @@
         galleryLink.href = galleryUrl;
         galleryLink.textContent = galleryUrl;
 
-        // Generate QR code
-        generateQRCode(galleryUrl);
-        checkShareSupport();
+        // Generate QR code (wrapped in try-catch to prevent breaking other functionality)
+        try {
+          if (typeof QRCode !== 'undefined') {
+            generateQRCode(galleryUrl);
+            checkShareSupport();
+          } else {
+            console.warn('QRCode library not loaded');
+          }
+        } catch (e) {
+          console.error('QR code generation failed:', e);
+        }
       } else {
         document.getElementById('galleryLink').textContent = 'Set a gallery slug to get your public link';
         document.getElementById('qrCodeSection').style.display = 'none';
@@ -601,24 +609,38 @@
     let currentGalleryUrl = null;
 
     function generateQRCode(url) {
-      currentGalleryUrl = url;
-      const canvas = document.getElementById('qrCodeCanvas');
+      try {
+        currentGalleryUrl = url;
+        const canvas = document.getElementById('qrCodeCanvas');
 
-      QRCode.toCanvas(canvas, url, {
-        width: 200,
-        margin: 2,
-        color: {
-          dark: '#1a1a1a',
-          light: '#ffffff'
-        },
-        errorCorrectionLevel: 'H'
-      }, function(error) {
-        if (error) {
-          console.error('QR Code generation failed:', error);
+        if (!canvas) {
+          console.error('QR Code canvas not found');
           return;
         }
-        document.getElementById('qrCodeSection').style.display = 'block';
-      });
+
+        if (typeof QRCode === 'undefined') {
+          console.error('QRCode library not loaded');
+          return;
+        }
+
+        QRCode.toCanvas(canvas, url, {
+          width: 200,
+          margin: 2,
+          color: {
+            dark: '#1a1a1a',
+            light: '#ffffff'
+          },
+          errorCorrectionLevel: 'H'
+        }, function(error) {
+          if (error) {
+            console.error('QR Code generation failed:', error);
+            return;
+          }
+          document.getElementById('qrCodeSection').style.display = 'block';
+        });
+      } catch (e) {
+        console.error('QR Code error:', e);
+      }
     }
 
     window.downloadQRCode = function(format) {
