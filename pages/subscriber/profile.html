@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
+  <!-- QR Code Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 <body>
   <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
@@ -134,6 +136,28 @@
               <div class="value">
                 <a href="#" id="galleryLink" target="_blank" style="word-break: break-all;"></a>
                 <button class="btn btn-sm" style="margin-left: 0.5rem;" onclick="copyGalleryLink()">Copy</button>
+              </div>
+            </div>
+
+            <!-- QR Code Section -->
+            <div class="profile-field full-width" id="qrCodeSection" style="display: none;">
+              <label>Gallery QR Code</label>
+              <div class="qr-code-container">
+                <div class="qr-code-preview">
+                  <canvas id="qrCodeCanvas"></canvas>
+                </div>
+                <div class="qr-code-info">
+                  <p>Share this QR code on business cards, exhibition labels, or promotional materials.</p>
+                  <div class="qr-download-buttons">
+                    <button class="btn btn-dark btn-sm" onclick="downloadQRCode('png')">Download PNG</button>
+                    <button class="btn btn-outline btn-sm" onclick="downloadQRCode('svg')">Download SVG</button>
+                  </div>
+                  <div class="qr-share-buttons">
+                    <button class="btn btn-sm" onclick="shareQRCode()" id="shareQRBtn" style="display: none;">Share to Social</button>
+                    <button class="btn btn-sm" onclick="copyQRCodeToClipboard()">Copy to Clipboard</button>
+                  </div>
+                  <p class="qr-hint">PNG is best for print. SVG scales to any size.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -334,14 +358,19 @@
         socialDisplay.innerHTML = '<span style="color: var(--hm-text-muted);">No social links added</span>';
       }
 
-      // Gallery link
+      // Gallery link and QR code
       if (profile.gallery_slug) {
         const galleryUrl = `${window.location.origin}/pages/gallery/artist.html?slug=${profile.gallery_slug}`;
         const galleryLink = document.getElementById('galleryLink');
         galleryLink.href = galleryUrl;
         galleryLink.textContent = galleryUrl;
+
+        // Generate QR code
+        generateQRCode(galleryUrl);
+        checkShareSupport();
       } else {
         document.getElementById('galleryLink').textContent = 'Set a gallery slug to get your public link';
+        document.getElementById('qrCodeSection').style.display = 'none';
       }
 
       // Load recent artworks
@@ -567,6 +596,181 @@
         alert('Please set a gallery slug first.');
       }
     };
+
+    // QR Code generation
+    let currentGalleryUrl = null;
+
+    function generateQRCode(url) {
+      currentGalleryUrl = url;
+      const canvas = document.getElementById('qrCodeCanvas');
+
+      QRCode.toCanvas(canvas, url, {
+        width: 200,
+        margin: 2,
+        color: {
+          dark: '#1a1a1a',
+          light: '#ffffff'
+        },
+        errorCorrectionLevel: 'H'
+      }, function(error) {
+        if (error) {
+          console.error('QR Code generation failed:', error);
+          return;
+        }
+        document.getElementById('qrCodeSection').style.display = 'block';
+      });
+    }
+
+    window.downloadQRCode = function(format) {
+      if (!currentGalleryUrl) {
+        alert('Please set a gallery slug first.');
+        return;
+      }
+
+      const slug = currentProfile?.gallery_slug || 'gallery';
+
+      if (format === 'png') {
+        // Download as PNG
+        QRCode.toDataURL(currentGalleryUrl, {
+          width: 1000,
+          margin: 2,
+          color: {
+            dark: '#1a1a1a',
+            light: '#ffffff'
+          },
+          errorCorrectionLevel: 'H'
+        }, function(error, url) {
+          if (error) {
+            console.error('PNG generation failed:', error);
+            return;
+          }
+          const link = document.createElement('a');
+          link.download = `${slug}-qr-code.png`;
+          link.href = url;
+          link.click();
+        });
+      } else if (format === 'svg') {
+        // Download as SVG
+        QRCode.toString(currentGalleryUrl, {
+          type: 'svg',
+          width: 1000,
+          margin: 2,
+          color: {
+            dark: '#1a1a1a',
+            light: '#ffffff'
+          },
+          errorCorrectionLevel: 'H'
+        }, function(error, svgString) {
+          if (error) {
+            console.error('SVG generation failed:', error);
+            return;
+          }
+          const blob = new Blob([svgString], { type: 'image/svg+xml' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `${slug}-qr-code.svg`;
+          link.href = url;
+          link.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+    };
+
+    // Share QR code using Web Share API (mobile)
+    window.shareQRCode = async function() {
+      if (!currentGalleryUrl) {
+        alert('Please set a gallery slug first.');
+        return;
+      }
+
+      const slug = currentProfile?.gallery_slug || 'gallery';
+      const galleryName = currentProfile?.gallery_name || 'My Gallery';
+
+      try {
+        // Generate high-quality PNG for sharing
+        const dataUrl = await new Promise((resolve, reject) => {
+          QRCode.toDataURL(currentGalleryUrl, {
+            width: 800,
+            margin: 2,
+            color: { dark: '#1a1a1a', light: '#ffffff' },
+            errorCorrectionLevel: 'H'
+          }, (err, url) => err ? reject(err) : resolve(url));
+        });
+
+        // Convert data URL to blob
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+        const file = new File([blob], `${slug}-qr-code.png`, { type: 'image/png' });
+
+        // Use Web Share API
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: `${galleryName} - AR Gallery`,
+            text: `Scan this QR code to view my AR art gallery!`,
+            files: [file]
+          });
+        } else {
+          // Fallback - share just the link
+          await navigator.share({
+            title: `${galleryName} - AR Gallery`,
+            text: `View my AR art gallery!`,
+            url: currentGalleryUrl
+          });
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Share failed:', err);
+          alert('Sharing failed. Try downloading the QR code instead.');
+        }
+      }
+    };
+
+    // Copy QR code to clipboard
+    window.copyQRCodeToClipboard = async function() {
+      if (!currentGalleryUrl) {
+        alert('Please set a gallery slug first.');
+        return;
+      }
+
+      try {
+        // Generate PNG
+        const dataUrl = await new Promise((resolve, reject) => {
+          QRCode.toDataURL(currentGalleryUrl, {
+            width: 800,
+            margin: 2,
+            color: { dark: '#1a1a1a', light: '#ffffff' },
+            errorCorrectionLevel: 'H'
+          }, (err, url) => err ? reject(err) : resolve(url));
+        });
+
+        // Convert to blob
+        const response = await fetch(dataUrl);
+        const blob = await response.blob();
+
+        // Copy to clipboard
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]);
+
+        alert('QR code copied to clipboard!');
+      } catch (err) {
+        console.error('Copy failed:', err);
+        // Fallback - copy the gallery URL instead
+        try {
+          await navigator.clipboard.writeText(currentGalleryUrl);
+          alert('Gallery link copied to clipboard! (Image copy not supported in this browser)');
+        } catch (e) {
+          alert('Copy failed. Try downloading the QR code instead.');
+        }
+      }
+    };
+
+    // Check if Web Share API is available and show share button
+    function checkShareSupport() {
+      if (navigator.share) {
+        document.getElementById('shareQRBtn').style.display = 'inline-block';
+      }
+    }
 
     window.changePassword = async function() {
       const { error } = await supabase.auth.resetPasswordForEmail(currentUser.email);
@@ -932,6 +1136,72 @@
 
       .profile-actions {
         flex-direction: column;
+      }
+    }
+
+    /* QR Code Section Styles */
+    .qr-code-container {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      margin-top: 0.5rem;
+    }
+
+    .qr-code-preview {
+      background: white;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    .qr-code-preview canvas {
+      display: block;
+      width: 200px;
+      height: 200px;
+    }
+
+    .qr-code-info {
+      flex: 1;
+    }
+
+    .qr-code-info p {
+      color: var(--hm-text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .qr-download-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .qr-share-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .qr-hint {
+      font-size: 0.75rem !important;
+      color: var(--hm-text-muted);
+      opacity: 0.7;
+    }
+
+    @media (max-width: 768px) {
+      .qr-code-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .qr-download-buttons,
+      .qr-share-buttons {
+        justify-content: center;
       }
     }
   </style>
