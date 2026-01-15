@@ -256,24 +256,39 @@
 
       <!-- Sample 3D Model for comparison -->
       <div class="ar-artwork-card">
-        <model-viewer
-          src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-          ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
-          poster="https://modelviewer.dev/shared-assets/models/Astronaut.webp"
-          alt="3D Astronaut Sculpture"
-          ar
-          ar-modes="webxr scene-viewer quick-look"
-          ar-scale="fixed"
-          camera-controls
-          touch-action="pan-y"
-          shadow-intensity="1"
-          auto-rotate>
-        </model-viewer>
+        <div style="position: relative;">
+          <model-viewer
+            id="astronaut-model"
+            src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+            ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
+            poster="https://modelviewer.dev/shared-assets/models/Astronaut.webp"
+            alt="3D Astronaut Sculpture"
+            ar
+            ar-modes="scene-viewer webxr quick-look"
+            ar-scale="auto"
+            camera-controls
+            touch-action="pan-y"
+            shadow-intensity="1"
+            auto-rotate
+            style="width: 100%; height: 400px;">
+            <button slot="ar-button" style="background: #1a1a1a; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); cursor: pointer;">
+              View in AR
+            </button>
+          </model-viewer>
+          <!-- Direct iOS Quick Look fallback link -->
+          <a rel="ar" href="https://modelviewer.dev/shared-assets/models/Astronaut.usdz" id="ios-ar-link" style="display: none;">
+            <img src="https://modelviewer.dev/shared-assets/models/Astronaut.webp" style="width: 1px; height: 1px;">
+          </a>
+        </div>
         <div class="ar-artwork-info">
           <h3>The Astronaut</h3>
           <p class="artist">Sample 3D Sculpture</p>
           <p class="dimensions">3D model for comparison</p>
           <p class="price">Demo</p>
+          <!-- Backup AR button -->
+          <button onclick="launchAR()" style="background: #1a1a1a; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 1rem;">
+            Launch AR View
+          </button>
         </div>
       </div>
 
@@ -324,70 +339,51 @@
       navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
     }
 
-    // Ensure AR buttons work reliably
-    document.addEventListener('DOMContentLoaded', function() {
-      // Wait for model-viewer to be defined
-      const checkModelViewer = setInterval(() => {
-        if (customElements.get('model-viewer')) {
-          clearInterval(checkModelViewer);
-          initARButtons();
-        }
-      }, 100);
-
-      // Timeout after 5 seconds
-      setTimeout(() => clearInterval(checkModelViewer), 5000);
-    });
-
-    function initARButtons() {
-      document.querySelectorAll('model-viewer').forEach(mv => {
-        // Add click handler to the entire model-viewer for AR activation
-        mv.addEventListener('click', function(e) {
-          // Only trigger if clicking on the model area (not the AR button itself)
-          if (e.target === mv) {
-            tryActivateAR(mv);
-          }
-        });
-
-        // Also add a visible AR button if one doesn't exist
-        const parent = mv.parentElement;
-        if (!parent.querySelector('.custom-ar-btn')) {
-          const btn = document.createElement('button');
-          btn.className = 'custom-ar-btn';
-          btn.textContent = 'View in AR';
-          btn.style.cssText = 'position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; cursor: pointer; z-index: 10;';
-          btn.onclick = () => tryActivateAR(mv);
-          mv.style.position = 'relative';
-          mv.appendChild(btn);
-        }
-      });
+    // Detect iOS
+    function isIOS() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     }
 
-    function tryActivateAR(modelViewer) {
-      try {
-        // Method 1: Shadow DOM button
-        const arButton = modelViewer.shadowRoot?.querySelector('button[slot="ar-button"]');
-        if (arButton) {
-          arButton.click();
+    // Detect Android
+    function isAndroid() {
+      return /Android/.test(navigator.userAgent);
+    }
+
+    // Launch AR - tries multiple methods
+    function launchAR() {
+      const modelViewer = document.getElementById('astronaut-model');
+
+      // For iOS: Use Quick Look directly via the hidden link
+      if (isIOS()) {
+        const iosLink = document.getElementById('ios-ar-link');
+        if (iosLink) {
+          iosLink.click();
           return;
         }
-
-        // Method 2: activateAR method
-        if (typeof modelViewer.activateAR === 'function') {
-          modelViewer.activateAR();
-          return;
-        }
-
-        // Method 3: Check support
-        if (!modelViewer.canActivateAR) {
-          alert('AR requires a mobile device with iOS Safari or Android Chrome.');
-          return;
-        }
-
-        alert('AR could not be activated. Please refresh and try again.');
-      } catch(err) {
-        console.error('AR error:', err);
-        alert('AR is not available. Please use iOS Safari or Android Chrome on a mobile device.');
       }
+
+      // For Android: Try Scene Viewer via intent URL
+      if (isAndroid()) {
+        const glbUrl = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
+        const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbUrl)}&mode=ar_only#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;end;`;
+        window.location.href = intentUrl;
+        return;
+      }
+
+      // Fallback: Try model-viewer's built-in AR
+      if (modelViewer) {
+        try {
+          if (typeof modelViewer.activateAR === 'function') {
+            modelViewer.activateAR();
+            return;
+          }
+        } catch(e) {
+          console.error('AR activation error:', e);
+        }
+      }
+
+      alert('AR requires a mobile device. Please open this page on your iPhone or Android phone.');
     }
   </script>
 </body>
