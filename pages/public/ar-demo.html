@@ -323,6 +323,72 @@
       const navLinks = document.getElementById('navLinks');
       navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
     }
+
+    // Ensure AR buttons work reliably
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for model-viewer to be defined
+      const checkModelViewer = setInterval(() => {
+        if (customElements.get('model-viewer')) {
+          clearInterval(checkModelViewer);
+          initARButtons();
+        }
+      }, 100);
+
+      // Timeout after 5 seconds
+      setTimeout(() => clearInterval(checkModelViewer), 5000);
+    });
+
+    function initARButtons() {
+      document.querySelectorAll('model-viewer').forEach(mv => {
+        // Add click handler to the entire model-viewer for AR activation
+        mv.addEventListener('click', function(e) {
+          // Only trigger if clicking on the model area (not the AR button itself)
+          if (e.target === mv) {
+            tryActivateAR(mv);
+          }
+        });
+
+        // Also add a visible AR button if one doesn't exist
+        const parent = mv.parentElement;
+        if (!parent.querySelector('.custom-ar-btn')) {
+          const btn = document.createElement('button');
+          btn.className = 'custom-ar-btn';
+          btn.textContent = 'View in AR';
+          btn.style.cssText = 'position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; cursor: pointer; z-index: 10;';
+          btn.onclick = () => tryActivateAR(mv);
+          mv.style.position = 'relative';
+          mv.appendChild(btn);
+        }
+      });
+    }
+
+    function tryActivateAR(modelViewer) {
+      try {
+        // Method 1: Shadow DOM button
+        const arButton = modelViewer.shadowRoot?.querySelector('button[slot="ar-button"]');
+        if (arButton) {
+          arButton.click();
+          return;
+        }
+
+        // Method 2: activateAR method
+        if (typeof modelViewer.activateAR === 'function') {
+          modelViewer.activateAR();
+          return;
+        }
+
+        // Method 3: Check support
+        if (!modelViewer.canActivateAR) {
+          alert('AR requires a mobile device with iOS Safari or Android Chrome.');
+          return;
+        }
+
+        alert('AR could not be activated. Please refresh and try again.');
+      } catch(err) {
+        console.error('AR error:', err);
+        alert('AR is not available. Please use iOS Safari or Android Chrome on a mobile device.');
+      }
+    }
   </script>
 </body>
 </html>

@@ -1452,20 +1452,48 @@
       const modelViewer = wrapper.querySelector('model-viewer');
       const artworkId = wrapper.getAttribute('data-artwork-id');
 
-      if (modelViewer && modelViewer.tagName === 'MODEL-VIEWER') {
-        const selectedFrame = artworkFrameSelections[artworkId] || 'none';
-        console.log('Launching AR with selected frame:', selectedFrame);
-
-        // Launch AR directly
-        try {
-          modelViewer.activateAR();
-        } catch(err) {
-          console.error('AR activation failed:', err);
-          alert('AR activation failed. Please try again.');
-        }
-
+      if (!modelViewer) {
+        alert('AR viewer not found. Please refresh the page.');
         return false;
       }
+
+      // Check if model-viewer is ready
+      if (!customElements.get('model-viewer')) {
+        alert('AR is still loading. Please wait a moment and try again.');
+        return false;
+      }
+
+      const selectedFrame = artworkFrameSelections[artworkId] || 'none';
+      console.log('Launching AR with selected frame:', selectedFrame);
+
+      // Try multiple methods to activate AR
+      try {
+        // Method 1: Try the shadow DOM AR button (most reliable)
+        const arButton = modelViewer.shadowRoot?.querySelector('button[slot="ar-button"]');
+        if (arButton) {
+          arButton.click();
+          return false;
+        }
+
+        // Method 2: Try activateAR method
+        if (typeof modelViewer.activateAR === 'function') {
+          modelViewer.activateAR();
+          return false;
+        }
+
+        // Method 3: Check if AR is supported and show appropriate message
+        if (!modelViewer.canActivateAR) {
+          alert('AR is not supported on this device. Please use a mobile device with iOS Safari or Android Chrome.');
+          return false;
+        }
+
+        alert('AR activation failed. Please refresh and try again.');
+      } catch(err) {
+        console.error('AR activation failed:', err);
+        alert('AR could not be launched. Please ensure you are using iOS Safari or Android Chrome.');
+      }
+
+      return false;
     };
 
     // Select frame
