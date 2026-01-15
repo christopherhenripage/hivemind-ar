@@ -486,6 +486,7 @@
     // Map our plan slugs to PayPal subscription plan IDs
     const PAYPAL_PLAN_IDS = {
       'artist': 'P-XXXXXXXXXXXXXXXXXXXXXX',       // $12/month - Replace with actual PayPal Plan ID
+      'gallery': 'P-XXXXXXXXXXXXXXXXXXXXXX',      // $19/month - Replace with actual PayPal Plan ID
       'professional': 'P-XXXXXXXXXXXXXXXXXXXXXX'  // $29/month - Replace with actual PayPal Plan ID
     };
 
@@ -559,7 +560,7 @@
         const isCurrent = plan.slug === currentPlanSlug;
         const isUpgrade = index > currentPlanIndex;
         const isDowngrade = index < currentPlanIndex;
-        const isRecommended = plan.slug === 'artist'; // Mark Artist as recommended (best value)
+        const isRecommended = plan.slug === 'gallery'; // Mark Gallery as recommended (best value)
 
         const features = getFeatures(plan);
 
@@ -610,7 +611,7 @@
       }
 
       // Analytics
-      if (plan.full_analytics || plan.slug === 'professional') {
+      if (plan.full_analytics || plan.slug === 'professional' || plan.slug === 'gallery') {
         features.push({ text: 'Full analytics (views, AR, location)', disabled: false });
       } else if (plan.slug === 'artist') {
         features.push({ text: 'Views + AR activation analytics', disabled: false });
@@ -621,7 +622,7 @@
       // Support
       if (plan.priority_support || plan.slug === 'professional') {
         features.push({ text: 'Priority support', disabled: false });
-      } else if (plan.slug === 'artist') {
+      } else if (plan.slug === 'artist' || plan.slug === 'gallery') {
         features.push({ text: 'Email support', disabled: false });
       } else {
         features.push({ text: 'Community support', disabled: false });
