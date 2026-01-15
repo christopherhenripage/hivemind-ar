@@ -33,6 +33,7 @@
     .current-plan-info .plan-name {
       font-size: 1.5rem;
       font-weight: 600;
+      color: white;
     }
 
     .plans-grid {
@@ -305,6 +306,19 @@
     .modal-actions .btn {
       flex: 1;
     }
+
+    .branding-comparison {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border: 1px solid #e9ecef;
+    }
+
+    .branding-comparison h3 {
+      color: var(--hm-text);
+    }
   </style>
 </head>
 <body>
@@ -379,6 +393,17 @@
             </div>
             <div class="current-plan-usage">
               <span id="currentUsage">0</span> of <span id="currentLimit">3</span> artworks used
+            </div>
+          </div>
+
+          <!-- AR Branding Comparison (Free vs Paid) -->
+          <div class="branding-comparison" id="brandingComparison" style="display: none;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="flex: 1;">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem;">Remove HiveMind branding</h3>
+                <p style="margin: 0; font-size: 0.875rem; color: var(--hm-text-muted);">Free plan AR views show "Powered by HiveMind AR" to buyers. Upgrade to show your artwork without our branding.</p>
+              </div>
+              <a href="#plansGrid" class="btn btn-dark" style="white-space: nowrap;">View Plans</a>
             </div>
           </div>
 
@@ -810,6 +835,11 @@
         document.getElementById('currentUsage').textContent = artworkCount;
         document.getElementById('currentLimit').textContent = currentPlan.artwork_limit >= 9999 ? '∞' : currentPlan.artwork_limit;
         document.getElementById('currentPlanBanner').style.display = 'flex';
+      }
+
+      // Show branding comparison for free tier users
+      if (currentPlanSlug === 'free') {
+        document.getElementById('brandingComparison').style.display = 'block';
       }
 
       // Render plans
