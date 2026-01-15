@@ -98,8 +98,15 @@
     <!-- Torso - leaning slightly forward -->
     <path d="M 230 280 Q 240 330 255 380 L 290 370 Q 285 320 280 280 Z"/>
 
-    <!-- Head - looking toward portal -->
-    <circle cx="270" cy="250" r="32"/>
+    <!-- Deer Head -->
+    <g transform="translate(270, 250) scale(1.1)">
+      <path d="M -20 -25 Q -25 -45 -35 -55 M -25 -45 Q -30 -50 -40 -48 M -25 -45 Q -20 -55 -25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M 20 -25 Q 25 -45 35 -55 M 25 -45 Q 30 -50 40 -48 M 25 -45 Q 20 -55 25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <ellipse cx="-22" cy="-12" rx="5" ry="9" transform="rotate(-20 -22 -12)"/>
+      <ellipse cx="22" cy="-12" rx="5" ry="9" transform="rotate(20 22 -12)"/>
+      <ellipse cx="0" cy="5" rx="22" ry="28"/>
+      <ellipse cx="0" cy="28" rx="12" ry="10"/>
+    </g>
 
     <!-- Back arm -->
     <path d="M 240 290 Q 210 320 200 360" stroke="#9A7B5B" stroke-width="14" fill="none" stroke-linecap="round"/>

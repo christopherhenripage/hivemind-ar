@@ -82,8 +82,15 @@
     <ellipse cx="400" cy="480" rx="45" ry="15"/>
     <!-- Body -->
     <path d="M 360 320 Q 355 400 370 480 L 430 480 Q 445 400 440 320 Z"/>
-    <!-- Head - looking up at artwork -->
-    <circle cx="400" cy="290" r="30"/>
+    <!-- Deer Head -->
+    <g transform="translate(400, 290) scale(1.0)">
+      <path d="M -20 -25 Q -25 -45 -35 -55 M -25 -45 Q -30 -50 -40 -48 M -25 -45 Q -20 -55 -25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M 20 -25 Q 25 -45 35 -55 M 25 -45 Q 30 -50 40 -48 M 25 -45 Q 20 -55 25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <ellipse cx="-22" cy="-12" rx="5" ry="9" transform="rotate(-20 -22 -12)"/>
+      <ellipse cx="22" cy="-12" rx="5" ry="9" transform="rotate(20 22 -12)"/>
+      <ellipse cx="0" cy="5" rx="22" ry="28"/>
+      <ellipse cx="0" cy="28" rx="12" ry="10"/>
+    </g>
     <!-- Arms slightly raised -->
     <path d="M 360 340 Q 320 350 300 330" stroke="#9A7B5B" stroke-width="16" fill="none" stroke-linecap="round"/>
     <path d="M 440 340 Q 480 350 500 330" stroke="#9A7B5B" stroke-width="16" fill="none" stroke-linecap="round"/>
