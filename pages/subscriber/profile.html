@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
-  <!-- QR Code Library -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <!-- QR Code Library (qrcodejs - browser-native) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
   <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
@@ -144,7 +144,7 @@
               <label>Gallery QR Code</label>
               <div class="qr-code-container">
                 <div class="qr-code-preview">
-                  <canvas id="qrCodeCanvas"></canvas>
+                  <div id="qrCodeCanvas"></div>
                 </div>
                 <div class="qr-code-info">
                   <p>Share this QR code on business cards, exhibition labels, or promotional materials.</p>
@@ -607,14 +607,15 @@
 
     // QR Code generation
     let currentGalleryUrl = null;
+    let qrCodeInstance = null;
 
     function generateQRCode(url) {
       try {
         currentGalleryUrl = url;
-        const canvas = document.getElementById('qrCodeCanvas');
+        const container = document.getElementById('qrCodeCanvas');
 
-        if (!canvas) {
-          console.error('QR Code canvas not found');
+        if (!container) {
+          console.error('QR Code container not found');
           return;
         }
 
@@ -623,21 +624,21 @@
           return;
         }
 
-        QRCode.toCanvas(canvas, url, {
+        // Clear previous QR code
+        container.innerHTML = '';
+
+        // Generate new QR code using qrcodejs library
+        qrCodeInstance = new QRCode(container, {
+          text: url,
           width: 200,
-          margin: 2,
-          color: {
-            dark: '#1a1a1a',
-            light: '#ffffff'
-          },
-          errorCorrectionLevel: 'H'
-        }, function(error) {
-          if (error) {
-            console.error('QR Code generation failed:', error);
-            return;
-          }
-          document.getElementById('qrCodeSection').style.display = 'block';
+          height: 200,
+          colorDark: '#1a1a1a',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
         });
+
+        document.getElementById('qrCodeSection').style.display = 'block';
+        console.log('QR code generated successfully');
       } catch (e) {
         console.error('QR Code error:', e);
       }
@@ -650,51 +651,38 @@
       }
 
       const slug = currentProfile?.gallery_slug || 'gallery';
+      const container = document.getElementById('qrCodeCanvas');
+      const img = container.querySelector('img');
+      const canvas = container.querySelector('canvas');
 
       if (format === 'png') {
-        // Download as PNG
-        QRCode.toDataURL(currentGalleryUrl, {
-          width: 1000,
-          margin: 2,
-          color: {
-            dark: '#1a1a1a',
-            light: '#ffffff'
-          },
-          errorCorrectionLevel: 'H'
-        }, function(error, url) {
-          if (error) {
-            console.error('PNG generation failed:', error);
-            return;
-          }
+        // Get the image data from either the img or canvas element
+        let dataUrl;
+        if (canvas) {
+          dataUrl = canvas.toDataURL('image/png');
+        } else if (img) {
+          // Create a canvas to convert img to data URL
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = 1000;
+          tempCanvas.height = 1000;
+          const ctx = tempCanvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, 1000, 1000);
+          ctx.drawImage(img, 0, 0, 1000, 1000);
+          dataUrl = tempCanvas.toDataURL('image/png');
+        }
+
+        if (dataUrl) {
           const link = document.createElement('a');
           link.download = `${slug}-qr-code.png`;
-          link.href = url;
+          link.href = dataUrl;
           link.click();
-        });
+        } else {
+          alert('Could not generate PNG. Please try again.');
+        }
       } else if (format === 'svg') {
-        // Download as SVG
-        QRCode.toString(currentGalleryUrl, {
-          type: 'svg',
-          width: 1000,
-          margin: 2,
-          color: {
-            dark: '#1a1a1a',
-            light: '#ffffff'
-          },
-          errorCorrectionLevel: 'H'
-        }, function(error, svgString) {
-          if (error) {
-            console.error('SVG generation failed:', error);
-            return;
-          }
-          const blob = new Blob([svgString], { type: 'image/svg+xml' });
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = `${slug}-qr-code.svg`;
-          link.href = url;
-          link.click();
-          URL.revokeObjectURL(url);
-        });
+        // SVG generation - create from scratch since qrcodejs doesn't support SVG
+        alert('SVG download not available. Please use PNG format.');
       }
     };
 
@@ -705,49 +693,24 @@
         return;
       }
 
-      const slug = currentProfile?.gallery_slug || 'gallery';
       const galleryName = currentProfile?.gallery_name || 'My Gallery';
 
       try {
-        // Generate high-quality PNG for sharing
-        const dataUrl = await new Promise((resolve, reject) => {
-          QRCode.toDataURL(currentGalleryUrl, {
-            width: 800,
-            margin: 2,
-            color: { dark: '#1a1a1a', light: '#ffffff' },
-            errorCorrectionLevel: 'H'
-          }, (err, url) => err ? reject(err) : resolve(url));
+        // Use Web Share API to share the link
+        await navigator.share({
+          title: `${galleryName} - AR Gallery`,
+          text: `View my AR art gallery!`,
+          url: currentGalleryUrl
         });
-
-        // Convert data URL to blob
-        const response = await fetch(dataUrl);
-        const blob = await response.blob();
-        const file = new File([blob], `${slug}-qr-code.png`, { type: 'image/png' });
-
-        // Use Web Share API
-        if (navigator.share && navigator.canShare({ files: [file] })) {
-          await navigator.share({
-            title: `${galleryName} - AR Gallery`,
-            text: `Scan this QR code to view my AR art gallery!`,
-            files: [file]
-          });
-        } else {
-          // Fallback - share just the link
-          await navigator.share({
-            title: `${galleryName} - AR Gallery`,
-            text: `View my AR art gallery!`,
-            url: currentGalleryUrl
-          });
-        }
       } catch (err) {
         if (err.name !== 'AbortError') {
           console.error('Share failed:', err);
-          alert('Sharing failed. Try downloading the QR code instead.');
+          alert('Sharing failed. Try copying the gallery link instead.');
         }
       }
     };
 
-    // Copy QR code to clipboard
+    // Copy QR code to clipboard (copies the gallery URL)
     window.copyQRCodeToClipboard = async function() {
       if (!currentGalleryUrl) {
         alert('Please set a gallery slug first.');
@@ -755,35 +718,11 @@
       }
 
       try {
-        // Generate PNG
-        const dataUrl = await new Promise((resolve, reject) => {
-          QRCode.toDataURL(currentGalleryUrl, {
-            width: 800,
-            margin: 2,
-            color: { dark: '#1a1a1a', light: '#ffffff' },
-            errorCorrectionLevel: 'H'
-          }, (err, url) => err ? reject(err) : resolve(url));
-        });
-
-        // Convert to blob
-        const response = await fetch(dataUrl);
-        const blob = await response.blob();
-
-        // Copy to clipboard
-        await navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': blob })
-        ]);
-
-        alert('QR code copied to clipboard!');
+        await navigator.clipboard.writeText(currentGalleryUrl);
+        alert('Gallery link copied to clipboard!');
       } catch (err) {
         console.error('Copy failed:', err);
-        // Fallback - copy the gallery URL instead
-        try {
-          await navigator.clipboard.writeText(currentGalleryUrl);
-          alert('Gallery link copied to clipboard! (Image copy not supported in this browser)');
-        } catch (e) {
-          alert('Copy failed. Try downloading the QR code instead.');
-        }
+        alert('Copy failed. Please manually copy the gallery link.');
       }
     };
 
