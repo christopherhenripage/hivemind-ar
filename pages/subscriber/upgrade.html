@@ -33,6 +33,7 @@
     .current-plan-info .plan-name {
       font-size: 1.5rem;
       font-weight: 600;
+      color: white !important;
     }
 
     .plans-grid {
@@ -57,6 +58,7 @@
     .plan-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      z-index: 10;
     }
 
     .plan-card.current {
@@ -147,6 +149,87 @@
     .plan-features li.disabled::before {
       content: '✗';
       color: #dc3545;
+    }
+
+    .plan-features li .feature-text {
+      flex: 1;
+    }
+
+    .plan-features li .info-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--hm-light-gray);
+      border-radius: 50%;
+      font-size: 10px;
+      color: var(--hm-text-muted);
+      cursor: help;
+      flex-shrink: 0;
+      position: relative;
+      margin-left: 0.25rem;
+    }
+
+    .plan-features li .info-icon:hover {
+      background: var(--hm-dark);
+      color: white;
+    }
+
+    .plan-features li .info-icon .tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a2e;
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: normal;
+      width: 220px;
+      text-align: left;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      line-height: 1.4;
+    }
+
+    .plan-features li .info-icon .tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--hm-dark);
+    }
+
+    .plan-features li .info-icon:hover .tooltip {
+      display: block;
+    }
+
+    /* Feature category dividers */
+    .plan-features .feature-category {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--hm-text-muted);
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
+      padding: 0;
+      border-top: 1px solid var(--hm-light-gray);
+      padding-top: 0.75rem;
+    }
+
+    .plan-features .feature-category:first-child {
+      margin-top: 0;
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .plan-features .feature-category::before {
+      display: none;
     }
 
     .plan-card .btn {
@@ -313,10 +396,10 @@
   <div class="dashboard-layout">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
+      <a href="/" class="sidebar-header" style="text-decoration: none; color: inherit;">
         <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
         <span class="logo-text">HiveMind AR</span>
-      </div>
+      </a>
 
       <nav class="sidebar-nav">
         <a href="/pages/subscriber/dashboard.html">
@@ -326,6 +409,10 @@
         <a href="/pages/subscriber/images.html">
           <span class="nav-icon">🖼️</span>
           <span class="nav-text">My Artworks</span>
+        </a>
+        <a href="/pages/subscriber/analytics.html">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Analytics</span>
         </a>
         <a href="/pages/subscriber/profile.html">
           <span class="nav-icon">👤</span>
@@ -549,7 +636,15 @@
               }
             </div>
             <ul class="plan-features">
-              ${features.map(f => `<li${f.disabled ? ' class="disabled"' : ''}>${f.text}</li>`).join('')}
+              ${features.map(f => {
+                if (f.isCategory) {
+                  return `<li class="feature-category">${f.category}</li>`;
+                }
+                return `<li${f.disabled ? ' class="disabled"' : ''}>
+                  <span class="feature-text">${f.text}</span>
+                  <span class="info-icon">?<span class="tooltip">${f.tooltip}</span></span>
+                </li>`;
+              }).join('')}
             </ul>
             ${renderPlanButton(plan, isCurrent, isUpgrade, isDowngrade, artworkCount)}
           </div>
@@ -557,56 +652,197 @@
       }).join('');
     }
 
-    // Get features for a plan
+    // Feature definitions with tooltips
+    const FEATURE_DEFINITIONS = {
+      artworks: {
+        tooltip: 'The maximum number of artworks you can upload and display in your AR gallery.'
+      },
+      ar_viewing: {
+        text: 'AR viewing for collectors',
+        tooltip: 'Collectors can view your artwork in augmented reality at true-to-life scale on their walls before purchasing.'
+      },
+      custom_banner: {
+        text: 'Custom profile banner',
+        tooltip: 'Upload and customize your gallery profile banner with zoom, positioning, and visual effects.'
+      },
+      banner_effects: {
+        text: 'Banner effects (blur, tint)',
+        tooltip: 'Apply professional effects to your profile banner including blur, darken overlays, and color tints.'
+      },
+      gallery_url: {
+        text: {
+          free: 'Basic gallery URL',
+          paid: 'Custom gallery URL'
+        },
+        tooltip: {
+          free: 'Your gallery will be at hivemindar.com/gallery/[your-id]. Upgrade for a custom URL slug.',
+          paid: 'Choose your own custom URL slug like hivemindar.com/gallery/yourname for better branding.'
+        }
+      },
+      branding: {
+        text: {
+          free: '"Powered by HiveMind" badge',
+          paid: 'Your branding only'
+        },
+        tooltip: {
+          free: 'Your gallery displays a small "Powered by HiveMind AR" badge.',
+          paid: 'Remove HiveMind branding and display only your artist identity on your gallery.'
+        }
+      },
+      verified_badge: {
+        text: 'Verified artist badge',
+        tooltip: 'Display a gold verified badge on your gallery page showing you are a professional, paying artist.'
+      },
+      social_links: {
+        text: 'Social media links',
+        tooltip: 'Add links to your Instagram, Twitter, website, and other social profiles on your gallery page.'
+      },
+      analytics_basic: {
+        text: 'Basic view count',
+        tooltip: 'See how many times your gallery and artworks have been viewed.'
+      },
+      analytics_standard: {
+        text: 'Views + AR analytics',
+        tooltip: 'Track gallery views, artwork views, and see how many collectors activate AR viewing for each piece.'
+      },
+      analytics_full: {
+        text: 'Full analytics + map',
+        tooltip: 'Complete analytics including geographic visitor map, traffic sources, device breakdown, and export capabilities.'
+      },
+      support_community: {
+        text: 'Community support',
+        tooltip: 'Get help from our community forums and knowledge base articles.'
+      },
+      support_email: {
+        text: 'Email support',
+        tooltip: 'Direct email support from our team, typically within 24-48 hours.'
+      },
+      support_priority: {
+        text: 'Priority support',
+        tooltip: 'Fast-track support with responses within 4-8 hours, plus dedicated account assistance.'
+      },
+      featured_listing: {
+        text: 'Featured artist listing',
+        tooltip: 'Get promoted in our featured artists section on the homepage and discovery pages.'
+      },
+      custom_domain: {
+        text: 'Custom domain support',
+        tooltip: 'Connect your own domain (like yourgallery.com) to your HiveMind AR gallery.'
+      }
+    };
+
+    // Get features for a plan with consistent structure
     function getFeatures(plan) {
       const limit = plan.artwork_limit >= 9999 ? 'Unlimited' : plan.artwork_limit;
+      const isPaid = plan.slug !== 'free';
+      const isArtistPlus = plan.slug === 'artist' || plan.slug === 'established' || plan.slug === 'professional';
+      const isEstablishedPlus = plan.slug === 'established' || plan.slug === 'professional';
+      const isPro = plan.slug === 'professional';
+
       const features = [];
 
-      // Artwork limit
-      features.push({ text: `${limit} artworks`, disabled: false });
+      // Gallery section
+      features.push({ category: 'Gallery', isCategory: true });
+      features.push({
+        text: `${limit} artworks`,
+        tooltip: FEATURE_DEFINITIONS.artworks.tooltip,
+        disabled: false
+      });
+      features.push({
+        text: FEATURE_DEFINITIONS.ar_viewing.text,
+        tooltip: FEATURE_DEFINITIONS.ar_viewing.tooltip,
+        disabled: false
+      });
+      features.push({
+        text: isPaid ? FEATURE_DEFINITIONS.gallery_url.text.paid : FEATURE_DEFINITIONS.gallery_url.text.free,
+        tooltip: isPaid ? FEATURE_DEFINITIONS.gallery_url.tooltip.paid : FEATURE_DEFINITIONS.gallery_url.tooltip.free,
+        disabled: false
+      });
 
-      // AR viewing (all plans)
-      features.push({ text: 'AR viewing for collectors', disabled: false });
+      // Branding section
+      features.push({ category: 'Branding', isCategory: true });
+      features.push({
+        text: isPaid ? FEATURE_DEFINITIONS.branding.text.paid : FEATURE_DEFINITIONS.branding.text.free,
+        tooltip: isPaid ? FEATURE_DEFINITIONS.branding.tooltip.paid : FEATURE_DEFINITIONS.branding.tooltip.free,
+        disabled: false
+      });
+      features.push({
+        text: FEATURE_DEFINITIONS.custom_banner.text,
+        tooltip: FEATURE_DEFINITIONS.custom_banner.tooltip,
+        disabled: !isPaid
+      });
+      features.push({
+        text: FEATURE_DEFINITIONS.banner_effects.text,
+        tooltip: FEATURE_DEFINITIONS.banner_effects.tooltip,
+        disabled: !isArtistPlus
+      });
+      features.push({
+        text: FEATURE_DEFINITIONS.verified_badge.text,
+        tooltip: FEATURE_DEFINITIONS.verified_badge.tooltip,
+        disabled: !isPaid
+      });
+      features.push({
+        text: FEATURE_DEFINITIONS.social_links.text,
+        tooltip: FEATURE_DEFINITIONS.social_links.tooltip,
+        disabled: !isPaid
+      });
 
-      // Custom URL / Branding
-      if (plan.slug === 'free') {
-        features.push({ text: 'Basic gallery URL', disabled: false });
-        features.push({ text: '"Powered by HiveMind AR" branding', disabled: false });
+      // Analytics section
+      features.push({ category: 'Analytics', isCategory: true });
+      if (isPro || isEstablishedPlus) {
+        features.push({
+          text: FEATURE_DEFINITIONS.analytics_full.text,
+          tooltip: FEATURE_DEFINITIONS.analytics_full.tooltip,
+          disabled: false
+        });
+      } else if (isArtistPlus) {
+        features.push({
+          text: FEATURE_DEFINITIONS.analytics_standard.text,
+          tooltip: FEATURE_DEFINITIONS.analytics_standard.tooltip,
+          disabled: false
+        });
       } else {
-        features.push({ text: 'Custom gallery URL', disabled: false });
-        features.push({ text: 'Your branding only (no HiveMind)', disabled: false });
+        features.push({
+          text: FEATURE_DEFINITIONS.analytics_basic.text,
+          tooltip: FEATURE_DEFINITIONS.analytics_basic.tooltip,
+          disabled: false
+        });
       }
 
-      // Social links
-      if (plan.social_links || plan.slug !== 'free') {
-        features.push({ text: 'Social media links on gallery', disabled: false });
+      // Support section
+      features.push({ category: 'Support', isCategory: true });
+      if (isPro) {
+        features.push({
+          text: FEATURE_DEFINITIONS.support_priority.text,
+          tooltip: FEATURE_DEFINITIONS.support_priority.tooltip,
+          disabled: false
+        });
+      } else if (isArtistPlus) {
+        features.push({
+          text: FEATURE_DEFINITIONS.support_email.text,
+          tooltip: FEATURE_DEFINITIONS.support_email.tooltip,
+          disabled: false
+        });
       } else {
-        features.push({ text: 'Social media links on gallery', disabled: true });
+        features.push({
+          text: FEATURE_DEFINITIONS.support_community.text,
+          tooltip: FEATURE_DEFINITIONS.support_community.tooltip,
+          disabled: false
+        });
       }
 
-      // Analytics
-      if (plan.full_analytics || plan.slug === 'professional') {
-        features.push({ text: 'Full analytics (views, AR, location)', disabled: false });
-      } else if (plan.slug === 'artist') {
-        features.push({ text: 'Views + AR activation analytics', disabled: false });
-      } else {
-        features.push({ text: 'View count only', disabled: false });
-      }
-
-      // Support
-      if (plan.priority_support || plan.slug === 'professional') {
-        features.push({ text: 'Priority support', disabled: false });
-      } else if (plan.slug === 'artist') {
-        features.push({ text: 'Email support', disabled: false });
-      } else {
-        features.push({ text: 'Community support', disabled: false });
-      }
-
-      // Professional-only features
-      if (plan.slug === 'professional') {
-        features.push({ text: 'Featured artist listing', disabled: false });
-        features.push({ text: 'Custom domain support', disabled: false });
-      }
+      // Pro-only features
+      features.push({ category: 'Pro Features', isCategory: true });
+      features.push({
+        text: FEATURE_DEFINITIONS.featured_listing.text,
+        tooltip: FEATURE_DEFINITIONS.featured_listing.tooltip,
+        disabled: !isPro
+      });
+      features.push({
+        text: FEATURE_DEFINITIONS.custom_domain.text,
+        tooltip: FEATURE_DEFINITIONS.custom_domain.tooltip,
+        disabled: !isPro
+      });
 
       return features;
     }

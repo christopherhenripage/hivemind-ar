@@ -12,10 +12,10 @@
   <div class="dashboard-layout">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-header">
+      <a href="/" class="sidebar-header" style="text-decoration: none; color: inherit;">
         <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
         <span class="logo-text">HiveMind AR</span>
-      </div>
+      </a>
 
       <nav class="sidebar-nav">
         <a href="/pages/subscriber/dashboard.html">
@@ -25,6 +25,10 @@
         <a href="/pages/subscriber/images.html">
           <span class="nav-icon">🖼️</span>
           <span class="nav-text">My Artworks</span>
+        </a>
+        <a href="/pages/subscriber/analytics.html">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Analytics</span>
         </a>
         <a href="/pages/subscriber/profile.html" class="active">
           <span class="nav-icon">👤</span>
@@ -71,13 +75,55 @@
         <!-- Banner Section -->
         <div class="profile-banner" id="bannerContainer">
           <img id="bannerImage" src="" alt="Gallery Banner" style="display: none;">
+          <!-- Default gradient for free users -->
+          <div class="banner-gradient" id="bannerGradient"></div>
           <div class="banner-placeholder" id="bannerPlaceholder">
             <span>Add a banner image to personalize your gallery</span>
           </div>
+          <!-- Upgrade prompt for free users -->
+          <div class="banner-upgrade" id="bannerUpgrade" style="display: none;">
+            <div class="upgrade-content">
+              <span>✨ Custom banners are available on paid plans</span>
+              <a href="/pages/subscriber/upgrade.html" class="btn btn-sm btn-gold">Upgrade to Artist - $12/mo</a>
+            </div>
+          </div>
+          <!-- Controls for paid users -->
           <div class="banner-controls" id="bannerControls" style="display: none;">
-            <label>Adjust Position:</label>
-            <input type="range" id="bannerPosition" min="0" max="100" value="50" onchange="handleBannerPositionChange(this.value)">
+            <label style="cursor: move;">🖐️ Drag to position</label>
+            <div class="zoom-control">
+              <span class="zoom-icon">🔍</span>
+              <input type="range" id="bannerZoom" min="50" max="200" value="100" oninput="handleZoomChange(this.value)">
+              <span class="zoom-value" id="zoomValue">100%</span>
+            </div>
+            <div class="effects-control" id="effectsControl">
+              <button class="effects-btn" onclick="toggleEffectsPanel()">🎨 Effects</button>
+            </div>
+            <button class="banner-reset-btn" onclick="resetBannerPosition()">Reset</button>
             <button class="banner-edit-btn" onclick="document.getElementById('bannerInput').click()">Change Image</button>
+          </div>
+          <!-- Effects panel (Artist+ only) -->
+          <div class="effects-panel" id="effectsPanel" style="display: none;">
+            <div class="effect-row">
+              <label>Blur</label>
+              <input type="range" id="effectBlur" min="0" max="10" value="0" oninput="applyEffects()">
+              <span id="blurValue">0px</span>
+            </div>
+            <div class="effect-row">
+              <label>Darken</label>
+              <input type="range" id="effectDarken" min="0" max="70" value="0" oninput="applyEffects()">
+              <span id="darkenValue">0%</span>
+            </div>
+            <div class="effect-row">
+              <label>Tint</label>
+              <select id="effectTint" onchange="applyEffects()">
+                <option value="none">None</option>
+                <option value="warm">Warm</option>
+                <option value="cool">Cool</option>
+                <option value="sepia">Sepia</option>
+                <option value="purple">Purple</option>
+              </select>
+            </div>
+            <button class="btn btn-sm" onclick="resetEffects()">Reset Effects</button>
           </div>
           <button class="banner-edit-btn" id="bannerUploadBtn" onclick="document.getElementById('bannerInput').click()">Add Banner</button>
           <input type="file" id="bannerInput" accept="image/*" style="display: none;" onchange="handleBannerUpload(event)">
@@ -281,8 +327,15 @@
       currentProfile = profileResult.data;
       currentPlan = subscriptionResult.data?.subscription_plans || { slug: 'free', social_links: false };
 
+      // Check plan capabilities
+      // DEV MODE: Set to true to test paid features locally
+      const DEV_MODE = true;
+      const isPaidPlan = DEV_MODE || currentPlan.slug === 'artist' || currentPlan.slug === 'professional';
+      const canUseSocialLinks = currentPlan.social_links || isPaidPlan;
+      const canUseCustomBanner = isPaidPlan;
+      const canUseEffects = isPaidPlan;
+
       // Gate social links by plan
-      const canUseSocialLinks = currentPlan.social_links || currentPlan.slug === 'artist' || currentPlan.slug === 'professional';
       if (!canUseSocialLinks) {
         document.getElementById('socialLinksSection').style.display = 'none';
         document.getElementById('socialLinksUpgrade').style.display = 'block';
@@ -303,19 +356,56 @@
         document.getElementById('avatarImage').src = profile.avatar_url;
       }
 
-      // Banner
-      if (profile.banner_url) {
+      // Banner - gated by plan
+      const bannerGradient = document.getElementById('bannerGradient');
+      const bannerUpgrade = document.getElementById('bannerUpgrade');
+      const bannerPlaceholder = document.getElementById('bannerPlaceholder');
+      const bannerUploadBtn = document.getElementById('bannerUploadBtn');
+      const effectsControl = document.getElementById('effectsControl');
+
+      if (!canUseCustomBanner) {
+        // Free user - show gradient and upgrade prompt
+        bannerGradient.style.display = 'block';
+        bannerPlaceholder.style.display = 'none';
+        bannerUpgrade.style.display = 'flex';
+        bannerUploadBtn.style.display = 'none';
+      } else if (profile.banner_url) {
+        // Paid user with banner
         const bannerImg = document.getElementById('bannerImage');
         bannerImg.src = profile.banner_url;
         bannerImg.style.display = 'block';
-        document.getElementById('bannerPlaceholder').style.display = 'none';
-        document.getElementById('bannerUploadBtn').style.display = 'none';
+        bannerGradient.style.display = 'none';
+        bannerPlaceholder.style.display = 'none';
+        bannerUploadBtn.style.display = 'none';
         document.getElementById('bannerControls').style.display = 'flex';
 
-        // Apply saved position (default 50%)
-        const position = profile.banner_position || 50;
-        bannerImg.style.objectPosition = `center ${position}%`;
-        document.getElementById('bannerPosition').value = position;
+        // Show effects control for paid users
+        if (canUseEffects) {
+          effectsControl.style.display = 'block';
+        }
+
+        // Apply saved position (default 50%, 50%) and zoom (default 100)
+        const positionX = profile.banner_position_x || 50;
+        const positionY = profile.banner_position_y || 50;
+        const zoom = profile.banner_zoom || 100;
+        bannerImg.style.objectPosition = `${positionX}% ${positionY}%`;
+        bannerImg.style.transform = `scale(${zoom / 100})`;
+        document.getElementById('bannerZoom').value = zoom;
+        document.getElementById('zoomValue').textContent = zoom + '%';
+
+        // Apply saved effects
+        if (profile.banner_blur || profile.banner_darken || profile.banner_tint) {
+          document.getElementById('effectBlur').value = profile.banner_blur || 0;
+          document.getElementById('effectDarken').value = profile.banner_darken || 0;
+          document.getElementById('effectTint').value = profile.banner_tint || 'none';
+          applyEffects();
+        }
+
+        // Initialize drag functionality
+        initBannerDrag(bannerImg, zoom);
+      } else {
+        // Paid user without banner - show upload option
+        bannerGradient.style.display = 'none';
       }
 
       // Social links display
@@ -530,11 +620,16 @@
         const bannerImg = document.getElementById('bannerImage');
         bannerImg.src = publicUrl + '?t=' + Date.now();
         bannerImg.style.display = 'block';
-        bannerImg.style.objectPosition = 'center 50%';
+        bannerImg.style.objectPosition = '50% 50%';
+        bannerImg.style.transform = 'scale(1)';
         document.getElementById('bannerPlaceholder').style.display = 'none';
         document.getElementById('bannerUploadBtn').style.display = 'none';
         document.getElementById('bannerControls').style.display = 'flex';
-        document.getElementById('bannerPosition').value = 50;
+        document.getElementById('bannerZoom').value = 100;
+        document.getElementById('zoomValue').textContent = '100%';
+
+        // Initialize drag functionality
+        initBannerDrag(bannerImg, 100);
 
       } catch (err) {
         console.error('Banner upload error:', err);
@@ -542,20 +637,196 @@
       }
     };
 
-    window.handleBannerPositionChange = async function(value) {
-      const bannerImg = document.getElementById('bannerImage');
-      bannerImg.style.objectPosition = `center ${value}%`;
+    // Track current zoom level globally for the drag function
+    let currentBannerZoom = 100;
 
-      // Save position to database
+    // Banner drag functionality
+    function initBannerDrag(bannerImg, initialZoom = 100) {
+      let isDragging = false;
+      let startX, startY;
+      let currentPosX = parseInt(bannerImg.style.objectPosition?.split(' ')[0]) || 50;
+      let currentPosY = parseInt(bannerImg.style.objectPosition?.split(' ')[1]) || 50;
+      currentBannerZoom = initialZoom;
+
+      const startDrag = (e) => {
+        isDragging = true;
+        bannerImg.style.cursor = 'grabbing';
+        startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+        startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+        e.preventDefault();
+      };
+
+      const doDrag = (e) => {
+        if (!isDragging) return;
+
+        const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+        const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+
+        const deltaX = (clientX - startX) / bannerImg.offsetWidth * 100;
+        const deltaY = (clientY - startY) / bannerImg.offsetHeight * 100;
+
+        currentPosX = Math.max(0, Math.min(100, currentPosX - deltaX));
+        currentPosY = Math.max(0, Math.min(100, currentPosY - deltaY));
+
+        bannerImg.style.objectPosition = `${currentPosX}% ${currentPosY}%`;
+
+        startX = clientX;
+        startY = clientY;
+      };
+
+      const endDrag = async () => {
+        if (!isDragging) return;
+        isDragging = false;
+        bannerImg.style.cursor = 'grab';
+
+        // Save position to database
+        try {
+          await supabase
+            .from('profiles')
+            .update({
+              banner_position_x: Math.round(currentPosX),
+              banner_position_y: Math.round(currentPosY)
+            })
+            .eq('id', currentUser.id);
+        } catch (err) {
+          console.error('Failed to save banner position:', err);
+        }
+      };
+
+      bannerImg.style.cursor = 'grab';
+      bannerImg.addEventListener('mousedown', startDrag);
+      bannerImg.addEventListener('mousemove', doDrag);
+      bannerImg.addEventListener('mouseup', endDrag);
+      bannerImg.addEventListener('mouseleave', endDrag);
+
+      // Touch events for mobile
+      bannerImg.addEventListener('touchstart', startDrag);
+      bannerImg.addEventListener('touchmove', doDrag);
+      bannerImg.addEventListener('touchend', endDrag);
+    }
+
+    // Handle zoom slider change
+    window.handleZoomChange = async function(value) {
+      const bannerImg = document.getElementById('bannerImage');
+      const zoom = parseInt(value);
+      currentBannerZoom = zoom;
+      bannerImg.style.transform = `scale(${zoom / 100})`;
+      document.getElementById('zoomValue').textContent = zoom + '%';
+
+      // Save zoom to database (debounced on mouseup/touchend via slider)
+    };
+
+    // Save zoom when slider is released
+    document.getElementById('bannerZoom')?.addEventListener('change', async function() {
       try {
         await supabase
           .from('profiles')
-          .update({ banner_position: parseInt(value) })
+          .update({ banner_zoom: parseInt(this.value) })
           .eq('id', currentUser.id);
       } catch (err) {
-        console.error('Failed to save banner position:', err);
+        console.error('Failed to save banner zoom:', err);
+      }
+    });
+
+    window.resetBannerPosition = async function() {
+      const bannerImg = document.getElementById('bannerImage');
+      bannerImg.style.objectPosition = '50% 50%';
+      bannerImg.style.transform = 'scale(1)';
+      currentBannerZoom = 100;
+      document.getElementById('bannerZoom').value = 100;
+      document.getElementById('zoomValue').textContent = '100%';
+
+      try {
+        await supabase
+          .from('profiles')
+          .update({ banner_position_x: 50, banner_position_y: 50, banner_zoom: 100 })
+          .eq('id', currentUser.id);
+      } catch (err) {
+        console.error('Failed to reset banner position:', err);
       }
     };
+
+    // Effects panel functions
+    window.toggleEffectsPanel = function() {
+      const panel = document.getElementById('effectsPanel');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    };
+
+    window.applyEffects = function() {
+      const bannerImg = document.getElementById('bannerImage');
+      const blur = document.getElementById('effectBlur').value;
+      const darken = document.getElementById('effectDarken').value;
+      const tint = document.getElementById('effectTint').value;
+
+      // Update display values
+      document.getElementById('blurValue').textContent = blur + 'px';
+      document.getElementById('darkenValue').textContent = darken + '%';
+
+      // Build filter string
+      let filters = [];
+      if (blur > 0) filters.push(`blur(${blur}px)`);
+
+      // Tint effects
+      switch(tint) {
+        case 'warm':
+          filters.push('sepia(0.3) saturate(1.2)');
+          break;
+        case 'cool':
+          filters.push('hue-rotate(20deg) saturate(0.9)');
+          break;
+        case 'sepia':
+          filters.push('sepia(0.6)');
+          break;
+        case 'purple':
+          filters.push('hue-rotate(270deg) saturate(0.8)');
+          break;
+      }
+
+      bannerImg.style.filter = filters.join(' ') || 'none';
+
+      // Apply darken overlay
+      const bannerContainer = document.getElementById('bannerContainer');
+      let overlay = bannerContainer.querySelector('.darken-overlay');
+      if (darken > 0) {
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.className = 'darken-overlay';
+          bannerContainer.appendChild(overlay);
+        }
+        overlay.style.background = `rgba(0, 0, 0, ${darken / 100})`;
+      } else if (overlay) {
+        overlay.remove();
+      }
+    };
+
+    window.resetEffects = function() {
+      document.getElementById('effectBlur').value = 0;
+      document.getElementById('effectDarken').value = 0;
+      document.getElementById('effectTint').value = 'none';
+      applyEffects();
+      saveEffects();
+    };
+
+    // Save effects when sliders are released
+    async function saveEffects() {
+      try {
+        await supabase
+          .from('profiles')
+          .update({
+            banner_blur: parseInt(document.getElementById('effectBlur').value),
+            banner_darken: parseInt(document.getElementById('effectDarken').value),
+            banner_tint: document.getElementById('effectTint').value
+          })
+          .eq('id', currentUser.id);
+      } catch (err) {
+        console.error('Failed to save banner effects:', err);
+      }
+    }
+
+    // Add event listeners for effect controls
+    document.getElementById('effectBlur')?.addEventListener('change', saveEffects);
+    document.getElementById('effectDarken')?.addEventListener('change', saveEffects);
+    document.getElementById('effectTint')?.addEventListener('change', saveEffects);
 
     window.copyGalleryLink = function() {
       const link = document.getElementById('galleryLink').href;
@@ -623,6 +894,167 @@
       font-size: 0.9rem;
     }
 
+    /* Default gradient for free users */
+    .banner-gradient {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #1a1a2e 75%, #16213e 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      display: none;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Upgrade prompt for free users */
+    .banner-upgrade {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .banner-upgrade .upgrade-content {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+    }
+
+    .banner-upgrade span {
+      display: block;
+      color: white;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #C9A227 0%, #D4AF37 50%, #C9A227 100%);
+      color: #000;
+      font-weight: 600;
+      border: none;
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #D4AF37 0%, #E5C100 50%, #D4AF37 100%);
+    }
+
+    /* Effects button */
+    .effects-control {
+      display: none;
+    }
+
+    .effects-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: background 0.2s;
+    }
+
+    .effects-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Effects panel */
+    .effects-panel {
+      position: absolute;
+      bottom: 5rem;
+      left: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,0.9);
+      padding: 1rem;
+      border-radius: 8px;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .effect-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .effect-row:last-of-type {
+      margin-bottom: 1rem;
+    }
+
+    .effect-row label {
+      color: white;
+      font-size: 0.8rem;
+      width: 50px;
+    }
+
+    .effect-row input[type="range"] {
+      flex: 1;
+      height: 6px;
+      -webkit-appearance: none;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .effect-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .effect-row select {
+      flex: 1;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .effect-row select option {
+      background: #333;
+      color: white;
+    }
+
+    .effect-row span {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.75rem;
+      width: 40px;
+      text-align: right;
+    }
+
+    /* Darken overlay */
+    .darken-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
     .banner-edit-btn {
       position: absolute;
       bottom: 1rem;
@@ -660,6 +1092,44 @@
       white-space: nowrap;
     }
 
+    .zoom-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      padding: 0.4rem 0.6rem;
+      border-radius: 6px;
+    }
+
+    .zoom-icon {
+      font-size: 0.9rem;
+    }
+
+    .zoom-value {
+      color: white;
+      font-size: 0.75rem;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .zoom-control input[type="range"] {
+      width: 80px;
+      height: 6px;
+      -webkit-appearance: none;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .zoom-control input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
     .banner-controls input[type="range"] {
       flex: 1;
       height: 6px;
@@ -678,9 +1148,20 @@
       cursor: pointer;
     }
 
-    .banner-controls .banner-edit-btn {
+    .banner-controls .banner-edit-btn,
+    .banner-controls .banner-reset-btn {
       position: static;
       padding: 0.4rem 0.8rem;
+    }
+
+    .banner-reset-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    .banner-reset-btn:hover {
+      background: rgba(255,255,255,0.3);
     }
 
     /* Social links styles */
@@ -932,6 +1413,26 @@
 
       .profile-actions {
         flex-direction: column;
+      }
+
+      .banner-controls {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .banner-controls label {
+        font-size: 0.7rem;
+      }
+
+      .zoom-control {
+        order: 10;
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.25rem;
+      }
+
+      .zoom-control input[type="range"] {
+        width: 120px;
       }
     }
   </style>

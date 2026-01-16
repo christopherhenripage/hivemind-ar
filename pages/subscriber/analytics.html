@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    .analytics-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .time-filter {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .time-filter button {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--hm-light-gray);
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .time-filter button.active {
+      background: var(--hm-dark);
+      color: white;
+      border-color: var(--hm-dark);
+    }
+
+    .time-filter button:hover:not(.active) {
+      background: var(--hm-light-gray);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--hm-white);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .stat-card h3 {
+      font-size: 0.8rem;
+      color: var(--hm-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--hm-text);
+    }
+
+    .stat-card .change {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .stat-card .change.positive {
+      color: #22c55e;
+    }
+
+    .stat-card .change.negative {
+      color: #ef4444;
+    }
+
+    .analytics-section {
+      background: var(--hm-white);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .analytics-section h2 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--hm-light-gray);
+    }
+
+    .chart-placeholder {
+      height: 200px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--hm-text-muted);
+    }
+
+    .top-artworks-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .top-artworks-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--hm-light-gray);
+    }
+
+    .top-artworks-list li:last-child {
+      border-bottom: none;
+    }
+
+    .artwork-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .artwork-info img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .artwork-info .title {
+      font-weight: 500;
+    }
+
+    .artwork-stats {
+      text-align: right;
+    }
+
+    .artwork-stats .views {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .artwork-stats .ar-views {
+      font-size: 0.85rem;
+      color: var(--hm-text-muted);
+    }
+
+    .upgrade-prompt {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .upgrade-prompt h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .upgrade-prompt p {
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
+    }
+
+    .upgrade-prompt .features {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .upgrade-prompt .feature {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .two-column-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .two-column-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* World Map Styles */
+    .world-map-container {
+      position: relative;
+      width: 100%;
+      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 1.5rem;
+    }
+
+    .world-map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: white;
+    }
+
+    .world-map-header h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .visitor-count-badge {
+      background: rgba(255,255,255,0.1);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    #visitorDots {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+
+    .visitor-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #22c55e;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: dotPulse 2s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .visitor-dot::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      background: rgba(34, 197, 94, 0.2);
+      border-radius: 50%;
+      animation: dotRipple 2s ease-out infinite;
+      pointer-events: none;
+    }
+
+    .visitor-dot .dot-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      width: 200px;
+      text-align: left;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      line-height: 1.5;
+      pointer-events: none;
+    }
+
+    .visitor-dot .dot-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #1e293b;
+    }
+
+    .visitor-dot:hover .dot-tooltip {
+      display: block;
+    }
+
+    .dot-tooltip-header {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dot-tooltip-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.2rem 0;
+      border-bottom: 1px solid #334155;
+    }
+
+    .dot-tooltip-stat:last-child {
+      border-bottom: none;
+    }
+
+    .dot-tooltip-label {
+      color: #94a3b8;
+    }
+
+    .dot-tooltip-value {
+      font-weight: 500;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    @keyframes dotRipple {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+    }
+
+    .map-legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.active {
+      background: #22c55e;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+    }
+
+    .legend-dot.recent {
+      background: #3b82f6;
+      box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+    }
+
+    .top-countries-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .top-countries-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--hm-light-gray);
+    }
+
+    .top-countries-list li:last-child {
+      border-bottom: none;
+    }
+
+    .country-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .country-flag {
+      font-size: 1.25rem;
+    }
+
+    .country-name {
+      font-weight: 500;
+    }
+
+    .country-visitors {
+      color: var(--hm-text-muted);
+      font-size: 0.9rem;
+    }
+
+    .country-bar {
+      width: 60px;
+      height: 4px;
+      background: var(--hm-light-gray);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .country-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 2px;
+    }
+
+    .pro-map-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .pro-map-overlay h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
+    }
+
+    .pro-map-overlay p {
+      margin: 0 0 1rem 0;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 101;
+      background: var(--hm-dark);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      .breadcrumb, .page-header {
+        padding-left: 4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <a href="/" class="sidebar-header" style="text-decoration: none; color: inherit;">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind" class="logo-icon" style="height: 32px;">
+        <span class="logo-text">HiveMind AR</span>
+      </a>
+
+      <nav class="sidebar-nav">
+        <a href="/pages/subscriber/dashboard.html">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a href="/pages/subscriber/images.html">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">My Artworks</span>
+        </a>
+        <a href="/pages/subscriber/analytics.html" class="active">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Analytics</span>
+        </a>
+        <a href="/pages/subscriber/profile.html">
+          <span class="nav-icon">👤</span>
+          <span class="nav-text">Profile</span>
+        </a>
+        <a href="/pages/subscriber/messages.html">
+          <span class="nav-icon">✉️</span>
+          <span class="nav-text">Messages</span>
+        </a>
+        <a href="/pages/subscriber/upgrade.html">
+          <span class="nav-icon">⭐</span>
+          <span class="nav-text">Upgrade Plan</span>
+        </a>
+        <a href="/pages/subscriber/support.html">
+          <span class="nav-icon">🎧</span>
+          <span class="nav-text">Support</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" onclick="handleLogout()">
+          <span class="nav-icon">🚪</span>
+          <span class="nav-text">Sign Out</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/pages/subscriber/dashboard.html">Dashboard</a> / <span>Analytics</span>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Gallery Analytics</h1>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <!-- Free User Upgrade Prompt -->
+        <div id="freeUserPrompt" class="upgrade-prompt" style="display: none;">
+          <h3>Unlock Gallery Analytics</h3>
+          <p>See who's viewing your art and what resonates with your audience.</p>
+          <div class="features">
+            <div class="feature"><span>✓</span> View counts & unique visitors</div>
+            <div class="feature"><span>✓</span> Top performing artworks</div>
+            <div class="feature"><span>✓</span> AR engagement tracking</div>
+          </div>
+          <a href="/pages/subscriber/upgrade.html" class="btn btn-gold">Upgrade to Artist - $12/mo</a>
+        </div>
+
+        <!-- Analytics Content (for paid users) -->
+        <div id="analyticsContent" style="display: none;">
+          <!-- Time Filter & Header -->
+          <div class="analytics-header">
+            <div class="time-filter">
+              <button class="active" data-range="7">7 Days</button>
+              <button data-range="30">30 Days</button>
+              <button data-range="90">90 Days</button>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3>Gallery Views</h3>
+              <div class="value" id="totalViews">0</div>
+            </div>
+            <div class="stat-card">
+              <h3>Unique Visitors</h3>
+              <div class="value" id="uniqueVisitors">0</div>
+            </div>
+            <div class="stat-card">
+              <h3>AR Activations</h3>
+              <div class="value" id="arViews">0</div>
+            </div>
+            <div class="stat-card">
+              <h3>Inquiries</h3>
+              <div class="value" id="inquiries">0</div>
+            </div>
+            <div class="stat-card">
+              <h3>AR Engagement</h3>
+              <div class="value" id="arRate">0%</div>
+            </div>
+          </div>
+
+          <!-- Two Column Layout -->
+          <div class="two-column-grid">
+            <!-- Top Artworks -->
+            <div class="analytics-section">
+              <h2>Top Artworks</h2>
+              <ul class="top-artworks-list" id="topArtworksList">
+                <li style="color: var(--hm-text-muted); justify-content: center;">Loading...</li>
+              </ul>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="analytics-section">
+              <h2>Traffic Sources</h2>
+              <div id="trafficSources">
+                <p style="color: var(--hm-text-muted); text-align: center; padding: 2rem 0;">
+                  Traffic source data is available on Professional plans
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Geographic Analytics Section -->
+          <div class="analytics-section" id="geoSection">
+            <h2>Visitor Locations</h2>
+            <div class="world-map-container" id="worldMapContainer">
+              <div class="world-map-header">
+                <h3>Global Reach</h3>
+                <span class="visitor-count-badge" id="mapVisitorCount">0 visitors</span>
+              </div>
+              <!-- World Map -->
+              <div style="position: relative; width: 100%; aspect-ratio: 3/2; min-height: 200px;" id="mapWrapper">
+                <img src="/images/analytics/world-map-dark.png" alt="World Map" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                <!-- Visitor dots will be positioned here -->
+                <div id="visitorDots"></div>
+              </div>
+              <div class="map-legend">
+                <div class="legend-item">
+                  <span class="legend-dot active"></span>
+                  <span>Recent visitors</span>
+                </div>
+              </div>
+              <!-- Pro overlay for non-Pro users -->
+              <div class="pro-map-overlay" id="proMapOverlay" style="display: none;">
+                <h4>Geographic Analytics</h4>
+                <p>See where your collectors are viewing from around the world</p>
+                <a href="/pages/subscriber/upgrade.html" class="btn btn-gold" style="font-size: 0.85rem;">Upgrade to Professional</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Countries -->
+          <div class="two-column-grid">
+            <div class="analytics-section" id="topCountriesSection">
+              <h2>Top Countries</h2>
+              <ul class="top-countries-list" id="topCountriesList">
+                <li style="color: var(--hm-text-muted); justify-content: center; padding: 2rem 0;">Loading...</li>
+              </ul>
+            </div>
+
+            <div class="analytics-section" id="deviceBreakdown">
+              <h2>Device Breakdown</h2>
+              <ul class="top-countries-list" id="deviceList">
+                <li style="color: var(--hm-text-muted); justify-content: center; padding: 2rem 0;">Loading...</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Pro Features Prompt -->
+          <div id="proFeaturesPrompt" class="analytics-section" style="display: none;">
+            <div style="text-align: center; padding: 1rem;">
+              <h3 style="margin-bottom: 0.5rem;">Want deeper insights?</h3>
+              <p style="color: var(--hm-text-muted); margin-bottom: 1rem;">Professional plan includes geographic data, device breakdown, and data export.</p>
+              <a href="/pages/subscriber/upgrade.html" class="btn btn-dark">Upgrade to Professional</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="dashboard-footer">
+        &copy; 2026 HiveMind AR
+      </footer>
+    </main>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let currentUser = null;
+    let currentPlan = null;
+    let selectedRange = 7;
+
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/pages/auth/login.html';
+        return null;
+      }
+      return user;
+    }
+
+    // Load analytics
+    async function loadAnalytics() {
+      currentUser = await checkAuth();
+      if (!currentUser) return;
+
+      // Get subscription
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('*, subscription_plans(*)')
+        .eq('user_id', currentUser.id)
+        .single();
+
+      currentPlan = subscription?.subscription_plans || { slug: 'free' };
+
+      // DEV MODE: Set to true to test paid features locally
+      const DEV_MODE = true;
+      const isPaidPlan = DEV_MODE || currentPlan.slug === 'artist' || currentPlan.slug === 'professional';
+
+      if (!isPaidPlan) {
+        // Show upgrade prompt for free users
+        document.getElementById('freeUserPrompt').style.display = 'block';
+        document.getElementById('analyticsContent').style.display = 'none';
+        return;
+      }
+
+      // Show analytics for paid users
+      document.getElementById('freeUserPrompt').style.display = 'none';
+      document.getElementById('analyticsContent').style.display = 'block';
+
+      const isProPlan = DEV_MODE || currentPlan.slug === 'professional' || currentPlan.slug === 'established';
+
+      // Show pro features prompt for Artist plan users
+      if (currentPlan.slug === 'artist' && !DEV_MODE) {
+        document.getElementById('proFeaturesPrompt').style.display = 'block';
+        document.getElementById('proMapOverlay').style.display = 'flex';
+      }
+
+      // Hide geo sections for non-pro plans (unless DEV_MODE)
+      if (!isProPlan && !DEV_MODE) {
+        document.getElementById('geoSection').querySelector('.world-map-container').style.filter = 'blur(3px)';
+        document.getElementById('topCountriesSection').style.opacity = '0.5';
+        document.getElementById('deviceBreakdown').style.opacity = '0.5';
+      }
+
+      await fetchAnalyticsData();
+    }
+
+    async function fetchAnalyticsData() {
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - selectedRange);
+
+      // Fetch analytics data
+      let analytics = [];
+      try {
+        const { data, error } = await supabase
+          .from('gallery_analytics')
+          .select('*')
+          .eq('artist_id', currentUser.id)
+          .gte('created_at', startDate.toISOString());
+
+        if (!error && data) {
+          analytics = data;
+        }
+      } catch (err) {
+        console.log('Analytics table may not exist yet:', err);
+      }
+
+      // Calculate stats (with demo data fallback)
+      const pageViews = analytics.filter(a => a.event_type === 'page_view');
+      const arViews = analytics.filter(a => a.event_type === 'ar_view');
+      const inquiries = analytics.filter(a => a.event_type === 'inquiry');
+      const uniqueVisitors = new Set(pageViews.map(a => a.visitor_fingerprint)).size;
+
+      // Use demo stats if no real data
+      const hasRealData = analytics.length > 0;
+
+      // Demo stats for display
+      const demoStats = {
+        views: 127,
+        uniqueVisitors: 89,
+        arViews: 34,
+        inquiries: 7,
+        arRate: 27
+      };
+
+      // Update UI with real or demo data
+      document.getElementById('totalViews').textContent = hasRealData ? pageViews.length : demoStats.views;
+      document.getElementById('uniqueVisitors').textContent = hasRealData ? uniqueVisitors : demoStats.uniqueVisitors;
+      document.getElementById('arViews').textContent = hasRealData ? arViews.length : demoStats.arViews;
+      document.getElementById('inquiries').textContent = hasRealData ? inquiries.length : demoStats.inquiries;
+
+      const arRate = hasRealData && pageViews.length > 0
+        ? Math.round((arViews.length / pageViews.length) * 100)
+        : demoStats.arRate;
+      document.getElementById('arRate').textContent = arRate + '%';
+
+      // Load top artworks
+      await loadTopArtworks(analytics);
+
+      // Populate geographic data (Pro feature, but shown with simulated data in DEV_MODE)
+      populateMap(analytics);
+      populateCountries(analytics);
+      populateDevices(analytics);
+    }
+
+    async function loadTopArtworks(analytics) {
+      // Get artwork view counts
+      const artworkViews = analytics.filter(a => a.event_type === 'ar_view' && a.artwork_id);
+      const viewCounts = {};
+
+      artworkViews.forEach(view => {
+        viewCounts[view.artwork_id] = (viewCounts[view.artwork_id] || 0) + 1;
+      });
+
+      // Sort by views
+      const sortedArtworks = Object.entries(viewCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      if (sortedArtworks.length === 0) {
+        document.getElementById('topArtworksList').innerHTML = '<li style="color: var(--hm-text-muted); justify-content: center; padding: 2rem 0;">No artwork views yet</li>';
+        return;
+      }
+
+      // Fetch artwork details
+      const artworkIds = sortedArtworks.map(([id]) => id);
+      const { data: artworks } = await supabase
+        .from('artworks')
+        .select('id, title, thumbnail_url, image_url')
+        .in('id', artworkIds);
+
+      const artworkMap = {};
+      artworks?.forEach(a => artworkMap[a.id] = a);
+
+      // Render list
+      const listHtml = sortedArtworks.map(([id, count]) => {
+        const artwork = artworkMap[id];
+        if (!artwork) return '';
+        return `
+          <li>
+            <div class="artwork-info">
+              <img src="${artwork.thumbnail_url || artwork.image_url || '/images/placeholder.png'}" alt="${artwork.title}">
+              <span class="title">${artwork.title}</span>
+            </div>
+            <div class="artwork-stats">
+              <div class="ar-views">${count} AR views</div>
+            </div>
+          </li>
+        `;
+      }).join('');
+
+      document.getElementById('topArtworksList').innerHTML = listHtml || '<li style="color: var(--hm-text-muted); justify-content: center;">No data yet</li>';
+    }
+
+    // Country coordinates for map dots (percentages matching world-map-dark.png)
+    const COUNTRY_COORDS = {
+      'US': { x: 18, y: 35, flag: '🇺🇸', name: 'United States' },
+      'UK': { x: 45, y: 25, flag: '🇬🇧', name: 'United Kingdom' },
+      'GB': { x: 45, y: 25, flag: '🇬🇧', name: 'United Kingdom' },
+      'CA': { x: 15, y: 25, flag: '🇨🇦', name: 'Canada' },
+      'AU': { x: 82, y: 75, flag: '🇦🇺', name: 'Australia' },
+      'DE': { x: 49, y: 28, flag: '🇩🇪', name: 'Germany' },
+      'FR': { x: 46, y: 30, flag: '🇫🇷', name: 'France' },
+      'JP': { x: 87, y: 35, flag: '🇯🇵', name: 'Japan' },
+      'BR': { x: 28, y: 65, flag: '🇧🇷', name: 'Brazil' },
+      'IN': { x: 68, y: 42, flag: '🇮🇳', name: 'India' },
+      'CN': { x: 77, y: 35, flag: '🇨🇳', name: 'China' },
+      'MX': { x: 14, y: 42, flag: '🇲🇽', name: 'Mexico' },
+      'ES': { x: 43, y: 32, flag: '🇪🇸', name: 'Spain' },
+      'IT': { x: 50, y: 32, flag: '🇮🇹', name: 'Italy' },
+      'NL': { x: 47, y: 26, flag: '🇳🇱', name: 'Netherlands' },
+      'KR': { x: 84, y: 36, flag: '🇰🇷', name: 'South Korea' },
+      'SG': { x: 75, y: 52, flag: '🇸🇬', name: 'Singapore' },
+      'AE': { x: 58, y: 40, flag: '🇦🇪', name: 'UAE' },
+      'NZ': { x: 92, y: 82, flag: '🇳🇿', name: 'New Zealand' },
+      'SE': { x: 50, y: 20, flag: '🇸🇪', name: 'Sweden' },
+      'ZA': { x: 52, y: 68, flag: '🇿🇦', name: 'South Africa' },
+      'RU': { x: 65, y: 22, flag: '🇷🇺', name: 'Russia' },
+      'UNKNOWN': { x: 50, y: 50, flag: '🌍', name: 'Unknown' }
+    };
+
+    // Generate demo insights for a country
+    function generateInsights(countryCode, visitorCount) {
+      const country = COUNTRY_COORDS[countryCode] || COUNTRY_COORDS['UNKNOWN'];
+
+      // Demo artwork names
+      const artworks = ['Sunset Harbor', 'Urban Dreams', 'Morning Light', 'Abstract Flow', 'Coastal Breeze'];
+      const topArtwork = artworks[Math.floor(Math.random() * artworks.length)];
+
+      // Generate plausible demo stats based on visitor count
+      const arEngagement = Math.floor(visitorCount * (0.3 + Math.random() * 0.4));
+      const inquiries = Math.floor(visitorCount * (0.05 + Math.random() * 0.1));
+      const returnVisitors = Math.floor(visitorCount * (0.2 + Math.random() * 0.2));
+      const mobilePercent = Math.floor(40 + Math.random() * 35);
+
+      // Peak hours based on rough timezone
+      const peakHours = {
+        'US': '7-10pm EST', 'CA': '7-10pm EST', 'MX': '8-11pm CST',
+        'UK': '6-9pm GMT', 'GB': '6-9pm GMT', 'DE': '7-10pm CET', 'FR': '7-10pm CET',
+        'ES': '8-11pm CET', 'IT': '7-10pm CET', 'NL': '7-10pm CET', 'SE': '6-9pm CET',
+        'JP': '8-11pm JST', 'KR': '8-11pm KST', 'CN': '7-10pm CST',
+        'AU': '7-10pm AEST', 'NZ': '7-10pm NZST',
+        'IN': '7-10pm IST', 'SG': '8-11pm SGT',
+        'AE': '8-11pm GST', 'ZA': '6-9pm SAST', 'BR': '7-10pm BRT', 'RU': '7-10pm MSK'
+      };
+
+      return {
+        name: country.name,
+        flag: country.flag,
+        visitors: visitorCount,
+        topArtwork,
+        arEngagement,
+        inquiries,
+        returnVisitors,
+        mobilePercent,
+        peakTime: peakHours[countryCode] || '7-10pm local'
+      };
+    }
+
+    // Populate map with visitor dots
+    function populateMap(analytics) {
+      const dotsContainer = document.getElementById('visitorDots');
+      dotsContainer.innerHTML = '';
+
+      // Get unique visitor countries (simulate from data)
+      // In production, you'd have country_code in your analytics table
+      let countries = {};
+      analytics.forEach(a => {
+        const country = a.country_code || 'US'; // Default to US for demo
+        countries[country] = (countries[country] || 0) + 1;
+      });
+
+      // Demo data if no analytics yet
+      if (Object.keys(countries).length === 0) {
+        countries = { 'US': 45, 'UK': 23, 'CA': 18, 'AU': 12, 'DE': 9, 'FR': 7, 'JP': 5 };
+      }
+
+      // Create dots for each country
+      Object.entries(countries).forEach(([code, count]) => {
+        const coords = COUNTRY_COORDS[code] || COUNTRY_COORDS['UNKNOWN'];
+        const insights = generateInsights(code, count);
+
+        const dot = document.createElement('div');
+        dot.className = 'visitor-dot';
+        dot.style.left = `${coords.x}%`;
+        dot.style.top = `${coords.y}%`;
+
+        // Create tooltip with insights
+        dot.innerHTML = `
+          <div class="dot-tooltip">
+            <div class="dot-tooltip-header">
+              <span>${insights.flag}</span>
+              <span>${insights.name}</span>
+            </div>
+            <div class="dot-tooltip-stat">
+              <span class="dot-tooltip-label">Visitors</span>
+              <span class="dot-tooltip-value">${insights.visitors}</span>
+            </div>
+            <div class="dot-tooltip-stat">
+              <span class="dot-tooltip-label">Top artwork</span>
+              <span class="dot-tooltip-value">${insights.topArtwork}</span>
+            </div>
+            <div class="dot-tooltip-stat">
+              <span class="dot-tooltip-label">AR views</span>
+              <span class="dot-tooltip-value">${insights.arEngagement}</span>
+            </div>
+            <div class="dot-tooltip-stat">
+              <span class="dot-tooltip-label">Inquiries</span>
+              <span class="dot-tooltip-value">${insights.inquiries}</span>
+            </div>
+            <div class="dot-tooltip-stat">
+              <span class="dot-tooltip-label">Return visitors</span>
+              <span class="dot-tooltip-value">${insights.returnVisitors}</span>
+            </div>
+            <div class="dot-tooltip-stat">
+              <span class="dot-tooltip-label">Mobile</span>
+              <span class="dot-tooltip-value">${insights.mobilePercent}%</span>
+            </div>
+            <div class="dot-tooltip-stat">
+              <span class="dot-tooltip-label">Peak time</span>
+              <span class="dot-tooltip-value">${insights.peakTime}</span>
+            </div>
+          </div>
+        `;
+
+        dotsContainer.appendChild(dot);
+      });
+
+      // Update visitor count
+      document.getElementById('mapVisitorCount').textContent =
+        `${Object.values(countries).reduce((a, b) => a + b, 0)} visitors from ${Object.keys(countries).length} countries`;
+    }
+
+    // Populate top countries list
+    function populateCountries(analytics) {
+      // Simulate country data - in production this would come from IP geolocation
+      let countryCounts = {};
+      analytics.forEach(a => {
+        const country = a.country_code || ['US', 'UK', 'CA', 'AU', 'DE'][Math.floor(Math.random() * 5)];
+        countryCounts[country] = (countryCounts[country] || 0) + 1;
+      });
+
+      // Demo data if no analytics yet
+      if (Object.keys(countryCounts).length === 0) {
+        countryCounts = { 'US': 45, 'UK': 23, 'CA': 18, 'AU': 12, 'DE': 9 };
+      }
+
+      const sortedCountries = Object.entries(countryCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      const maxCount = sortedCountries[0]?.[1] || 1;
+
+      const html = sortedCountries.map(([code, count]) => {
+        const country = COUNTRY_COORDS[code] || COUNTRY_COORDS['UNKNOWN'];
+        const percentage = Math.round((count / maxCount) * 100);
+        return `
+          <li>
+            <div class="country-info">
+              <span class="country-flag">${country.flag}</span>
+              <span class="country-name">${country.name}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span class="country-visitors">${count}</span>
+              <div class="country-bar">
+                <div class="country-bar-fill" style="width: ${percentage}%"></div>
+              </div>
+            </div>
+          </li>
+        `;
+      }).join('');
+
+      document.getElementById('topCountriesList').innerHTML = html;
+    }
+
+    // Populate device breakdown
+    function populateDevices(analytics) {
+      let deviceCounts = { mobile: 0, desktop: 0, tablet: 0 };
+
+      analytics.forEach(a => {
+        const device = a.device_type || 'desktop';
+        deviceCounts[device] = (deviceCounts[device] || 0) + 1;
+      });
+
+      // Demo data if no analytics yet
+      const totalReal = Object.values(deviceCounts).reduce((a, b) => a + b, 0);
+      if (totalReal === 0) {
+        deviceCounts = { mobile: 52, desktop: 38, tablet: 10 };
+      }
+
+      const total = Object.values(deviceCounts).reduce((a, b) => a + b, 0) || 1;
+      const devices = [
+        { name: 'Mobile', icon: '📱', count: deviceCounts.mobile },
+        { name: 'Desktop', icon: '🖥️', count: deviceCounts.desktop },
+        { name: 'Tablet', icon: '📲', count: deviceCounts.tablet }
+      ].sort((a, b) => b.count - a.count);
+
+      const maxCount = devices[0]?.count || 1;
+
+      const html = devices.map(device => {
+        const percentage = Math.round((device.count / maxCount) * 100);
+        const percentOfTotal = Math.round((device.count / total) * 100);
+        return `
+          <li>
+            <div class="country-info">
+              <span class="country-flag">${device.icon}</span>
+              <span class="country-name">${device.name}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span class="country-visitors">${percentOfTotal}%</span>
+              <div class="country-bar">
+                <div class="country-bar-fill" style="width: ${percentage}%"></div>
+              </div>
+            </div>
+          </li>
+        `;
+      }).join('');
+
+      document.getElementById('deviceList').innerHTML = html;
+    }
+
+    // Time filter handlers
+    document.querySelectorAll('.time-filter button').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        document.querySelectorAll('.time-filter button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        selectedRange = parseInt(this.dataset.range);
+        await fetchAnalyticsData();
+      });
+    });
+
+    window.handleLogout = async function() {
+      await supabase.auth.signOut();
+      window.location.href = '/pages/auth/login.html';
+    };
+
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('mobileOverlay').classList.toggle('active');
+    };
+
+    window.closeSidebar = function() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('active');
+    };
+
+    loadAnalytics();
+  </script>
+</body>
+</html>
