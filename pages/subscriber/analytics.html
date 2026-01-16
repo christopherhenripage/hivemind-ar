@@ -708,7 +708,7 @@
       currentPlan = subscription?.subscription_plans || { slug: 'free' };
 
       // DEV MODE: Set to true to test paid features locally
-      const DEV_MODE = true;
+      const DEV_MODE = false;
       const isPaidPlan = DEV_MODE || currentPlan.slug === 'artist' || currentPlan.slug === 'professional';
 
       if (!isPaidPlan) {
