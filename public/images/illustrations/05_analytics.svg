@@ -96,8 +96,15 @@
     <ellipse cx="180" cy="480" rx="45" ry="15"/>
     <!-- Body -->
     <path d="M 140 310 Q 130 400 150 480 L 210 480 Q 230 400 220 310 Z"/>
-    <!-- Head - looking at visualization -->
-    <circle cx="180" cy="275" r="32"/>
+    <!-- Deer Head -->
+    <g transform="translate(180, 275) scale(1.1)">
+      <path d="M -20 -25 Q -25 -45 -35 -55 M -25 -45 Q -30 -50 -40 -48 M -25 -45 Q -20 -55 -25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M 20 -25 Q 25 -45 35 -55 M 25 -45 Q 30 -50 40 -48 M 25 -45 Q 20 -55 25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <ellipse cx="-22" cy="-12" rx="5" ry="9" transform="rotate(-20 -22 -12)"/>
+      <ellipse cx="22" cy="-12" rx="5" ry="9" transform="rotate(20 22 -12)"/>
+      <ellipse cx="0" cy="5" rx="22" ry="28"/>
+      <ellipse cx="0" cy="28" rx="12" ry="10"/>
+    </g>
     <!-- Arm extended toward data -->
     <path d="M 220 330 Q 280 300 320 280" stroke="#9A7B5B" stroke-width="16" fill="none" stroke-linecap="round"/>
     <!-- Other arm relaxed -->

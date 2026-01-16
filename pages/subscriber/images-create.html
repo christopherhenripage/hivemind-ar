@@ -417,7 +417,7 @@
           .select('*', { count: 'exact', head: true })
           .eq('user_id', currentUser.id);
 
-        const limit = subscription?.subscription_plans?.artwork_limit || 5; // Free tier default
+        const limit = subscription?.subscription_plans?.artwork_limit || 3; // Free tier default
 
         if (count >= limit && limit < 9999) {
           alert(`You have reached your artwork limit (${limit}). Please upgrade your subscription to add more.`);

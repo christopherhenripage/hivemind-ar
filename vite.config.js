@@ -50,6 +50,7 @@ export default defineConfig({
         'public-privacy': resolve(__dirname, 'pages/public/privacy.html'),
         'public-contact': resolve(__dirname, 'pages/public/contact.html'),
         'public-how-it-works': resolve(__dirname, 'pages/public/how-it-works.html'),
+        'public-ar-demo': resolve(__dirname, 'pages/public/ar-demo.html'),
         // Gallery
         'gallery': resolve(__dirname, 'pages/gallery/index.html'),
         'gallery-artist': resolve(__dirname, 'pages/gallery/artist.html'),

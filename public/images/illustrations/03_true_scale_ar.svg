@@ -102,8 +102,15 @@
     <rect x="135" y="380" width="20" height="80" rx="5"/>
     <!-- Torso -->
     <path d="M 100 280 Q 95 330 105 380 L 155 380 Q 165 330 160 280 Z"/>
-    <!-- Head -->
-    <circle cx="130" cy="250" r="30"/>
+    <!-- Deer Head -->
+    <g transform="translate(130, 250) scale(1.0)">
+      <path d="M -20 -25 Q -25 -45 -35 -55 M -25 -45 Q -30 -50 -40 -48 M -25 -45 Q -20 -55 -25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M 20 -25 Q 25 -45 35 -55 M 25 -45 Q 30 -50 40 -48 M 25 -45 Q 20 -55 25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <ellipse cx="-22" cy="-12" rx="5" ry="9" transform="rotate(-20 -22 -12)"/>
+      <ellipse cx="22" cy="-12" rx="5" ry="9" transform="rotate(20 22 -12)"/>
+      <ellipse cx="0" cy="5" rx="22" ry="28"/>
+      <ellipse cx="0" cy="28" rx="12" ry="10"/>
+    </g>
     <!-- Arms at sides -->
     <path d="M 100 290 Q 80 330 85 370" stroke="#9A7B5B" stroke-width="14" fill="none" stroke-linecap="round"/>
     <path d="M 160 290 Q 180 330 175 370" stroke="#9A7B5B" stroke-width="14" fill="none" stroke-linecap="round"/>

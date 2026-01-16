@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
+  <!-- QR Code Library (qrcodejs - browser-native) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
   <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
@@ -182,6 +184,28 @@
                 <button class="btn btn-sm" style="margin-left: 0.5rem;" onclick="copyGalleryLink()">Copy</button>
               </div>
             </div>
+
+            <!-- QR Code Section -->
+            <div class="profile-field full-width" id="qrCodeSection" style="display: none;">
+              <label>Gallery QR Code</label>
+              <div class="qr-code-container">
+                <div class="qr-code-preview">
+                  <div id="qrCodeCanvas"></div>
+                </div>
+                <div class="qr-code-info">
+                  <p>Share this QR code on business cards, exhibition labels, or promotional materials.</p>
+                  <div class="qr-download-buttons">
+                    <button class="btn btn-dark btn-sm" onclick="downloadQRCode('png')">Download PNG</button>
+                    <button class="btn btn-outline btn-sm" onclick="downloadQRCode('svg')">Download SVG</button>
+                  </div>
+                  <div class="qr-share-buttons">
+                    <button class="btn btn-sm" onclick="shareQRCode()" id="shareQRBtn" style="display: none;">Share to Social</button>
+                    <button class="btn btn-sm" onclick="copyQRCodeToClipboard()">Copy to Clipboard</button>
+                  </div>
+                  <p class="qr-hint">PNG is best for print. SVG scales to any size.</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="profile-actions">
@@ -307,25 +331,86 @@
       return user;
     }
 
+    // Create missing profile and subscription (fallback if trigger failed)
+    async function ensureProfileExists(user) {
+      // Check if profile exists
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError && profileError.code === 'PGRST116') {
+        // Profile doesn't exist - create it
+        console.log('Creating missing profile for user:', user.id);
+        const { error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            id: user.id,
+            email: user.email,
+            full_name: user.user_metadata?.full_name || '',
+            created_at: new Date().toISOString()
+          });
+
+        if (createError) {
+          console.error('Failed to create profile:', createError);
+          return null;
+        }
+
+        // Also create subscription
+        const { data: freePlan } = await supabase
+          .from('subscription_plans')
+          .select('id')
+          .eq('slug', 'free')
+          .single();
+
+        if (freePlan) {
+          await supabase
+            .from('subscriptions')
+            .insert({
+              user_id: user.id,
+              plan_id: freePlan.id,
+              status: 'active',
+              created_at: new Date().toISOString()
+            });
+        }
+
+        // Fetch the newly created profile
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        return newProfile;
+      }
+
+      return profile;
+    }
+
     // Load profile
     async function loadProfile() {
       currentUser = await checkAuth();
       if (!currentUser) return;
 
-      // Get profile and subscription in parallel
-      const [profileResult, subscriptionResult] = await Promise.all([
-        supabase.from('profiles').select('*').eq('id', currentUser.id).single(),
-        supabase.from('subscriptions').select('*, subscription_plans(*)').eq('user_id', currentUser.id).single()
-      ]);
+      // Get profile with auto-creation fallback
+      const profile = await ensureProfileExists(currentUser);
 
-      if (profileResult.error) {
-        console.error('Error loading profile:', profileResult.error);
-        document.getElementById('galleryName').textContent = 'Error loading profile';
+      if (!profile) {
+        console.error('Could not load or create profile');
+        document.getElementById('galleryName').textContent = 'Error loading profile. Please refresh.';
         return;
       }
 
-      currentProfile = profileResult.data;
-      currentPlan = subscriptionResult.data?.subscription_plans || { slug: 'free', social_links: false };
+      // Get subscription
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('*, subscription_plans(*)')
+        .eq('user_id', currentUser.id)
+        .single();
+
+      currentProfile = profile;
+      currentPlan = subscription?.subscription_plans || { slug: 'free', social_links: false };
 
       // Check plan capabilities
       // DEV MODE: Set to true to test paid features locally
@@ -342,18 +427,17 @@
       }
 
       // Update UI
-      const profile = currentProfile;
-      document.getElementById('galleryName').textContent = profile.gallery_name || 'Your Gallery';
-      document.getElementById('fullName').textContent = profile.full_name || '-';
-      document.getElementById('location').textContent = profile.location || '';
+      document.getElementById('galleryName').textContent = currentProfile.gallery_name || 'Your Gallery';
+      document.getElementById('fullName').textContent = currentProfile.full_name || '-';
+      document.getElementById('location').textContent = currentProfile.location || '';
       document.getElementById('email').textContent = currentUser.email;
-      document.getElementById('phone').textContent = profile.phone || '-';
-      document.getElementById('website').textContent = profile.website || '-';
-      document.getElementById('bio').textContent = profile.bio || '-';
+      document.getElementById('phone').textContent = currentProfile.phone || '-';
+      document.getElementById('website').textContent = currentProfile.website || '-';
+      document.getElementById('bio').textContent = currentProfile.bio || '-';
 
       // Avatar
-      if (profile.avatar_url) {
-        document.getElementById('avatarImage').src = profile.avatar_url;
+      if (currentProfile.avatar_url) {
+        document.getElementById('avatarImage').src = currentProfile.avatar_url;
       }
 
       // Banner - gated by plan
@@ -369,10 +453,10 @@
         bannerPlaceholder.style.display = 'none';
         bannerUpgrade.style.display = 'flex';
         bannerUploadBtn.style.display = 'none';
-      } else if (profile.banner_url) {
+      } else if (currentProfile.banner_url) {
         // Paid user with banner
         const bannerImg = document.getElementById('bannerImage');
-        bannerImg.src = profile.banner_url;
+        bannerImg.src = currentProfile.banner_url;
         bannerImg.style.display = 'block';
         bannerGradient.style.display = 'none';
         bannerPlaceholder.style.display = 'none';
@@ -385,19 +469,19 @@
         }
 
         // Apply saved position (default 50%, 50%) and zoom (default 100)
-        const positionX = profile.banner_position_x || 50;
-        const positionY = profile.banner_position_y || 50;
-        const zoom = profile.banner_zoom || 100;
+        const positionX = currentProfile.banner_position_x || 50;
+        const positionY = currentProfile.banner_position_y || 50;
+        const zoom = currentProfile.banner_zoom || 100;
         bannerImg.style.objectPosition = `${positionX}% ${positionY}%`;
         bannerImg.style.transform = `scale(${zoom / 100})`;
         document.getElementById('bannerZoom').value = zoom;
         document.getElementById('zoomValue').textContent = zoom + '%';
 
         // Apply saved effects
-        if (profile.banner_blur || profile.banner_darken || profile.banner_tint) {
-          document.getElementById('effectBlur').value = profile.banner_blur || 0;
-          document.getElementById('effectDarken').value = profile.banner_darken || 0;
-          document.getElementById('effectTint').value = profile.banner_tint || 'none';
+        if (currentProfile.banner_blur || currentProfile.banner_darken || currentProfile.banner_tint) {
+          document.getElementById('effectBlur').value = currentProfile.banner_blur || 0;
+          document.getElementById('effectDarken').value = currentProfile.banner_darken || 0;
+          document.getElementById('effectTint').value = currentProfile.banner_tint || 'none';
           applyEffects();
         }
 
@@ -410,12 +494,12 @@
 
       // Social links display
       const socialLinks = [];
-      if (profile.instagram_url) socialLinks.push(`<a href="${profile.instagram_url}" target="_blank" class="social-icon" title="Instagram">📷</a>`);
-      if (profile.facebook_url) socialLinks.push(`<a href="${profile.facebook_url}" target="_blank" class="social-icon" title="Facebook">📘</a>`);
-      if (profile.twitter_url) socialLinks.push(`<a href="${profile.twitter_url}" target="_blank" class="social-icon" title="Twitter/X">🐦</a>`);
-      if (profile.tiktok_url) socialLinks.push(`<a href="${profile.tiktok_url}" target="_blank" class="social-icon" title="TikTok">🎵</a>`);
-      if (profile.youtube_url) socialLinks.push(`<a href="${profile.youtube_url}" target="_blank" class="social-icon" title="YouTube">▶️</a>`);
-      if (profile.etsy_url) socialLinks.push(`<a href="${profile.etsy_url}" target="_blank" class="social-icon" title="Etsy">🛒</a>`);
+      if (currentProfile.instagram_url) socialLinks.push(`<a href="${currentProfile.instagram_url}" target="_blank" class="social-icon" title="Instagram">📷</a>`);
+      if (currentProfile.facebook_url) socialLinks.push(`<a href="${currentProfile.facebook_url}" target="_blank" class="social-icon" title="Facebook">📘</a>`);
+      if (currentProfile.twitter_url) socialLinks.push(`<a href="${currentProfile.twitter_url}" target="_blank" class="social-icon" title="Twitter/X">🐦</a>`);
+      if (currentProfile.tiktok_url) socialLinks.push(`<a href="${currentProfile.tiktok_url}" target="_blank" class="social-icon" title="TikTok">🎵</a>`);
+      if (currentProfile.youtube_url) socialLinks.push(`<a href="${currentProfile.youtube_url}" target="_blank" class="social-icon" title="YouTube">▶️</a>`);
+      if (currentProfile.etsy_url) socialLinks.push(`<a href="${currentProfile.etsy_url}" target="_blank" class="social-icon" title="Etsy">🛒</a>`);
 
       const socialDisplay = document.getElementById('socialLinksDisplay');
       if (socialLinks.length > 0) {
@@ -424,14 +508,27 @@
         socialDisplay.innerHTML = '<span style="color: var(--hm-text-muted);">No social links added</span>';
       }
 
-      // Gallery link
-      if (profile.gallery_slug) {
-        const galleryUrl = `${window.location.origin}/pages/gallery/artist.html?slug=${profile.gallery_slug}`;
+      // Gallery link and QR code
+      if (currentProfile.gallery_slug) {
+        const galleryUrl = `${window.location.origin}/pages/gallery/artist.html?slug=${currentProfile.gallery_slug}`;
         const galleryLink = document.getElementById('galleryLink');
         galleryLink.href = galleryUrl;
         galleryLink.textContent = galleryUrl;
+
+        // Generate QR code (wrapped in try-catch to prevent breaking other functionality)
+        try {
+          if (typeof QRCode !== 'undefined') {
+            generateQRCode(galleryUrl);
+            checkShareSupport();
+          } else {
+            console.warn('QRCode library not loaded');
+          }
+        } catch (e) {
+          console.error('QR code generation failed:', e);
+        }
       } else {
         document.getElementById('galleryLink').textContent = 'Set a gallery slug to get your public link';
+        document.getElementById('qrCodeSection').style.display = 'none';
       }
 
       // Load recent artworks
@@ -838,6 +935,134 @@
         alert('Please set a gallery slug first.');
       }
     };
+
+    // QR Code generation
+    let currentGalleryUrl = null;
+    let qrCodeInstance = null;
+
+    function generateQRCode(url) {
+      try {
+        currentGalleryUrl = url;
+        const container = document.getElementById('qrCodeCanvas');
+
+        if (!container) {
+          console.error('QR Code container not found');
+          return;
+        }
+
+        if (typeof QRCode === 'undefined') {
+          console.error('QRCode library not loaded');
+          return;
+        }
+
+        // Clear previous QR code
+        container.innerHTML = '';
+
+        // Generate new QR code using qrcodejs library
+        qrCodeInstance = new QRCode(container, {
+          text: url,
+          width: 200,
+          height: 200,
+          colorDark: '#1a1a1a',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+
+        document.getElementById('qrCodeSection').style.display = 'block';
+        console.log('QR code generated successfully');
+      } catch (e) {
+        console.error('QR Code error:', e);
+      }
+    }
+
+    window.downloadQRCode = function(format) {
+      if (!currentGalleryUrl) {
+        alert('Please set a gallery slug first.');
+        return;
+      }
+
+      const slug = currentProfile?.gallery_slug || 'gallery';
+      const container = document.getElementById('qrCodeCanvas');
+      const img = container.querySelector('img');
+      const canvas = container.querySelector('canvas');
+
+      if (format === 'png') {
+        // Get the image data from either the img or canvas element
+        let dataUrl;
+        if (canvas) {
+          dataUrl = canvas.toDataURL('image/png');
+        } else if (img) {
+          // Create a canvas to convert img to data URL
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = 1000;
+          tempCanvas.height = 1000;
+          const ctx = tempCanvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, 1000, 1000);
+          ctx.drawImage(img, 0, 0, 1000, 1000);
+          dataUrl = tempCanvas.toDataURL('image/png');
+        }
+
+        if (dataUrl) {
+          const link = document.createElement('a');
+          link.download = `${slug}-qr-code.png`;
+          link.href = dataUrl;
+          link.click();
+        } else {
+          alert('Could not generate PNG. Please try again.');
+        }
+      } else if (format === 'svg') {
+        // SVG generation - create from scratch since qrcodejs doesn't support SVG
+        alert('SVG download not available. Please use PNG format.');
+      }
+    };
+
+    // Share QR code using Web Share API (mobile)
+    window.shareQRCode = async function() {
+      if (!currentGalleryUrl) {
+        alert('Please set a gallery slug first.');
+        return;
+      }
+
+      const galleryName = currentProfile?.gallery_name || 'My Gallery';
+
+      try {
+        // Use Web Share API to share the link
+        await navigator.share({
+          title: `${galleryName} - AR Gallery`,
+          text: `View my AR art gallery!`,
+          url: currentGalleryUrl
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error('Share failed:', err);
+          alert('Sharing failed. Try copying the gallery link instead.');
+        }
+      }
+    };
+
+    // Copy QR code to clipboard (copies the gallery URL)
+    window.copyQRCodeToClipboard = async function() {
+      if (!currentGalleryUrl) {
+        alert('Please set a gallery slug first.');
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(currentGalleryUrl);
+        alert('Gallery link copied to clipboard!');
+      } catch (err) {
+        console.error('Copy failed:', err);
+        alert('Copy failed. Please manually copy the gallery link.');
+      }
+    };
+
+    // Check if Web Share API is available and show share button
+    function checkShareSupport() {
+      if (navigator.share) {
+        document.getElementById('shareQRBtn').style.display = 'inline-block';
+      }
+    }
 
     window.changePassword = async function() {
       const { error } = await supabase.auth.resetPasswordForEmail(currentUser.email);
@@ -1433,6 +1658,72 @@
 
       .zoom-control input[type="range"] {
         width: 120px;
+      }
+    }
+
+    /* QR Code Section Styles */
+    .qr-code-container {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      margin-top: 0.5rem;
+    }
+
+    .qr-code-preview {
+      background: white;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    .qr-code-preview canvas {
+      display: block;
+      width: 200px;
+      height: 200px;
+    }
+
+    .qr-code-info {
+      flex: 1;
+    }
+
+    .qr-code-info p {
+      color: var(--hm-text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .qr-download-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .qr-share-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .qr-hint {
+      font-size: 0.75rem !important;
+      color: var(--hm-text-muted);
+      opacity: 0.7;
+    }
+
+    @media (max-width: 768px) {
+      .qr-code-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .qr-download-buttons,
+      .qr-share-buttons {
+        justify-content: center;
       }
     }
   </style>

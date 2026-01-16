@@ -75,8 +75,15 @@
     <rect x="424" y="280" width="16" height="70" rx="4"/>
     <!-- Body -->
     <path d="M 395 200 Q 390 240 400 280 L 440 280 Q 450 240 445 200 Z"/>
-    <!-- Head -->
-    <circle cx="420" cy="175" r="25"/>
+    <!-- Deer Head -->
+    <g transform="translate(420, 175) scale(0.85)">
+      <path d="M -20 -25 Q -25 -45 -35 -55 M -25 -45 Q -30 -50 -40 -48 M -25 -45 Q -20 -55 -25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M 20 -25 Q 25 -45 35 -55 M 25 -45 Q 30 -50 40 -48 M 25 -45 Q 20 -55 25 -65" stroke="#9A7B5B" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <ellipse cx="-22" cy="-12" rx="5" ry="9" transform="rotate(-20 -22 -12)"/>
+      <ellipse cx="22" cy="-12" rx="5" ry="9" transform="rotate(20 22 -12)"/>
+      <ellipse cx="0" cy="5" rx="22" ry="28"/>
+      <ellipse cx="0" cy="28" rx="12" ry="10"/>
+    </g>
     <!-- Arm gesturing toward artwork -->
     <path d="M 395 215 Q 340 200 300 180" stroke="#9A7B5B" stroke-width="12" fill="none" stroke-linecap="round"/>
     <!-- Other arm relaxed -->
