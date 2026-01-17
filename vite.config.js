@@ -66,7 +66,8 @@ export default defineConfig({
         'subscriber-messages': resolve(__dirname, 'pages/subscriber/messages.html'),
         'subscriber-support': resolve(__dirname, 'pages/subscriber/support.html'),
         'subscriber-upgrade': resolve(__dirname, 'pages/subscriber/upgrade.html'),
-        'subscriber-transactions': resolve(__dirname, 'pages/subscriber/transactions.html')
+        'subscriber-transactions': resolve(__dirname, 'pages/subscriber/transactions.html'),
+        'subscriber-analytics': resolve(__dirname, 'pages/subscriber/analytics.html')
       }
     }
   }
