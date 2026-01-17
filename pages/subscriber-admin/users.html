@@ -492,6 +492,7 @@
 
   <script type="module">
     import { supabase } from '/src/supabase.js';
+    import { checkAdminAuth } from '/src/admin-auth.js';
 
     let allUsers = [];
     let filteredUsers = [];
@@ -499,16 +500,6 @@
     let currentPage = 1;
     const pageSize = 20;
     let editingUserId = null;
-
-    // Check admin auth
-    async function checkAdminAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        window.location.href = '/pages/auth/login.html';
-        return null;
-      }
-      return user;
-    }
 
     // Load plans
     async function loadPlans() {

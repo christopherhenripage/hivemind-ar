@@ -1,5 +1,6 @@
 // HiveMind AR - Main JavaScript
 import { supabase, checkConnection, isInitialized, getInitError } from './supabase.js';
+import { checkAdminAuth } from './admin-auth.js';
 
 // Current lead being edited
 let currentEditId = null;
@@ -8,10 +9,18 @@ let currentEditId = null;
 // Initialization
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+  // Check if this is an admin page
+  const isAdminPage = window.location.pathname.includes('/subscriber-admin/');
+
+  if (isAdminPage) {
+    // Verify admin access before showing anything
+    const user = await checkAdminAuth();
+    if (!user) return; // checkAdminAuth handles redirect
+  }
+
   initSidebar();
   initModals();
-  checkAuth();
 
   // Initialize Mini CRM if on that page
   if (document.getElementById('leadsTableBody')) {
@@ -131,18 +140,9 @@ function hideModal(modalId) {
 // Auth
 // ============================================
 
-function checkAuth() {
-  const role = localStorage.getItem('hivemind_role');
-  const isLoginPage = window.location.pathname === '/' || window.location.pathname === '/index.html';
-
-  if (!role && !isLoginPage) {
-    window.location.href = '/index.html';
-  }
-}
-
-function logout() {
-  localStorage.removeItem('hivemind_role');
-  window.location.href = '/index.html';
+async function logout() {
+  await supabase.auth.signOut();
+  window.location.href = '/pages/auth/login.html';
 }
 
 // ============================================

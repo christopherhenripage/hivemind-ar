@@ -132,12 +132,7 @@
 
   <script type="module">
     import { supabase } from '/src/supabase.js';
-
-    async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { window.location.href = '/pages/auth/login.html'; return null; }
-      return user;
-    }
+    import { checkAdminAuth } from '/src/admin-auth.js';
 
     async function loadMessages() {
       const { data: messages, error } = await supabase
@@ -239,7 +234,7 @@
     window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('mobileOverlay').classList.remove('active'); };
 
     async function init() {
-      if (!await checkAuth()) return;
+      if (!await checkAdminAuth()) return;
       await loadMessages();
     }
     init();
