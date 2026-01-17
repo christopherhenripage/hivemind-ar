@@ -6,6 +6,10 @@
   <title>HiveMind AR - Augmented Reality for Artists</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
   <style>
+    body {
+      background: #f5f5f5;
+    }
+
     /* Additional home page specific styles */
     .hero {
       background: #000000;
@@ -202,29 +206,43 @@
     .fade-in-up:nth-child(2) { transition-delay: 0.15s; }
     .fade-in-up:nth-child(3) { transition-delay: 0.3s; }
 
-    /* Feature Card Hover Effects - Enhanced 3D */
+    /* Features Section */
+    .features-section {
+      background: #f5f5f5;
+      padding: 4rem 2rem;
+    }
+
+    .features-section.gradient-accent::before {
+      background: linear-gradient(90deg, rgba(220, 200, 170, 0.9) 0%, rgba(200, 180, 140, 0.9) 100%);
+    }
+
+    /* Feature Card Hover Effects - Glassmorphism */
     .feature-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(220, 200, 170, 0.3);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       transform-style: preserve-3d;
       perspective: 1000px;
     }
     .feature-card:hover {
-      transform: translateY(-12px) rotateX(2deg);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      border-color: rgba(220, 200, 170, 0.5);
+    }
+    .feature-card h3 {
+      color: #1a1a1a;
+    }
+    .feature-card p {
+      color: #4b5563;
     }
     .feature-card img {
       transition: transform 0.4s ease;
     }
     .feature-card:hover img {
-      transform: scale(1.05) translateZ(20px);
-    }
-    .feature-card h3,
-    .feature-card p {
-      transition: transform 0.3s ease;
-    }
-    .feature-card:hover h3,
-    .feature-card:hover p {
-      transform: translateZ(10px);
+      transform: scale(1.03);
     }
 
     .testimonial-section {
@@ -302,19 +320,20 @@
 
     .cta-section {
       padding: 5rem 2rem;
-      background: var(--hm-dark);
+      background: #ffffff;
       text-align: center;
-      color: var(--hm-white);
+      color: #1a1a1a;
     }
 
     .cta-section h2 {
       font-size: 2rem;
       font-weight: 300;
       margin-bottom: 1rem;
+      color: #1a1a1a;
     }
 
     .cta-section p {
-      opacity: 0.8;
+      color: #4b5563;
       margin-bottom: 2rem;
       max-width: 600px;
       margin-left: auto;
@@ -322,21 +341,23 @@
     }
 
     .cta-section .btn {
-      background: var(--hm-white);
-      color: var(--hm-dark);
+      background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%);
+      color: #1a1a1a;
       padding: 1rem 2rem;
       font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .cta-section .btn:hover {
-      background: var(--hm-light-gray);
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(220, 200, 170, 0.4);
     }
 
     .cta-section .btn:active {
-      transform: translateY(-1px) scale(0.98);
+      transform: translateY(-1px);
     }
 
     @media (max-width: 768px) {
@@ -396,8 +417,8 @@
       <img src="/images/brand/HMC_Logo_AR.png" alt="">
     </div>
     <div class="hero-content">
-      <h1 class="scale-in visible" style="animation-delay: 0.2s;">Share Your Art With The World</h1>
-      <p class="slide-in-up visible" style="animation-delay: 0.4s;">HiveMind AR empowers independent artists and dealers to showcase their work globally through augmented reality technology. Buyers simply open your gallery link on their smartphone to see your artwork at true scale in their space - no app download needed.</p>
+      <h1 class="scale-in visible" style="animation-delay: 0.2s;">Share Your ARt With The World</h1>
+      <p class="slide-in-up visible" style="animation-delay: 0.4s;">HiveMind AR empowers independent artists and dealers to showcase their work globally through augmented reality technology. Buyers simply open your gallery link on their smartphone to see your ARtwork at true scale in their space - no app download needed.</p>
       <a href="/pages/auth/signup.html" class="btn btn-light slide-in-up visible" style="margin-top: 2rem; animation-delay: 0.6s;">Get Started Free</a>
     </div>
   </section>
@@ -408,17 +429,17 @@
       <div class="feature-card slide-in-left">
         <img src="/images/illustrations/02_create_gallery.svg" alt="Create Your Gallery">
         <h3>Create Your Gallery</h3>
-        <p>Subscribe for free and create your profile. Provide some biographical details, and select from three different subscription levels. Upload your artwork images with their descriptions using our intuitive customization interface.</p>
+        <p>Subscribe for free and create your profile. Provide some biographical details, and select from three different subscription levels. Upload your ARtwork images with their descriptions using our intuitive customization interface.</p>
       </div>
       <div class="feature-card slide-in-up">
         <img src="/images/illustrations/04_share_work.svg" alt="Share Your Work">
         <h3>Share Your Work</h3>
-        <p>Share your gallery links with potential buyers worldwide. Visitors can view your art in augmented reality on their smartphone - no app download required.</p>
+        <p>Share your gallery links with potential buyers worldwide. Visitors can view your ARt in augmented reality on their smartphone - no app download required.</p>
       </div>
       <div class="feature-card slide-in-right">
         <img src="/images/illustrations/08_about_who_we_are.svg" alt="Sell to Anyone">
         <h3>Sell to Anyone</h3>
-        <p>Viewers can connect with you directly through the messaging portal to inquire about your artwork and negotiate purchases. Sell your art to anyone, anywhere in the world.</p>
+        <p>Viewers can connect with you directly through the messaging portal to inquire about your ARtwork and negotiate purchases. Sell your ARt to anyone, anywhere in the world.</p>
       </div>
     </div>
   </section>
@@ -429,7 +450,7 @@
       <div class="feature-card slide-in-right">
         <img src="/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR">
         <h3>True Scale AR</h3>
-        <p>HVM AR ensures precise image scaling, representing the true size of art unlike many other AR solutions. Buyers see exactly how your artwork will look in their space.</p>
+        <p>HVM AR ensures precise image scaling, representing the true size of ARt unlike many other AR solutions. Buyers see exactly how your ARtwork will look in their space.</p>
       </div>
       <div class="feature-card slide-in-up">
         <img src="/images/illustrations/05_analytics.svg" alt="Analytics">
@@ -439,7 +460,7 @@
       <div class="feature-card slide-in-left">
         <img src="/images/illustrations/09_about_philosophy.svg" alt="Social Sharing">
         <h3>Social Sharing</h3>
-        <p>Easily share your virtual galleries across social media platforms to expand your reach and attract new interest in your artwork.</p>
+        <p>Easily share your virtual galleries across social media platforms to expand your reach and attract new interest in your ARtwork.</p>
       </div>
     </div>
   </section>
@@ -452,7 +473,7 @@
         <img src="/images/illustrations/06_testimonial.svg" alt="Artist showcasing artwork with AR">
       </div>
       <div class="testimonial-content">
-        <blockquote>"HiveMind AR has transformed how I showcase my work to collectors around the world. They can see my paintings at true scale in their homes before buying."</blockquote>
+        <blockquote>"Finally, technology that lets my ARt speak for itself. No more 'just picture it above your couch' - they actually can."</blockquote>
         <cite>- Independent Artist</cite>
       </div>
     </div>
@@ -461,7 +482,7 @@
   <!-- CTA Section -->
   <section class="cta-section" style="position: relative; overflow: hidden;">
     <div style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 500px; height: 400px; background-image: url('/images/illustrations/07_cta_get_started.svg'); background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.4;"></div>
-    <h2 style="position: relative; z-index: 1;">Ready to Share Your Art?</h2>
+    <h2 style="position: relative; z-index: 1;">Ready to Share Your ARt?</h2>
     <p style="position: relative; z-index: 1;">Join thousands of artists using HiveMind AR to reach global audiences and sell their work through augmented reality.</p>
     <a href="/pages/auth/signup.html" class="btn" style="position: relative; z-index: 1;">Get Started Free</a>
   </section>
