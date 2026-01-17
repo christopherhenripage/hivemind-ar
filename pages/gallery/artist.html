@@ -438,6 +438,129 @@
       color: var(--hm-text-muted);
     }
 
+    /* AR Helper Section (for free tier) */
+    .ar-helper {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 1px solid var(--hm-border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem auto;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .ar-helper-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem 0;
+      color: var(--hm-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .ar-helper-text {
+      font-size: 0.875rem;
+      color: var(--hm-text-muted);
+      margin: 0 0 0.75rem 0;
+      line-height: 1.5;
+    }
+
+    .ar-helper-steps {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--hm-text-muted);
+    }
+
+    .ar-helper-step {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .ar-helper-step-num {
+      background: var(--hm-primary);
+      color: white;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .ar-helper-branding {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--hm-border);
+      font-size: 0.7rem;
+    }
+
+    .ar-helper-branding a {
+      color: var(--hm-text-muted);
+      text-decoration: none;
+    }
+
+    .ar-helper-branding strong {
+      background: linear-gradient(90deg, #C9A227, #667eea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Desktop AR button tooltip */
+    .ar-desktop-tooltip {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: white;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      margin-bottom: 8px;
+      z-index: 10;
+    }
+
+    .ar-desktop-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #1a1a1a;
+    }
+
+    .custom-ar-button:hover .ar-desktop-tooltip {
+      display: block;
+    }
+
+    .custom-ar-button.desktop-mode {
+      position: relative;
+    }
+
+    @media (max-width: 768px) {
+      .ar-helper {
+        margin: 1.5rem 1rem;
+        padding: 1rem;
+      }
+
+      .ar-helper-steps {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+      }
+    }
+
     /* Powered by HiveMind badge */
     .powered-by-badge {
       position: fixed;
@@ -635,7 +758,34 @@
     <button class="btn btn-dark" onclick="showContactModal()">Contact Artist</button>
   </section>
 
-  <!-- Powered by HiveMind AR (shown for free tier) -->
+  <!-- AR Helper Section (shown for free tier) -->
+  <div id="arHelper" class="ar-helper" style="display: none;">
+    <h3 class="ar-helper-title">
+      <span>📱</span> View Artwork in Your Space
+    </h3>
+    <p class="ar-helper-text">
+      See how this artwork looks in your room using augmented reality on your phone.
+    </p>
+    <div class="ar-helper-steps">
+      <span class="ar-helper-step">
+        <span class="ar-helper-step-num">1</span>
+        Open on mobile
+      </span>
+      <span class="ar-helper-step">
+        <span class="ar-helper-step-num">2</span>
+        Tap "View in AR"
+      </span>
+      <span class="ar-helper-step">
+        <span class="ar-helper-step-num">3</span>
+        Point at your wall
+      </span>
+    </div>
+    <div class="ar-helper-branding">
+      <a href="/" target="_blank">Powered by <strong>HiveMind AR</strong></a>
+    </div>
+  </div>
+
+  <!-- Powered by HiveMind AR badge (shown for free tier) -->
   <div id="poweredByBadge" class="powered-by-badge" style="display: none;">
     <a href="/" target="_blank">
       Powered by <strong>HiveMind AR</strong>
@@ -1230,10 +1380,14 @@
 
       currentPlan = subscription?.subscription_plans || { slug: 'free', show_branding: true, social_links: false };
 
-      // Show branding badge for free tier
+      // Show branding badge and AR helper for free tier
       if (currentPlan.show_branding !== false && currentPlan.slug === 'free') {
         document.getElementById('poweredByBadge').style.display = 'block';
+        document.getElementById('arHelper').style.display = 'block';
       }
+
+      // Setup device-aware AR buttons
+      setupArButtons();
 
       // Update page
       document.title = `${artist.gallery_name || artist.full_name} - HiveMind AR`;
@@ -1526,11 +1680,53 @@
       return false;
     };
 
+    // Device detection
+    function isMobileDevice() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+
+    // Setup AR buttons based on device
+    function setupArButtons() {
+      const arButtons = document.querySelectorAll('.custom-ar-button');
+      const isDesktop = !isMobileDevice();
+
+      arButtons.forEach(button => {
+        if (isDesktop) {
+          // Add desktop-specific styling and tooltip
+          button.classList.add('desktop-mode');
+          button.innerHTML = `
+            View in AR 📱
+            <span class="ar-desktop-tooltip">Open this page on your phone to use AR</span>
+          `;
+        }
+      });
+    }
+
     // Activate AR function
     window.activateAR = function(button, event) {
       const wrapper = button.closest('.artwork-card-wrapper');
       const modelViewer = wrapper.querySelector('model-viewer');
       const artworkId = wrapper.getAttribute('data-artwork-id');
+
+      // Check if on desktop
+      if (!isMobileDevice()) {
+        // Show helpful message for desktop users
+        const currentUrl = window.location.href;
+        const message = `AR viewing requires a mobile device.\n\nOpen this link on your phone:\n${currentUrl}`;
+
+        // Try to copy to clipboard
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(currentUrl).then(() => {
+            alert(message + '\n\n(Link copied to clipboard!)');
+          }).catch(() => {
+            alert(message);
+          });
+        } else {
+          alert(message);
+        }
+        return false;
+      }
 
       if (modelViewer && modelViewer.tagName === 'MODEL-VIEWER') {
         const selectedFrame = artworkFrameSelections[artworkId] || 'none';
