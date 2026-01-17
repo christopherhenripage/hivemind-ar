@@ -243,16 +243,28 @@
           .eq('id', currentUser.id)
           .single();
 
+        // Map subject to category
+        const categoryMap = {
+          'general': 'general',
+          'technical': 'technical',
+          'billing': 'billing',
+          'ar': 'technical',
+          'feature': 'feature_request',
+          'other': 'general'
+        };
+
         // Insert support ticket
         const { error } = await supabase
           .from('support_tickets')
           .insert({
             user_id: currentUser.id,
-            subject: subject,
+            subject: `Support Request: ${subject}`,
+            category: categoryMap[subject] || 'general',
             message: message,
-            user_email: profile?.email || currentUser.email,
-            user_name: profile?.full_name || 'User',
-            status: 'open'
+            contact_email: profile?.email || currentUser.email,
+            contact_name: profile?.full_name || 'User',
+            status: 'open',
+            priority: 'normal'
           });
 
         if (error) throw error;

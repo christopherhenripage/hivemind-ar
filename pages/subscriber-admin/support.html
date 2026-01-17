@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Inbox - HiveMind AR Admin</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar { width: 260px; background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
+    .admin-sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .admin-sidebar-header h2 { font-size: 1.25rem; margin: 0; }
+    .admin-sidebar-header span { font-size: 0.75rem; background: #dc3545; padding: 0.125rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; }
+    .admin-nav { flex: 1; padding: 1rem 0; }
+    .admin-nav a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; }
+    .admin-nav a:hover { background: rgba(255,255,255,0.1); color: white; }
+    .admin-nav a.active { background: rgba(255,255,255,0.15); color: white; border-left: 3px solid #667eea; }
+    .admin-sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .admin-sidebar-footer a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.875rem; }
+    .admin-main { flex: 1; margin-left: 260px; background: var(--hm-light-gray); min-height: 100vh; }
+    .admin-header { background: white; padding: 1rem 2rem; border-bottom: 1px solid var(--hm-border); display: flex; justify-content: space-between; align-items: center; }
+    .admin-header h1 { font-size: 1.5rem; margin: 0; }
+    .admin-content { padding: 2rem; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .stat-card h3 { font-size: 0.875rem; color: var(--hm-text-muted); margin: 0 0 0.5rem 0; }
+    .stat-card .value { font-size: 2rem; font-weight: 700; }
+    .stat-card.urgent { border-left: 4px solid #dc3545; }
+    .stat-card.open { border-left: 4px solid #f59e0b; }
+
+    .filters { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .filters select { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--hm-border); }
+
+    .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
+    .ticket-list { max-height: 600px; overflow-y: auto; }
+    .ticket-item { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--hm-border); cursor: pointer; transition: background 0.2s; }
+    .ticket-item:hover { background: #fafafa; }
+    .ticket-item.unread { background: #fef3c7; }
+    .ticket-item.urgent { border-left: 4px solid #dc3545; }
+    .ticket-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; align-items: flex-start; }
+    .ticket-subject { font-weight: 600; font-size: 0.95rem; flex: 1; }
+    .ticket-date { font-size: 0.8rem; color: var(--hm-text-muted); }
+    .ticket-preview { font-size: 0.85rem; color: var(--hm-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.5rem; }
+    .ticket-meta { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+
+    .badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+    .badge-open { background: #fef3c7; color: #b45309; }
+    .badge-in_progress { background: #dbeafe; color: #1d4ed8; }
+    .badge-resolved { background: #d1fae5; color: #047857; }
+    .badge-closed { background: #e5e7eb; color: #64748b; }
+    .badge-urgent { background: #fee2e2; color: #dc2626; }
+    .badge-high { background: #ffedd5; color: #c2410c; }
+    .badge-normal { background: #e0e7ff; color: #4338ca; }
+    .badge-low { background: #f3f4f6; color: #6b7280; }
+    .badge-category { background: #f3e8ff; color: #7c3aed; }
+
+    .empty-state { text-align: center; padding: 3rem; color: var(--hm-text-muted); }
+
+    .mobile-menu-btn { display: none; background: var(--hm-dark); color: white; border: none; width: 40px; height: 40px; border-radius: 8px; font-size: 1.25rem; cursor: pointer; }
+    @media (max-width: 768px) {
+      .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+      .admin-sidebar.open { transform: translateX(0); }
+      .admin-main { margin-left: 0; }
+      .mobile-menu-btn { display: block; }
+    }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 12px; padding: 2rem; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
+    .modal h2 { margin: 0 0 1rem 0; font-size: 1.25rem; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--hm-text-muted); }
+    .ticket-detail { line-height: 1.6; }
+    .ticket-detail-header { border-bottom: 1px solid var(--hm-border); padding-bottom: 1rem; margin-bottom: 1rem; }
+    .ticket-detail-meta { font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 1rem; }
+    .ticket-detail-body { background: #f9fafb; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; white-space: pre-wrap; }
+    .ticket-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .ticket-actions select, .ticket-actions button { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--hm-border); }
+    .ticket-actions button { background: var(--hm-primary); color: white; border: none; cursor: pointer; }
+    .ticket-actions button:hover { opacity: 0.9; }
+    .admin-notes { margin-top: 1rem; }
+    .admin-notes textarea { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--hm-border); min-height: 80px; resize: vertical; }
+  </style>
+</head>
+<body>
+  <div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="sidebar">
+      <div class="admin-sidebar-header"><h2>HiveMind AR <span>ADMIN</span></h2></div>
+      <nav class="admin-nav">
+        <a href="/pages/subscriber-admin/dashboard.html"><span>📊</span> Dashboard</a>
+        <a href="/pages/subscriber-admin/users.html"><span>👥</span> Users</a>
+        <a href="/pages/subscriber-admin/subscriptions.html"><span>💳</span> Subscriptions</a>
+        <a href="/pages/subscriber-admin/artworks.html"><span>🖼️</span> Artworks</a>
+        <a href="/pages/subscriber-admin/messages.html"><span>✉️</span> Inquiry Stats</a>
+        <a href="/pages/subscriber-admin/support.html" class="active"><span>🎫</span> Support Inbox</a>
+        <a href="/pages/subscriber-admin/analytics.html"><span>📈</span> Analytics</a>
+      </nav>
+      <div class="admin-sidebar-footer"><a href="/pages/subscriber/dashboard.html">← Back to User View</a></div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+          <h1>Support Inbox</h1>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="stats-row">
+          <div class="stat-card urgent">
+            <h3>Urgent</h3>
+            <div class="value" id="urgentCount">-</div>
+          </div>
+          <div class="stat-card open">
+            <h3>Open Tickets</h3>
+            <div class="value" id="openCount">-</div>
+          </div>
+          <div class="stat-card">
+            <h3>In Progress</h3>
+            <div class="value" id="inProgressCount">-</div>
+          </div>
+          <div class="stat-card">
+            <h3>Resolved This Week</h3>
+            <div class="value" id="resolvedCount">-</div>
+          </div>
+        </div>
+
+        <div class="filters">
+          <select id="filterStatus" onchange="loadTickets()">
+            <option value="">All Statuses</option>
+            <option value="open" selected>Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+          </select>
+          <select id="filterPriority" onchange="loadTickets()">
+            <option value="">All Priorities</option>
+            <option value="urgent">Urgent</option>
+            <option value="high">High</option>
+            <option value="normal">Normal</option>
+            <option value="low">Low</option>
+          </select>
+          <select id="filterCategory" onchange="loadTickets()">
+            <option value="">All Categories</option>
+            <option value="general">General</option>
+            <option value="billing">Billing</option>
+            <option value="technical">Technical</option>
+            <option value="account">Account</option>
+            <option value="feature_request">Feature Request</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="ticket-list" id="ticketList">
+            <div class="empty-state">Loading tickets...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Ticket Detail Modal -->
+  <div class="modal-overlay" id="ticketModal" onclick="if(event.target===this)closeTicketModal()">
+    <div class="modal">
+      <button class="modal-close" onclick="closeTicketModal()">&times;</button>
+      <div class="ticket-detail">
+        <div class="ticket-detail-header">
+          <h2 id="modalSubject">Subject</h2>
+          <div class="ticket-detail-meta">
+            <strong id="modalFrom">From Name</strong> &lt;<span id="modalEmail">email@example.com</span>&gt;<br>
+            <span id="modalDate">Date</span> | Category: <span id="modalCategory">General</span>
+          </div>
+          <div class="ticket-meta">
+            <span class="badge" id="modalStatus">Open</span>
+            <span class="badge" id="modalPriority">Normal</span>
+          </div>
+        </div>
+        <div class="ticket-detail-body" id="modalBody"></div>
+
+        <div class="ticket-actions">
+          <select id="updateStatus">
+            <option value="open">Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+          </select>
+          <select id="updatePriority">
+            <option value="low">Low</option>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+          <button onclick="updateTicket()">Update Ticket</button>
+        </div>
+
+        <div class="admin-notes">
+          <label><strong>Admin Notes</strong> (internal only)</label>
+          <textarea id="adminNotes" placeholder="Add internal notes about this ticket..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+    import { checkAdminAuth } from '/src/admin-auth.js';
+
+    let currentTicketId = null;
+
+    async function loadStats() {
+      const { data: tickets } = await supabase
+        .from('support_tickets')
+        .select('status, priority, resolved_at');
+
+      const urgent = tickets?.filter(t => t.priority === 'urgent' && t.status !== 'closed').length || 0;
+      const open = tickets?.filter(t => t.status === 'open').length || 0;
+      const inProgress = tickets?.filter(t => t.status === 'in_progress').length || 0;
+
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      const resolved = tickets?.filter(t => t.resolved_at && new Date(t.resolved_at) > weekAgo).length || 0;
+
+      document.getElementById('urgentCount').textContent = urgent;
+      document.getElementById('openCount').textContent = open;
+      document.getElementById('inProgressCount').textContent = inProgress;
+      document.getElementById('resolvedCount').textContent = resolved;
+    }
+
+    window.loadTickets = async function() {
+      const status = document.getElementById('filterStatus').value;
+      const priority = document.getElementById('filterPriority').value;
+      const category = document.getElementById('filterCategory').value;
+
+      let query = supabase
+        .from('support_tickets')
+        .select(`*, profiles:user_id (full_name, email)`)
+        .order('created_at', { ascending: false });
+
+      if (status) query = query.eq('status', status);
+      if (priority) query = query.eq('priority', priority);
+      if (category) query = query.eq('category', category);
+
+      const { data: tickets, error } = await query;
+
+      if (error) {
+        console.error('Error loading tickets:', error);
+        document.getElementById('ticketList').innerHTML = '<div class="empty-state">Error loading tickets</div>';
+        return;
+      }
+
+      const list = document.getElementById('ticketList');
+
+      if (!tickets || tickets.length === 0) {
+        list.innerHTML = '<div class="empty-state">No support tickets found.</div>';
+        return;
+      }
+
+      list.innerHTML = tickets.map(t => `
+        <div class="ticket-item ${t.status === 'open' ? 'unread' : ''} ${t.priority === 'urgent' ? 'urgent' : ''}" onclick="viewTicket('${t.id}')">
+          <div class="ticket-header">
+            <span class="ticket-subject">${escapeHtml(t.subject)}</span>
+            <span class="ticket-date">${formatDate(t.created_at)}</span>
+          </div>
+          <div class="ticket-preview">${escapeHtml(t.message?.substring(0, 120) || '')}</div>
+          <div class="ticket-meta">
+            <span class="badge badge-${t.status}">${t.status.replace('_', ' ')}</span>
+            <span class="badge badge-${t.priority}">${t.priority}</span>
+            <span class="badge badge-category">${t.category}</span>
+            <span style="font-size: 0.8rem; color: var(--hm-text-muted);">
+              From: ${escapeHtml(t.profiles?.full_name || t.contact_name || 'Unknown')}
+            </span>
+          </div>
+        </div>
+      `).join('');
+
+      window.ticketsData = tickets;
+    };
+
+    window.viewTicket = async function(id) {
+      const ticket = window.ticketsData?.find(t => t.id === id);
+      if (!ticket) return;
+
+      currentTicketId = id;
+
+      document.getElementById('modalSubject').textContent = ticket.subject;
+      document.getElementById('modalFrom').textContent = ticket.profiles?.full_name || ticket.contact_name || 'Unknown';
+      document.getElementById('modalEmail').textContent = ticket.profiles?.email || ticket.contact_email || 'No email';
+      document.getElementById('modalDate').textContent = new Date(ticket.created_at).toLocaleString();
+      document.getElementById('modalCategory').textContent = ticket.category;
+      document.getElementById('modalBody').textContent = ticket.message;
+
+      const statusBadge = document.getElementById('modalStatus');
+      statusBadge.textContent = ticket.status.replace('_', ' ');
+      statusBadge.className = `badge badge-${ticket.status}`;
+
+      const priorityBadge = document.getElementById('modalPriority');
+      priorityBadge.textContent = ticket.priority;
+      priorityBadge.className = `badge badge-${ticket.priority}`;
+
+      document.getElementById('updateStatus').value = ticket.status;
+      document.getElementById('updatePriority').value = ticket.priority;
+      document.getElementById('adminNotes').value = ticket.admin_notes || '';
+
+      document.getElementById('ticketModal').classList.add('active');
+    };
+
+    window.updateTicket = async function() {
+      if (!currentTicketId) return;
+
+      const status = document.getElementById('updateStatus').value;
+      const priority = document.getElementById('updatePriority').value;
+      const adminNotes = document.getElementById('adminNotes').value;
+
+      const updates = {
+        status,
+        priority,
+        admin_notes: adminNotes
+      };
+
+      if (status === 'resolved' || status === 'closed') {
+        updates.resolved_at = new Date().toISOString();
+      }
+
+      const { error } = await supabase
+        .from('support_tickets')
+        .update(updates)
+        .eq('id', currentTicketId);
+
+      if (error) {
+        alert('Error updating ticket: ' + error.message);
+        return;
+      }
+
+      closeTicketModal();
+      loadTickets();
+      loadStats();
+    };
+
+    window.closeTicketModal = function() {
+      document.getElementById('ticketModal').classList.remove('active');
+      currentTicketId = null;
+    };
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diff = now - date;
+      if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+      if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+      if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
+      return date.toLocaleDateString();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('mobileOverlay').classList.toggle('active'); };
+    window.closeSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('mobileOverlay').classList.remove('active'); };
+
+    async function init() {
+      if (!await checkAdminAuth()) return;
+      await loadStats();
+      await loadTickets();
+    }
+    init();
+  </script>
+</body>
+</html>

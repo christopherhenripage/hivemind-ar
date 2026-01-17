@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Messages - HiveMind AR Admin</title>
+  <title>Inquiry Analytics - HiveMind AR Admin</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     .admin-layout { display: flex; min-height: 100vh; }
     .admin-sidebar { width: 260px; background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
@@ -22,45 +23,44 @@
     .admin-header h1 { font-size: 1.5rem; margin: 0; }
     .admin-content { padding: 2rem; }
 
-    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
     .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
     .stat-card h3 { font-size: 0.875rem; color: var(--hm-text-muted); margin: 0 0 0.5rem 0; }
     .stat-card .value { font-size: 2rem; font-weight: 700; }
+    .stat-card .subvalue { font-size: 0.8rem; color: var(--hm-text-muted); margin-top: 0.25rem; }
+    .stat-card.highlight { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .stat-card.highlight h3, .stat-card.highlight .value, .stat-card.highlight .subvalue { color: white; }
 
-    .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
-    .message-list { max-height: 600px; overflow-y: auto; }
-    .message-item { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--hm-border); cursor: pointer; transition: background 0.2s; }
-    .message-item:hover { background: #fafafa; }
-    .message-item.unread { background: #f0f9ff; border-left: 3px solid #667eea; }
-    .message-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
-    .message-from { font-weight: 600; font-size: 0.95rem; }
-    .message-date { font-size: 0.8rem; color: var(--hm-text-muted); }
-    .message-subject { font-size: 0.9rem; margin-bottom: 0.25rem; }
-    .message-preview { font-size: 0.85rem; color: var(--hm-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .message-meta { font-size: 0.75rem; color: var(--hm-text-muted); margin-top: 0.5rem; }
+    .section-card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+    .section-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--hm-border); }
+    .section-header h2 { font-size: 1.1rem; margin: 0; }
+    .section-body { padding: 1.5rem; }
 
-    .badge { padding: 0.125rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
-    .badge-new { background: #dbeafe; color: #1d4ed8; }
-    .badge-read { background: #e2e8f0; color: #64748b; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
 
-    .empty-state { text-align: center; padding: 3rem; color: var(--hm-text-muted); }
+    .chart-container { position: relative; height: 280px; }
 
-    .mobile-menu-btn { display: none; background: var(--hm-dark); color: white; border: none; width: 40px; height: 40px; border-radius: 8px; font-size: 1.25rem; cursor: pointer; }
+    .top-list { list-style: none; padding: 0; margin: 0; }
+    .top-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--hm-border); }
+    .top-list li:last-child { border-bottom: none; }
+    .top-list .rank { width: 24px; height: 24px; background: var(--hm-light-gray); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; margin-right: 0.75rem; }
+    .top-list .info { flex: 1; }
+    .top-list .name { font-weight: 500; }
+    .top-list .meta { font-size: 0.8rem; color: var(--hm-text-muted); }
+    .top-list .value { font-weight: 600; color: var(--hm-primary); }
+
+    .insight-box { background: #f0f9ff; border-left: 4px solid #667eea; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0; margin-bottom: 1rem; }
+    .insight-box h4 { margin: 0 0 0.5rem 0; font-size: 0.9rem; color: #1d4ed8; }
+    .insight-box p { margin: 0; font-size: 0.875rem; color: #374151; }
+
+    .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
     @media (max-width: 768px) {
       .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s; }
       .admin-sidebar.open { transform: translateX(0); }
       .admin-main { margin-left: 0; }
       .mobile-menu-btn { display: block; }
     }
-
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-    .modal-overlay.active { display: flex; }
-    .modal { background: white; border-radius: 12px; padding: 2rem; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
-    .modal h2 { margin: 0 0 1rem 0; font-size: 1.25rem; }
-    .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--hm-text-muted); }
-    .message-detail { line-height: 1.6; }
-    .message-detail-header { border-bottom: 1px solid var(--hm-border); padding-bottom: 1rem; margin-bottom: 1rem; }
-    .message-detail-meta { font-size: 0.875rem; color: var(--hm-text-muted); }
   </style>
 </head>
 <body>
@@ -74,7 +74,8 @@
         <a href="/pages/subscriber-admin/users.html"><span>👥</span> Users</a>
         <a href="/pages/subscriber-admin/subscriptions.html"><span>💳</span> Subscriptions</a>
         <a href="/pages/subscriber-admin/artworks.html"><span>🖼️</span> Artworks</a>
-        <a href="/pages/subscriber-admin/messages.html" class="active"><span>✉️</span> Messages</a>
+        <a href="/pages/subscriber-admin/messages.html" class="active"><span>✉️</span> Inquiry Stats</a>
+        <a href="/pages/subscriber-admin/support.html"><span>🎫</span> Support Inbox</a>
         <a href="/pages/subscriber-admin/analytics.html"><span>📈</span> Analytics</a>
       </nav>
       <div class="admin-sidebar-footer"><a href="/pages/subscriber/dashboard.html">← Back to User View</a></div>
@@ -84,150 +85,346 @@
       <header class="admin-header">
         <div style="display: flex; align-items: center; gap: 1rem;">
           <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-          <h1>Collector Inquiries</h1>
+          <h1>Inquiry Analytics</h1>
         </div>
+        <p style="font-size: 0.875rem; color: var(--hm-text-muted); margin: 0;">Collector interest across all galleries</p>
       </header>
 
       <div class="admin-content">
+        <!-- Key Stats -->
         <div class="stats-row">
-          <div class="stat-card">
-            <h3>Total Messages</h3>
-            <div class="value" id="totalMessages">-</div>
-          </div>
-          <div class="stat-card">
-            <h3>Unread</h3>
-            <div class="value" id="unreadMessages">-</div>
+          <div class="stat-card highlight">
+            <h3>Total Inquiries</h3>
+            <div class="value" id="totalInquiries">0</div>
+            <div class="subvalue">All time</div>
           </div>
           <div class="stat-card">
             <h3>This Week</h3>
-            <div class="value" id="weekMessages">-</div>
+            <div class="value" id="weekInquiries">0</div>
+            <div class="subvalue" id="weekChange">vs last week</div>
+          </div>
+          <div class="stat-card">
+            <h3>This Month</h3>
+            <div class="value" id="monthInquiries">0</div>
+            <div class="subvalue" id="monthChange">vs last month</div>
+          </div>
+          <div class="stat-card">
+            <h3>Response Rate</h3>
+            <div class="value" id="responseRate">-</div>
+            <div class="subvalue">Marked as read</div>
           </div>
         </div>
 
-        <div class="card">
-          <div class="message-list" id="messageList">
-            <div class="empty-state">Loading messages...</div>
+        <!-- Insights -->
+        <div class="insight-box" id="insightBox">
+          <h4>Platform Insight</h4>
+          <p id="insightText">Loading insights...</p>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="two-col">
+          <!-- Inquiries Over Time -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Inquiry Trend (Last 30 Days)</h2>
+            </div>
+            <div class="section-body">
+              <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Artists by Inquiries -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Most Inquired Artists</h2>
+            </div>
+            <div class="section-body">
+              <ul class="top-list" id="topArtistsList">
+                <li>Loading...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- More Stats -->
+        <div class="two-col">
+          <!-- Top Artworks -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Most Inquired Artworks</h2>
+            </div>
+            <div class="section-body">
+              <ul class="top-list" id="topArtworksList">
+                <li>Loading...</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Inquiry Distribution -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Inquiries by Plan Tier</h2>
+            </div>
+            <div class="section-body">
+              <div class="chart-container">
+                <canvas id="planChart"></canvas>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Message Detail Modal -->
-  <div class="modal-overlay" id="messageModal" onclick="if(event.target===this)closeMessageModal()">
-    <div class="modal" style="position: relative;">
-      <button class="modal-close" onclick="closeMessageModal()">&times;</button>
-      <div class="message-detail">
-        <div class="message-detail-header">
-          <h2 id="modalSubject">Subject</h2>
-          <div class="message-detail-meta">
-            <strong id="modalFrom">From Name</strong> &lt;<span id="modalEmail">email@example.com</span>&gt;<br>
-            <span id="modalDate">Date</span> | About: <span id="modalArtwork">Artwork Title</span>
-          </div>
-        </div>
-        <div id="modalBody" style="white-space: pre-wrap;"></div>
-      </div>
-    </div>
-  </div>
-
   <script type="module">
     import { supabase } from '/src/supabase.js';
     import { checkAdminAuth } from '/src/admin-auth.js';
 
-    async function loadMessages() {
+    let trendChart, planChart;
+
+    async function loadInquiryStats() {
       const { data: messages, error } = await supabase
         .from('messages')
         .select(`
-          *,
-          artworks (title),
-          profiles:artist_id (full_name, gallery_name)
+          id, created_at, read,
+          artist_id, artwork_id,
+          profiles:artist_id (full_name, gallery_name),
+          artworks (title)
         `)
         .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error loading messages:', error);
-        document.getElementById('messageList').innerHTML = '<div class="empty-state">Error loading messages</div>';
         return;
       }
 
-      // Stats
       const total = messages?.length || 0;
-      const unread = messages?.filter(m => !m.read).length || 0;
-      const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+      document.getElementById('totalInquiries').textContent = total;
+
+      // This week
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      const twoWeeksAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
       const thisWeek = messages?.filter(m => new Date(m.created_at) > weekAgo).length || 0;
+      const lastWeek = messages?.filter(m => {
+        const d = new Date(m.created_at);
+        return d > twoWeeksAgo && d <= weekAgo;
+      }).length || 0;
 
-      document.getElementById('totalMessages').textContent = total;
-      document.getElementById('unreadMessages').textContent = unread;
-      document.getElementById('weekMessages').textContent = thisWeek;
+      document.getElementById('weekInquiries').textContent = thisWeek;
+      const weekDiff = thisWeek - lastWeek;
+      document.getElementById('weekChange').textContent = weekDiff >= 0 ? `+${weekDiff} vs last week` : `${weekDiff} vs last week`;
 
-      const list = document.getElementById('messageList');
+      // This month
+      const monthStart = new Date();
+      monthStart.setDate(1);
+      monthStart.setHours(0, 0, 0, 0);
+      const lastMonthStart = new Date(monthStart);
+      lastMonthStart.setMonth(lastMonthStart.getMonth() - 1);
 
-      if (!messages || messages.length === 0) {
-        list.innerHTML = '<div class="empty-state">No messages yet. Collector inquiries will appear here.</div>';
+      const thisMonth = messages?.filter(m => new Date(m.created_at) >= monthStart).length || 0;
+      const lastMonth = messages?.filter(m => {
+        const d = new Date(m.created_at);
+        return d >= lastMonthStart && d < monthStart;
+      }).length || 0;
+
+      document.getElementById('monthInquiries').textContent = thisMonth;
+      const monthDiff = thisMonth - lastMonth;
+      document.getElementById('monthChange').textContent = monthDiff >= 0 ? `+${monthDiff} vs last month` : `${monthDiff} vs last month`;
+
+      // Response rate
+      const readCount = messages?.filter(m => m.read).length || 0;
+      const responseRate = total > 0 ? Math.round((readCount / total) * 100) : 0;
+      document.getElementById('responseRate').textContent = `${responseRate}%`;
+
+      // Generate insight
+      generateInsight(total, thisWeek, lastWeek, responseRate);
+
+      // Top artists
+      loadTopArtists(messages);
+
+      // Top artworks
+      loadTopArtworks(messages);
+
+      // Trend chart
+      loadTrendChart(messages);
+
+      // Plan distribution
+      await loadPlanDistribution(messages);
+    }
+
+    function generateInsight(total, thisWeek, lastWeek, responseRate) {
+      let insight = '';
+
+      if (total === 0) {
+        insight = 'No collector inquiries yet. As galleries get more traffic, inquiries will start coming in.';
+      } else if (thisWeek > lastWeek * 1.5) {
+        insight = `Inquiries are up ${Math.round(((thisWeek - lastWeek) / (lastWeek || 1)) * 100)}% this week! Your artists are attracting more collector interest.`;
+      } else if (responseRate < 50) {
+        insight = `Only ${responseRate}% of inquiries have been read. Encourage artists to check their messages to not miss potential sales.`;
+      } else if (thisWeek < lastWeek * 0.5 && lastWeek > 0) {
+        insight = `Inquiries dropped this week. Consider promoting galleries or running a campaign to drive traffic.`;
+      } else {
+        insight = `${total} total inquiries across the platform. Artists with the most inquiries are seeing strong collector engagement.`;
+      }
+
+      document.getElementById('insightText').textContent = insight;
+    }
+
+    function loadTopArtists(messages) {
+      const artistCounts = {};
+      messages?.forEach(m => {
+        const name = m.profiles?.gallery_name || m.profiles?.full_name || 'Unknown';
+        artistCounts[name] = (artistCounts[name] || 0) + 1;
+      });
+
+      const sorted = Object.entries(artistCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+      const list = document.getElementById('topArtistsList');
+      if (sorted.length === 0) {
+        list.innerHTML = '<li style="color: var(--hm-text-muted);">No inquiries yet</li>';
         return;
       }
 
-      list.innerHTML = messages.map(m => `
-        <div class="message-item ${!m.read ? 'unread' : ''}" onclick="viewMessage('${m.id}')">
-          <div class="message-header">
-            <span class="message-from">${escapeHtml(m.sender_name || 'Anonymous')}</span>
-            <span class="message-date">${formatDate(m.created_at)}</span>
+      list.innerHTML = sorted.map(([name, count], i) => `
+        <li>
+          <span class="rank">${i + 1}</span>
+          <div class="info">
+            <div class="name">${name}</div>
           </div>
-          <div class="message-subject">${escapeHtml(m.subject || 'Artwork Inquiry')}</div>
-          <div class="message-preview">${escapeHtml(m.message?.substring(0, 100) || '')}</div>
-          <div class="message-meta">
-            To: ${escapeHtml(m.profiles?.full_name || m.profiles?.gallery_name || 'Unknown')} |
-            About: ${escapeHtml(m.artworks?.title || 'General')}
-            <span class="badge ${m.read ? 'badge-read' : 'badge-new'}">${m.read ? 'Read' : 'New'}</span>
-          </div>
-        </div>
+          <div class="value">${count} inquiries</div>
+        </li>
       `).join('');
-
-      // Store messages for detail view
-      window.messagesData = messages;
     }
 
-    window.viewMessage = async function(id) {
-      const message = window.messagesData?.find(m => m.id === id);
-      if (!message) return;
+    function loadTopArtworks(messages) {
+      const artworkCounts = {};
+      messages?.forEach(m => {
+        if (m.artworks?.title) {
+          const title = m.artworks.title;
+          artworkCounts[title] = (artworkCounts[title] || 0) + 1;
+        }
+      });
 
-      document.getElementById('modalSubject').textContent = message.subject || 'Artwork Inquiry';
-      document.getElementById('modalFrom').textContent = message.sender_name || 'Anonymous';
-      document.getElementById('modalEmail').textContent = message.sender_email || 'No email';
-      document.getElementById('modalDate').textContent = new Date(message.created_at).toLocaleString();
-      document.getElementById('modalArtwork').textContent = message.artworks?.title || 'General';
-      document.getElementById('modalBody').textContent = message.message || '';
+      const sorted = Object.entries(artworkCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
 
-      document.getElementById('messageModal').classList.add('active');
-
-      // Mark as read
-      if (!message.read) {
-        await supabase.from('messages').update({ read: true }).eq('id', id);
-        message.read = true;
-        document.querySelector(`[onclick="viewMessage('${id}')"]`)?.classList.remove('unread');
-        const unreadCount = parseInt(document.getElementById('unreadMessages').textContent) - 1;
-        document.getElementById('unreadMessages').textContent = Math.max(0, unreadCount);
+      const list = document.getElementById('topArtworksList');
+      if (sorted.length === 0) {
+        list.innerHTML = '<li style="color: var(--hm-text-muted);">No artwork-specific inquiries yet</li>';
+        return;
       }
-    };
 
-    window.closeMessageModal = function() {
-      document.getElementById('messageModal').classList.remove('active');
-    };
-
-    function formatDate(dateStr) {
-      const date = new Date(dateStr);
-      const now = new Date();
-      const diff = now - date;
-      if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
-      if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
-      if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
-      return date.toLocaleDateString();
+      list.innerHTML = sorted.map(([title, count], i) => `
+        <li>
+          <span class="rank">${i + 1}</span>
+          <div class="info">
+            <div class="name">${title}</div>
+          </div>
+          <div class="value">${count} inquiries</div>
+        </li>
+      `).join('');
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text || '';
-      return div.innerHTML;
+    function loadTrendChart(messages) {
+      const days = 30;
+      const dateLabels = [];
+      const dateCounts = {};
+
+      for (let i = days - 1; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const key = date.toISOString().split('T')[0];
+        dateLabels.push(key);
+        dateCounts[key] = 0;
+      }
+
+      messages?.forEach(m => {
+        const date = m.created_at.split('T')[0];
+        if (dateCounts.hasOwnProperty(date)) {
+          dateCounts[date]++;
+        }
+      });
+
+      const ctx = document.getElementById('trendChart').getContext('2d');
+      if (trendChart) trendChart.destroy();
+
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dateLabels.map(d => {
+            const date = new Date(d);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          }),
+          datasets: [{
+            label: 'Inquiries',
+            data: dateLabels.map(d => dateCounts[d]),
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+          }
+        }
+      });
+    }
+
+    async function loadPlanDistribution(messages) {
+      // Get subscriptions to map users to plans
+      const { data: subs } = await supabase
+        .from('subscriptions')
+        .select('user_id, subscription_plans (name)')
+        .eq('status', 'active');
+
+      const userPlan = {};
+      subs?.forEach(s => {
+        userPlan[s.user_id] = s.subscription_plans?.name || 'Free';
+      });
+
+      const planCounts = { 'Free': 0 };
+      messages?.forEach(m => {
+        const plan = userPlan[m.artist_id] || 'Free';
+        planCounts[plan] = (planCounts[plan] || 0) + 1;
+      });
+
+      const ctx = document.getElementById('planChart').getContext('2d');
+      if (planChart) planChart.destroy();
+
+      const labels = Object.keys(planCounts);
+      const data = Object.values(planCounts);
+
+      planChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: ['#e5e7eb', '#667eea', '#f59e0b', '#10b981'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
     }
 
     window.toggleSidebar = function() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('mobileOverlay').classList.toggle('active'); };
@@ -235,7 +432,7 @@
 
     async function init() {
       if (!await checkAdminAuth()) return;
-      await loadMessages();
+      await loadInquiryStats();
     }
     init();
   </script>

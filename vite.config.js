@@ -25,6 +25,7 @@ export default defineConfig({
  'subscriber-admin-artworks': resolve(__dirname, 'pages/subscriber-admin/artworks.html'),
  'subscriber-admin-messages': resolve(__dirname, 'pages/subscriber-admin/messages.html'),
  'subscriber-admin-analytics': resolve(__dirname, 'pages/subscriber-admin/analytics.html'),
+ 'subscriber-admin-support': resolve(__dirname, 'pages/subscriber-admin/support.html'),
  'subscriber-admin-mini-crm': resolve(__dirname, 'pages/subscriber-admin/mini-crm.html'),
  'subscriber-admin-payments': resolve(__dirname, 'pages/subscriber-admin/payments.html'),
  'subscriber-admin-contact-us': resolve(__dirname, 'pages/subscriber-admin/contact-us.html'),
