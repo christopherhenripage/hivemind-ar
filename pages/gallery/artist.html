@@ -438,33 +438,22 @@
       color: var(--hm-text-muted);
     }
 
-    /* AR Helper Section (for free tier) */
+    /* AR Helper Section (for free tier - compact banner style) */
     .ar-helper {
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border: 1px solid var(--hm-border);
-      border-radius: 12px;
-      padding: 1.25rem 1.5rem;
-      margin: 2rem auto;
-      max-width: 500px;
+      border-bottom: 1px solid var(--hm-border);
+      padding: 0.75rem 1.5rem;
       text-align: center;
     }
 
     .ar-helper-title {
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 0.9rem;
       margin: 0 0 0.5rem 0;
       color: var(--hm-dark);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
     }
 
-    .ar-helper-text {
-      font-size: 0.875rem;
-      color: var(--hm-text-muted);
-      margin: 0 0 0.75rem 0;
-      line-height: 1.5;
+    .ar-helper-title strong {
+      color: var(--hm-primary);
     }
 
     .ar-helper-steps {
@@ -473,6 +462,7 @@
       gap: 1.5rem;
       font-size: 0.8rem;
       color: var(--hm-text-muted);
+      margin-bottom: 0.5rem;
     }
 
     .ar-helper-step {
@@ -484,20 +474,17 @@
     .ar-helper-step-num {
       background: var(--hm-primary);
       color: white;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 600;
     }
 
     .ar-helper-branding {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--hm-border);
       font-size: 0.7rem;
     }
 
@@ -550,14 +537,23 @@
 
     @media (max-width: 768px) {
       .ar-helper {
-        margin: 1.5rem 1rem;
-        padding: 1rem;
+        padding: 0.75rem 1rem;
+      }
+
+      .ar-helper-title {
+        font-size: 0.85rem;
       }
 
       .ar-helper-steps {
+        gap: 0.75rem;
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .ar-helper-steps {
         flex-direction: column;
-        gap: 0.5rem;
-        align-items: center;
+        gap: 0.35rem;
       }
     }
 
@@ -744,6 +740,21 @@
     </div>
   </section>
 
+  <!-- AR Helper Section (shown for free tier) -->
+  <div id="arHelper" class="ar-helper" style="display: none;">
+    <p class="ar-helper-title">
+      📱 <strong>View in AR</strong> — See artwork in your space using your phone's camera
+    </p>
+    <div class="ar-helper-steps">
+      <span class="ar-helper-step"><span class="ar-helper-step-num">1</span> Open on mobile</span>
+      <span class="ar-helper-step"><span class="ar-helper-step-num">2</span> Tap "View in AR"</span>
+      <span class="ar-helper-step"><span class="ar-helper-step-num">3</span> Point at wall</span>
+    </div>
+    <div class="ar-helper-branding">
+      <a href="/" target="_blank">Powered by <strong>HiveMind AR</strong></a>
+    </div>
+  </div>
+
   <!-- Artwork Grid -->
   <div class="gallery-container">
     <div class="artwork-grid" id="artworkGrid">
@@ -757,33 +768,6 @@
     <p>Contact the artist directly to inquire about availability and pricing.</p>
     <button class="btn btn-dark" onclick="showContactModal()">Contact Artist</button>
   </section>
-
-  <!-- AR Helper Section (shown for free tier) -->
-  <div id="arHelper" class="ar-helper" style="display: none;">
-    <h3 class="ar-helper-title">
-      <span>📱</span> View Artwork in Your Space
-    </h3>
-    <p class="ar-helper-text">
-      See how this artwork looks in your room using augmented reality on your phone.
-    </p>
-    <div class="ar-helper-steps">
-      <span class="ar-helper-step">
-        <span class="ar-helper-step-num">1</span>
-        Open on mobile
-      </span>
-      <span class="ar-helper-step">
-        <span class="ar-helper-step-num">2</span>
-        Tap "View in AR"
-      </span>
-      <span class="ar-helper-step">
-        <span class="ar-helper-step-num">3</span>
-        Point at your wall
-      </span>
-    </div>
-    <div class="ar-helper-branding">
-      <a href="/" target="_blank">Powered by <strong>HiveMind AR</strong></a>
-    </div>
-  </div>
 
   <!-- Powered by HiveMind AR badge (shown for free tier) -->
   <div id="poweredByBadge" class="powered-by-badge" style="display: none;">
