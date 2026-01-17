@@ -28,24 +28,52 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 500px;
-      height: 500px;
+      width: 550px;
+      height: 550px;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.08;
     }
 
     .hero-logo-bg img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 0 40px rgba(220, 200, 170, 0.4));
-      animation: logoBreath 6s ease-in-out infinite;
+      filter: drop-shadow(0 0 40px rgba(205, 127, 50, 0.6))
+              drop-shadow(0 0 80px rgba(205, 127, 50, 0.4))
+              drop-shadow(0 0 120px rgba(205, 127, 50, 0.2))
+              sepia(0.7)
+              hue-rotate(25deg)
+              saturate(1.4)
+              brightness(1.05)
+              contrast(1.05);
+      clip-path: inset(23% 0 0 0);
+      mix-blend-mode: lighten;
+      animation: logoGlowBronze 4s ease-in-out infinite;
     }
 
-    @keyframes logoBreath {
-      0%, 100% { opacity: 0.06; transform: scale(1); }
-      50% { opacity: 0.12; transform: scale(1.03); }
+    @keyframes logoGlowBronze {
+      0%, 100% {
+        opacity: 0.3;
+        filter: drop-shadow(0 0 40px rgba(205, 127, 50, 0.6))
+                drop-shadow(0 0 80px rgba(205, 127, 50, 0.4))
+                drop-shadow(0 0 120px rgba(205, 127, 50, 0.2))
+                sepia(0.7)
+                hue-rotate(25deg)
+                saturate(1.4)
+                brightness(1.05)
+                contrast(1.05);
+      }
+      50% {
+        opacity: 0.6;
+        filter: drop-shadow(0 0 60px rgba(205, 127, 50, 0.8))
+                drop-shadow(0 0 120px rgba(205, 127, 50, 0.6))
+                drop-shadow(0 0 180px rgba(205, 127, 50, 0.4))
+                sepia(0.7)
+                hue-rotate(25deg)
+                saturate(1.4)
+                brightness(1.15)
+                contrast(1.05);
+      }
     }
 
     .hero-section .hero-content {
@@ -328,8 +356,8 @@
       }
 
       .hero-logo-bg {
-        width: 350px;
-        height: 350px;
+        width: 400px;
+        height: 400px;
       }
 
       .ar-showcase-content {
