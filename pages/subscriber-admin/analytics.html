@@ -1,102 +1,1139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Analytics - HiveMind AR</title>
- <link rel="stylesheet" href="/styles/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics - HiveMind AR Admin</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Leaflet for maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .admin-sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 100;
+    }
+
+    .admin-sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .admin-sidebar-header h2 {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+
+    .admin-sidebar-header span {
+      font-size: 0.75rem;
+      opacity: 0.7;
+      background: #dc3545;
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      margin-left: 0.5rem;
+    }
+
+    .admin-nav {
+      flex: 1;
+      padding: 1rem 0;
+      overflow-y: auto;
+    }
+
+    .admin-nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: all 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .admin-nav a:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .admin-nav a.active {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border-left: 3px solid #667eea;
+    }
+
+    .admin-sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .admin-sidebar-footer a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .admin-main {
+      flex: 1;
+      margin-left: 260px;
+      background: var(--hm-light-gray);
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background: white;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--hm-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+
+    .admin-content {
+      padding: 2rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .stat-card h3 {
+      font-size: 0.875rem;
+      color: var(--hm-text-muted);
+      margin: 0 0 0.5rem 0;
+      font-weight: 500;
+    }
+
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--hm-dark);
+    }
+
+    .stat-card .subvalue {
+      font-size: 0.8rem;
+      color: var(--hm-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .stat-card.highlight {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .stat-card.highlight h3,
+    .stat-card.highlight .value,
+    .stat-card.highlight .subvalue {
+      color: white;
+    }
+
+    .stat-card.success {
+      border-left: 4px solid #10b981;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--hm-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h2 {
+      font-size: 1.1rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-body {
+      padding: 1.5rem;
+    }
+
+    /* Two Column Layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+
+    /* Map Container */
+    .map-container {
+      height: 400px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #subscriberMap {
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--hm-border);
+    }
+
+    .data-table th {
+      font-weight: 600;
+      color: var(--hm-text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .data-table tr:hover {
+      background: var(--hm-light-gray);
+    }
+
+    /* Plan Badge */
+    .plan-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .plan-badge.free { background: #e5e7eb; color: #374151; }
+    .plan-badge.artist { background: #dbeafe; color: #1d4ed8; }
+    .plan-badge.established { background: #fef3c7; color: #b45309; }
+    .plan-badge.professional { background: #d1fae5; color: #047857; }
+
+    /* Top List */
+    .top-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .top-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--hm-border);
+    }
+
+    .top-list li:last-child {
+      border-bottom: none;
+    }
+
+    .top-list .rank {
+      width: 24px;
+      height: 24px;
+      background: var(--hm-light-gray);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.75rem;
+    }
+
+    .top-list .info {
+      flex: 1;
+    }
+
+    .top-list .name {
+      font-weight: 500;
+    }
+
+    .top-list .meta {
+      font-size: 0.8rem;
+      color: var(--hm-text-muted);
+    }
+
+    .top-list .value {
+      font-weight: 600;
+      color: var(--hm-primary);
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .admin-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      .admin-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .admin-main {
+        margin-left: 0;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+    }
+  </style>
 </head>
 <body>
- <div class="sidebar-overlay"></div>
- <div class="app-layout">
- <aside class="sidebar">
- <div class="sidebar-header">
- <h2>HiveMind AR</h2>
- <span>Subscriber Admin</span>
- </div>
- <nav class="sidebar-nav">
- <a href="/pages/subscriber-admin/dashboard.html">Dashboard</a>
- <a href="/pages/subscriber-admin/users.html">Users/Accounts</a>
- <a href="/pages/subscriber-admin/analytics.html" class="active">Analytics</a>
- <a href="/pages/subscriber-admin/mini-crm.html">Mini CRM</a>
- <a href="/pages/subscriber-admin/payments.html">Payments</a>
- <a href="/pages/subscriber-admin/contact-us.html">Contact Us</a>
- <a href="/pages/subscriber-admin/gallery.html">Gallery Showcase</a>
- <a href="/pages/subscriber-admin/about-us.html">About Us</a>
- <a href="/pages/subscriber-admin/augmented-reality.html">Augmented Reality</a>
- </nav>
- <div class="sidebar-footer">
- <a href="#" class="logout-btn" onclick="logout()">Logout</a>
- </div>
- </aside>
- <main class="main-content">
- <header class="header">
- <button class="menu-toggle">☰</button>
- <h1>Analytics</h1>
- <div></div>
- </header>
- <div class="page-content">
- <div class="card">
- <div class="card-header">
- <h3 class="card-title">My Reports</h3>
- <div class="btn-group">
- <button class="btn btn-primary" onclick="exportData('PDF')">Export PDF</button>
- <button class="btn btn-secondary" onclick="exportData('CSV')">Export CSV</button>
- </div>
- </div>
- <div class="table-container">
- <table>
- <thead>
- <tr>
- <th>Report Name</th>
- <th>Type</th>
- <th>Date Range</th>
- <th>Actions</th>
- </tr>
- </thead>
- <tbody>
- <tr>
- <td>Lead Conversion Report</td>
- <td>CRM</td>
- <td>Last 30 days</td>
- <td><button class="btn btn-sm btn-primary">View</button></td>
- </tr>
- <tr>
- <td>AR Engagement Stats</td>
- <td>Feature</td>
- <td>Last 7 days</td>
- <td><button class="btn btn-sm btn-primary">View</button></td>
- </tr>
- <tr>
- <td>Sales Performance</td>
- <td>Sales</td>
- <td>This Month</td>
- <td><button class="btn btn-sm btn-primary">View</button></td>
- </tr>
- </tbody>
- </table>
- </div>
- </div>
- <div class="stats-grid">
- <div class="stat-card">
- <h3>Lead Conversion</h3>
- <div class="value">24.5%</div>
- </div>
- <div class="stat-card">
- <h3>AR Views</h3>
- <div class="value">8,234</div>
- </div>
- <div class="stat-card">
- <h3>Avg Order Value</h3>
- <div class="value">$125</div>
- </div>
- </div>
- </div>
- <footer class="footer">
- <p>&copy; 2024 HiveMind AR. All rights reserved.</p>
- </footer>
- </main>
- </div>
- <script type="module" src="/src/main.js"></script>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="sidebar">
+      <div class="admin-sidebar-header">
+        <h2>HiveMind AR <span>ADMIN</span></h2>
+      </div>
+
+      <nav class="admin-nav">
+        <a href="/pages/subscriber-admin/dashboard.html">
+          <span>📊</span> Dashboard
+        </a>
+        <a href="/pages/subscriber-admin/users.html">
+          <span>👥</span> Users
+        </a>
+        <a href="/pages/subscriber-admin/subscriptions.html">
+          <span>💳</span> Subscriptions
+        </a>
+        <a href="/pages/subscriber-admin/artworks.html">
+          <span>🖼️</span> Artworks
+        </a>
+        <a href="/pages/subscriber-admin/messages.html">
+          <span>✉️</span> Messages
+        </a>
+        <a href="/pages/subscriber-admin/analytics.html" class="active">
+          <span>📈</span> Analytics
+        </a>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <a href="/pages/subscriber/dashboard.html">← Back to User View</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+          <h1>Platform Analytics</h1>
+        </div>
+        <div id="lastUpdated" style="font-size: 0.8rem; color: var(--hm-text-muted);"></div>
+      </header>
+
+      <div class="admin-content">
+        <!-- Revenue Stats -->
+        <div class="stats-grid">
+          <div class="stat-card highlight">
+            <h3>Monthly Revenue (MRR)</h3>
+            <div class="value" id="mrrValue">$0</div>
+            <div class="subvalue" id="mrrGrowth">Loading...</div>
+          </div>
+          <div class="stat-card success">
+            <h3>Total Subscribers</h3>
+            <div class="value" id="totalSubscribers">0</div>
+            <div class="subvalue" id="subscriberGrowth">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <h3>Paid Subscribers</h3>
+            <div class="value" id="paidSubscribers">0</div>
+            <div class="subvalue" id="conversionRate">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <h3>Total Artworks</h3>
+            <div class="value" id="totalArtworks">0</div>
+            <div class="subvalue" id="artworkGrowth">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Engagement Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Total Gallery Views</h3>
+            <div class="value" id="totalViews">0</div>
+            <div class="subvalue">Across all galleries</div>
+          </div>
+          <div class="stat-card">
+            <h3>AR Activations</h3>
+            <div class="value" id="totalArViews">0</div>
+            <div class="subvalue" id="arRate">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <h3>Inquiries Sent</h3>
+            <div class="value" id="totalInquiries">0</div>
+            <div class="subvalue">Collector interest</div>
+          </div>
+          <div class="stat-card">
+            <h3>Avg Artworks/User</h3>
+            <div class="value" id="avgArtworks">0</div>
+            <div class="subvalue">Content engagement</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="two-col">
+          <!-- Revenue by Plan -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Revenue by Plan</h2>
+            </div>
+            <div class="section-body">
+              <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subscribers by Plan -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Subscribers by Plan</h2>
+            </div>
+            <div class="section-body">
+              <div class="chart-container">
+                <canvas id="subscribersChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth Chart -->
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Growth Trends</h2>
+            <select id="trendPeriod" onchange="loadTrendData()" style="padding: 0.5rem; border-radius: 6px; border: 1px solid var(--hm-border);">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+            </select>
+          </div>
+          <div class="section-body">
+            <div class="chart-container" style="height: 250px;">
+              <canvas id="growthChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map and Top Artists -->
+        <div class="two-col">
+          <!-- Subscriber Map -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Subscriber Locations</h2>
+            </div>
+            <div class="section-body">
+              <div class="map-container">
+                <div id="subscriberMap"></div>
+              </div>
+              <div id="locationStats" style="margin-top: 1rem; font-size: 0.875rem; color: var(--hm-text-muted);">
+                Loading location data...
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Artists -->
+          <div class="section-card">
+            <div class="section-header">
+              <h2>Top Performing Artists</h2>
+              <select id="topMetric" onchange="loadTopArtists()" style="padding: 0.5rem; border-radius: 6px; border: 1px solid var(--hm-border);">
+                <option value="views">By Views</option>
+                <option value="ar_views">By AR Activations</option>
+                <option value="artworks">By Artworks</option>
+              </select>
+            </div>
+            <div class="section-body">
+              <ul class="top-list" id="topArtistsList">
+                <li>Loading...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Breakdown -->
+        <div class="section-card">
+          <div class="section-header">
+            <h2>Plan Breakdown</h2>
+          </div>
+          <div class="section-body">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Plan</th>
+                  <th>Subscribers</th>
+                  <th>MRR</th>
+                  <th>Artworks</th>
+                  <th>Avg Views</th>
+                  <th>AR Rate</th>
+                </tr>
+              </thead>
+              <tbody id="planBreakdown">
+                <tr><td colspan="6">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+    import { checkAdminAuth } from '/src/admin-auth.js';
+
+    // Chart instances
+    let revenueChart, subscribersChart, growthChart;
+
+    // Country coordinates for map
+    const COUNTRY_COORDS = {
+      'US': [37.0902, -95.7129],
+      'GB': [55.3781, -3.4360],
+      'CA': [56.1304, -106.3468],
+      'AU': [-25.2744, 133.7751],
+      'DE': [51.1657, 10.4515],
+      'FR': [46.2276, 2.2137],
+      'JP': [36.2048, 138.2529],
+      'BR': [-14.2350, -51.9253],
+      'IN': [20.5937, 78.9629],
+      'NL': [52.1326, 5.2913],
+      'ES': [40.4637, -3.7492],
+      'IT': [41.8719, 12.5674],
+      'MX': [23.6345, -102.5528],
+      'KR': [35.9078, 127.7669],
+      'SG': [1.3521, 103.8198],
+      'NZ': [-40.9006, 174.8860],
+      'SE': [60.1282, 18.6435],
+      'CH': [46.8182, 8.2275],
+      'PH': [12.8797, 121.7740],
+    };
+
+    // Initialize
+    async function init() {
+      const user = await checkAdminAuth();
+      if (!user) return;
+
+      document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+
+      // Load all data
+      await Promise.all([
+        loadRevenueStats(),
+        loadSubscriberStats(),
+        loadContentStats(),
+        loadEngagementStats(),
+        loadPlanBreakdown(),
+        loadTopArtists(),
+        initMap(),
+        loadTrendData()
+      ]);
+    }
+
+    // Revenue Stats
+    async function loadRevenueStats() {
+      try {
+        const { data: subs } = await supabase
+          .from('subscriptions')
+          .select(`*, subscription_plans (*)`)
+          .eq('status', 'active');
+
+        let mrr = 0;
+        let paidCount = 0;
+
+        subs?.forEach(s => {
+          if (s.subscription_plans?.price_monthly > 0) {
+            mrr += parseFloat(s.subscription_plans.price_monthly);
+            paidCount++;
+          }
+        });
+
+        document.getElementById('mrrValue').textContent = `$${mrr.toFixed(0)}`;
+        document.getElementById('paidSubscribers').textContent = paidCount;
+
+        // Calculate conversion rate
+        const { count: totalProfiles } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
+
+        const convRate = totalProfiles > 0 ? ((paidCount / totalProfiles) * 100).toFixed(1) : 0;
+        document.getElementById('conversionRate').textContent = `${convRate}% conversion rate`;
+        document.getElementById('mrrGrowth').textContent = paidCount > 0 ? `From ${paidCount} paid subscribers` : 'No paid subscribers yet';
+
+        // Build revenue chart data
+        const planRevenue = {};
+        subs?.forEach(s => {
+          const planName = s.subscription_plans?.name || 'Unknown';
+          const price = parseFloat(s.subscription_plans?.price_monthly || 0);
+          if (price > 0) {
+            planRevenue[planName] = (planRevenue[planName] || 0) + price;
+          }
+        });
+
+        renderRevenueChart(planRevenue);
+
+      } catch (err) {
+        console.error('Error loading revenue stats:', err);
+      }
+    }
+
+    // Subscriber Stats
+    async function loadSubscriberStats() {
+      try {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, created_at');
+
+        const total = profiles?.length || 0;
+        document.getElementById('totalSubscribers').textContent = total;
+
+        // New this month
+        const thisMonth = new Date();
+        thisMonth.setDate(1);
+        thisMonth.setHours(0, 0, 0, 0);
+        const newThisMonth = profiles?.filter(p => new Date(p.created_at) >= thisMonth).length || 0;
+        document.getElementById('subscriberGrowth').textContent = `+${newThisMonth} this month`;
+
+        // Subscribers by plan for chart
+        const { data: subs } = await supabase
+          .from('subscriptions')
+          .select(`*, subscription_plans (name, slug)`)
+          .eq('status', 'active');
+
+        const planCounts = { 'Free': 0 };
+        const subUserIds = new Set();
+
+        subs?.forEach(s => {
+          const planName = s.subscription_plans?.name || 'Free';
+          planCounts[planName] = (planCounts[planName] || 0) + 1;
+          subUserIds.add(s.user_id);
+        });
+
+        // Users without subscription are Free
+        planCounts['Free'] = total - subUserIds.size;
+
+        renderSubscribersChart(planCounts);
+
+      } catch (err) {
+        console.error('Error loading subscriber stats:', err);
+      }
+    }
+
+    // Content Stats
+    async function loadContentStats() {
+      try {
+        const { data: artworks } = await supabase
+          .from('artworks')
+          .select('id, created_at, glb_url');
+
+        const total = artworks?.length || 0;
+        document.getElementById('totalArtworks').textContent = total;
+
+        // New this month
+        const thisMonth = new Date();
+        thisMonth.setDate(1);
+        const newThisMonth = artworks?.filter(a => new Date(a.created_at) >= thisMonth).length || 0;
+        document.getElementById('artworkGrowth').textContent = `+${newThisMonth} this month`;
+
+        // Avg artworks per user
+        const { count: userCount } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
+
+        const avgPerUser = userCount > 0 ? (total / userCount).toFixed(1) : 0;
+        document.getElementById('avgArtworks').textContent = avgPerUser;
+
+      } catch (err) {
+        console.error('Error loading content stats:', err);
+      }
+    }
+
+    // Engagement Stats
+    async function loadEngagementStats() {
+      try {
+        const { data: artworks } = await supabase
+          .from('artworks')
+          .select('view_count, ar_view_count');
+
+        let totalViews = 0;
+        let totalArViews = 0;
+
+        artworks?.forEach(a => {
+          totalViews += a.view_count || 0;
+          totalArViews += a.ar_view_count || 0;
+        });
+
+        document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+        document.getElementById('totalArViews').textContent = totalArViews.toLocaleString();
+
+        const arRate = totalViews > 0 ? ((totalArViews / totalViews) * 100).toFixed(1) : 0;
+        document.getElementById('arRate').textContent = `${arRate}% of views use AR`;
+
+        // Inquiries
+        const { count: inquiryCount } = await supabase
+          .from('messages')
+          .select('*', { count: 'exact', head: true });
+
+        document.getElementById('totalInquiries').textContent = inquiryCount || 0;
+
+      } catch (err) {
+        console.error('Error loading engagement stats:', err);
+      }
+    }
+
+    // Plan Breakdown Table
+    async function loadPlanBreakdown() {
+      try {
+        const { data: plans } = await supabase
+          .from('subscription_plans')
+          .select('*')
+          .eq('is_active', true)
+          .order('price_monthly');
+
+        const { data: subs } = await supabase
+          .from('subscriptions')
+          .select(`user_id, subscription_plans (slug)`)
+          .eq('status', 'active');
+
+        const { data: artworks } = await supabase
+          .from('artworks')
+          .select('user_id, view_count, ar_view_count');
+
+        const { count: totalProfiles } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
+
+        // Map user to plan
+        const userPlan = {};
+        subs?.forEach(s => {
+          userPlan[s.user_id] = s.subscription_plans?.slug || 'free';
+        });
+
+        // Calculate stats per plan
+        const planStats = {};
+        plans?.forEach(p => {
+          planStats[p.slug] = { count: 0, artworks: 0, views: 0, arViews: 0, price: p.price_monthly };
+        });
+
+        // Count subscribers per plan
+        const subUserIds = new Set(Object.keys(userPlan));
+        Object.values(userPlan).forEach(slug => {
+          if (planStats[slug]) planStats[slug].count++;
+        });
+
+        // Free users (no subscription record)
+        if (planStats['free']) {
+          planStats['free'].count = (totalProfiles || 0) - subUserIds.size;
+        }
+
+        // Aggregate artwork stats by plan
+        artworks?.forEach(a => {
+          const plan = userPlan[a.user_id] || 'free';
+          if (planStats[plan]) {
+            planStats[plan].artworks++;
+            planStats[plan].views += a.view_count || 0;
+            planStats[plan].arViews += a.ar_view_count || 0;
+          }
+        });
+
+        // Render table
+        const tbody = document.getElementById('planBreakdown');
+        tbody.innerHTML = plans?.map(p => {
+          const stats = planStats[p.slug] || { count: 0, artworks: 0, views: 0, arViews: 0, price: 0 };
+          const avgViews = stats.count > 0 ? Math.round(stats.views / stats.count) : 0;
+          const arRate = stats.views > 0 ? ((stats.arViews / stats.views) * 100).toFixed(1) : 0;
+          const mrr = stats.count * (stats.price || 0);
+
+          return `
+            <tr>
+              <td><span class="plan-badge ${p.slug}">${p.name}</span></td>
+              <td>${stats.count}</td>
+              <td>$${mrr.toFixed(0)}</td>
+              <td>${stats.artworks}</td>
+              <td>${avgViews.toLocaleString()}</td>
+              <td>${arRate}%</td>
+            </tr>
+          `;
+        }).join('') || '<tr><td colspan="6">No data</td></tr>';
+
+      } catch (err) {
+        console.error('Error loading plan breakdown:', err);
+      }
+    }
+
+    // Top Artists
+    window.loadTopArtists = async function() {
+      const metric = document.getElementById('topMetric').value;
+
+      try {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select(`
+            id, full_name, gallery_name, gallery_slug,
+            artworks (id, view_count, ar_view_count)
+          `);
+
+        // Calculate totals
+        const artistStats = profiles?.map(p => {
+          const artworks = p.artworks || [];
+          const totalViews = artworks.reduce((sum, a) => sum + (a.view_count || 0), 0);
+          const totalArViews = artworks.reduce((sum, a) => sum + (a.ar_view_count || 0), 0);
+
+          return {
+            id: p.id,
+            name: p.gallery_name || p.full_name || 'Unknown',
+            slug: p.gallery_slug,
+            views: totalViews,
+            ar_views: totalArViews,
+            artworks: artworks.length
+          };
+        }) || [];
+
+        // Sort by selected metric
+        artistStats.sort((a, b) => b[metric] - a[metric]);
+
+        // Render top 10
+        const list = document.getElementById('topArtistsList');
+        const top10 = artistStats.slice(0, 10).filter(a => a[metric] > 0);
+
+        if (top10.length === 0) {
+          list.innerHTML = '<li style="color: var(--hm-text-muted);">No data yet</li>';
+          return;
+        }
+
+        const metricLabels = {
+          views: 'views',
+          ar_views: 'AR views',
+          artworks: 'artworks'
+        };
+
+        list.innerHTML = top10.map((a, i) => `
+          <li>
+            <span class="rank">${i + 1}</span>
+            <div class="info">
+              <div class="name">${a.name}</div>
+              <div class="meta">${a.artworks} artworks</div>
+            </div>
+            <div class="value">${a[metric].toLocaleString()} ${metricLabels[metric]}</div>
+          </li>
+        `).join('');
+
+      } catch (err) {
+        console.error('Error loading top artists:', err);
+      }
+    }
+
+    // Initialize Map
+    async function initMap() {
+      try {
+        const map = L.map('subscriberMap').setView([20, 0], 2);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          attribution: '© OpenStreetMap, © CARTO',
+          maxZoom: 18
+        }).addTo(map);
+
+        // Get subscriber locations
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('country_code, country');
+
+        // Count by country
+        const countryCounts = {};
+        profiles?.forEach(p => {
+          if (p.country_code) {
+            countryCounts[p.country_code] = (countryCounts[p.country_code] || 0) + 1;
+          }
+        });
+
+        // Add markers
+        let totalMapped = 0;
+        Object.entries(countryCounts).forEach(([code, count]) => {
+          const coords = COUNTRY_COORDS[code];
+          if (coords) {
+            const marker = L.circleMarker(coords, {
+              radius: Math.min(8 + count * 2, 25),
+              fillColor: '#667eea',
+              color: '#fff',
+              weight: 2,
+              opacity: 1,
+              fillOpacity: 0.7
+            }).addTo(map);
+
+            marker.bindPopup(`<strong>${code}</strong><br>${count} subscriber${count > 1 ? 's' : ''}`);
+            totalMapped += count;
+          }
+        });
+
+        // Update stats
+        const totalCountries = Object.keys(countryCounts).length;
+        document.getElementById('locationStats').textContent =
+          totalMapped > 0
+            ? `${totalMapped} subscribers across ${totalCountries} countries`
+            : 'No location data yet. Add country field to subscriber profiles.';
+
+      } catch (err) {
+        console.error('Error initializing map:', err);
+        document.getElementById('subscriberMap').innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--hm-text-muted);">Error loading map</div>';
+      }
+    }
+
+    // Growth Trend Chart
+    window.loadTrendData = async function() {
+      const days = parseInt(document.getElementById('trendPeriod').value);
+
+      try {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('created_at')
+          .gte('created_at', startDate.toISOString());
+
+        const { data: artworks } = await supabase
+          .from('artworks')
+          .select('created_at')
+          .gte('created_at', startDate.toISOString());
+
+        // Group by date
+        const signupsByDate = {};
+        const artworksByDate = {};
+
+        for (let i = 0; i < days; i++) {
+          const date = new Date();
+          date.setDate(date.getDate() - (days - 1 - i));
+          const key = date.toISOString().split('T')[0];
+          signupsByDate[key] = 0;
+          artworksByDate[key] = 0;
+        }
+
+        profiles?.forEach(p => {
+          const date = p.created_at.split('T')[0];
+          if (signupsByDate.hasOwnProperty(date)) {
+            signupsByDate[date]++;
+          }
+        });
+
+        artworks?.forEach(a => {
+          const date = a.created_at.split('T')[0];
+          if (artworksByDate.hasOwnProperty(date)) {
+            artworksByDate[date]++;
+          }
+        });
+
+        renderGrowthChart(signupsByDate, artworksByDate);
+
+      } catch (err) {
+        console.error('Error loading trend data:', err);
+      }
+    }
+
+    // Render Revenue Chart
+    function renderRevenueChart(data) {
+      const ctx = document.getElementById('revenueChart').getContext('2d');
+
+      if (revenueChart) revenueChart.destroy();
+
+      const labels = Object.keys(data);
+      const values = labels.map(k => data[k]);
+
+      if (labels.length === 0) {
+        ctx.font = '14px sans-serif';
+        ctx.fillStyle = '#6b7280';
+        ctx.textAlign = 'center';
+        ctx.fillText('No revenue data yet', ctx.canvas.width / 2, ctx.canvas.height / 2);
+        return;
+      }
+
+      revenueChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: ['#667eea', '#764ba2', '#f59e0b', '#10b981'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    // Render Subscribers Chart
+    function renderSubscribersChart(data) {
+      const ctx = document.getElementById('subscribersChart').getContext('2d');
+
+      if (subscribersChart) subscribersChart.destroy();
+
+      const labels = Object.keys(data);
+      const values = labels.map(k => data[k]);
+
+      subscribersChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Subscribers',
+            data: values,
+            backgroundColor: ['#e5e7eb', '#667eea', '#f59e0b', '#10b981'],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Render Growth Chart
+    function renderGrowthChart(signups, artworks) {
+      const ctx = document.getElementById('growthChart').getContext('2d');
+
+      if (growthChart) growthChart.destroy();
+
+      const labels = Object.keys(signups);
+      const signupData = Object.values(signups);
+      const artworkData = Object.values(artworks);
+
+      growthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels.map(d => {
+            const date = new Date(d);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          }),
+          datasets: [
+            {
+              label: 'New Signups',
+              data: signupData,
+              borderColor: '#667eea',
+              backgroundColor: 'rgba(102, 126, 234, 0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'New Artworks',
+              data: artworkData,
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              fill: true,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            intersect: false,
+            mode: 'index'
+          },
+          plugins: {
+            legend: {
+              position: 'top'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Sidebar toggle
+    window.toggleSidebar = function() {
+      document.getElementById('sidebar').classList.toggle('open');
+    };
+
+    // Initialize on load
+    init();
+  </script>
 </body>
 </html>
