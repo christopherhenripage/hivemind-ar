@@ -200,20 +200,8 @@
       background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
     }
 
+    /* Use model-viewer's native AR button - styled to match our design */
     .artwork-card model-viewer::part(default-ar-button) {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      opacity: 0;
-      pointer-events: all;
-      z-index: 1;
-    }
-
-    .artwork-card-wrapper {
-      position: relative;
-    }
-
-    .custom-ar-button {
       position: absolute;
       bottom: 20px;
       left: 50%;
@@ -227,40 +215,27 @@
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s;
       z-index: 10;
+      opacity: 1;
     }
 
-    .custom-ar-button:hover {
-      transform: translateX(-50%) scale(1.05);
-      box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
-    }
-
-    .custom-ar-button:active {
+    .artwork-card model-viewer::part(default-ar-button):active {
       transform: translateX(-50%) scale(0.98);
     }
 
-    .custom-ar-button::before {
-      content: '📱';
-      font-size: 1.5rem;
+    .artwork-card-wrapper {
+      position: relative;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-
-    .custom-ar-button.pulse {
-      animation: pulse 2s infinite;
+    /* Hide custom AR button - using native instead */
+    .custom-ar-button {
+      display: none !important;
     }
 
     /* Frame Selector - Compact inline version */
     .frame-selector-compact {
       position: absolute;
-      bottom: 85px;
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(255, 255, 255, 0.95);
@@ -279,7 +254,7 @@
     .artwork-card-wrapper:hover .frame-selector-compact {
       opacity: 1;
       pointer-events: all;
-      bottom: 90px;
+      bottom: 85px;
     }
 
     .frame-btn {
