@@ -274,6 +274,55 @@
       return user;
     }
 
+    // Validate GLB blob before upload
+    function validateGLB(blob) {
+      if (!blob) {
+        console.error('GLB validation failed: blob is null');
+        return false;
+      }
+      if (blob.size === 0) {
+        console.error('GLB validation failed: blob is empty');
+        return false;
+      }
+      if (blob.size > 50 * 1024 * 1024) { // 50MB max
+        console.error('GLB validation failed: blob too large', blob.size);
+        return false;
+      }
+      // GLB files should be at least a few KB
+      if (blob.size < 100) {
+        console.error('GLB validation failed: blob too small', blob.size);
+        return false;
+      }
+      return true;
+    }
+
+    // Generate GLB with retry logic
+    async function generateGLBWithRetry(imageDataUrl, widthInches, heightInches, maxRetries = 3) {
+      let lastError;
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const attemptText = maxRetries > 1 ? ` (attempt ${attempt}/${maxRetries})` : '';
+          updateProgress(50, `Generating AR model${attemptText}...`);
+
+          const glbBlob = await generateGLB(imageDataUrl, widthInches, heightInches);
+
+          if (validateGLB(glbBlob)) {
+            console.log(`GLB generation succeeded on attempt ${attempt}, size: ${glbBlob.size} bytes`);
+            return glbBlob;
+          }
+          throw new Error('Generated GLB failed validation');
+        } catch (err) {
+          lastError = err;
+          console.warn(`GLB attempt ${attempt} failed:`, err.message);
+          if (attempt < maxRetries) {
+            updateProgress(50, `AR model generation failed, retrying...`);
+            await new Promise(r => setTimeout(r, 1000));
+          }
+        }
+      }
+      throw lastError || new Error('GLB generation failed after all retries');
+    }
+
     // Generate GLB from image (optimized for iOS Quick Look)
     async function generateGLB(imageDataUrl, widthInches, heightInches) {
       console.log('generateGLB called with dimensions:', widthInches, 'x', heightInches);
@@ -664,15 +713,14 @@
 
         // Generate GLB for AR viewing (only if image changed or new artwork)
         if (imageFile || !glbUrl) {
-          updateProgress(50, 'Generating AR model...');
-
           try {
             // Use the local data URL for GLB generation (avoids CORS issues)
             const sourceImageUrl = imageDataUrl;
             if (!sourceImageUrl) {
               throw new Error('No image data available for AR model generation');
             }
-            const glbBlob = await generateGLB(sourceImageUrl, widthInches, heightInches);
+            // Use retry mechanism for more reliable GLB generation
+            const glbBlob = await generateGLBWithRetry(sourceImageUrl, widthInches, heightInches, 3);
 
             updateProgress(70, 'Uploading AR model...');
 
@@ -709,9 +757,9 @@
               }
             }
           } catch (glbError) {
-            console.error('GLB generation failed:', glbError);
-            alert('AR model generation failed: ' + glbError.message);
+            console.error('GLB generation failed after retries:', glbError);
             // Continue without GLB - AR just won't be available for this artwork
+            // User will see this in the success message
           }
         }
 
@@ -755,9 +803,13 @@
         }
 
         updateProgress(100, 'Complete!');
-        success.textContent = glbUrl
-          ? 'Artwork saved with AR model!'
-          : 'Artwork saved! (AR model generation failed - you can try again by editing)';
+        if (glbUrl) {
+          success.textContent = 'Artwork saved with AR model!';
+          success.style.color = '#28a745';
+        } else {
+          success.textContent = 'Artwork saved! AR model could not be generated - you can regenerate it from My Artworks.';
+          success.style.color = '#856404';
+        }
 
         // Redirect after short delay
         setTimeout(() => {

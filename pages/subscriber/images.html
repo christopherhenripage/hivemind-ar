@@ -149,6 +149,120 @@
     let userSubscription = null;
     let deleteId = null;
 
+    const INCHES_TO_METERS = 0.0254;
+
+    // Three.js for GLB generation
+    let THREE = null;
+    let GLTFExporter = null;
+
+    async function loadThreeJS() {
+      if (THREE) return true;
+      try {
+        console.log('Loading Three.js for AR regeneration...');
+        THREE = await import('https://esm.sh/three@0.160.0');
+        const exporterModule = await import('https://esm.sh/three@0.160.0/examples/jsm/exporters/GLTFExporter.js');
+        GLTFExporter = exporterModule.GLTFExporter;
+        console.log('Three.js loaded successfully');
+        return true;
+      } catch (e) {
+        console.error('Failed to load Three.js:', e);
+        return false;
+      }
+    }
+
+    // Validate GLB blob
+    function validateGLB(blob) {
+      if (!blob || blob.size === 0 || blob.size < 100 || blob.size > 50 * 1024 * 1024) {
+        return false;
+      }
+      return true;
+    }
+
+    // Generate GLB from image
+    async function generateGLB(imageDataUrl, widthInches, heightInches) {
+      const loaded = await loadThreeJS();
+      if (!loaded) throw new Error('Could not load 3D library');
+
+      const widthMeters = widthInches * INCHES_TO_METERS;
+      const heightMeters = heightInches * INCHES_TO_METERS;
+
+      // Load image and create DataTexture
+      const textureData = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 1024;
+          let w = img.width, h = img.height;
+          if (w > maxSize || h > maxSize) {
+            if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+            else { w = Math.round(w * maxSize / h); h = maxSize; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.translate(0, h);
+          ctx.scale(1, -1);
+          ctx.drawImage(img, 0, 0, w, h);
+          const imageData = ctx.getImageData(0, 0, w, h);
+          resolve({ data: imageData.data, width: w, height: h });
+        };
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = imageDataUrl;
+      });
+
+      const texture = new THREE.DataTexture(textureData.data, textureData.width, textureData.height, THREE.RGBAFormat);
+      texture.flipY = false;
+      texture.needsUpdate = true;
+
+      const scene = new THREE.Scene();
+      const geometry = new THREE.PlaneGeometry(widthMeters, heightMeters);
+      const material = new THREE.MeshStandardMaterial({ map: texture, side: THREE.FrontSide, metalness: 0, roughness: 1 });
+      const mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+      scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+      return new Promise((resolve, reject) => {
+        const exporter = new GLTFExporter();
+        exporter.parse(scene, (glb) => {
+          const blob = new Blob([glb], { type: 'model/gltf-binary' });
+          resolve(blob);
+        }, (error) => reject(new Error('Failed to export 3D model')), { binary: true });
+      });
+    }
+
+    // Generate GLB with retry
+    async function generateGLBWithRetry(imageUrl, widthInches, heightInches, maxRetries = 3) {
+      let lastError;
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const glbBlob = await generateGLB(imageUrl, widthInches, heightInches);
+          if (validateGLB(glbBlob)) return glbBlob;
+          throw new Error('Generated GLB failed validation');
+        } catch (err) {
+          lastError = err;
+          console.warn(`GLB attempt ${attempt} failed:`, err.message);
+          if (attempt < maxRetries) await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+      throw lastError || new Error('GLB generation failed');
+    }
+
+    // Toast notification
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
     // Check authentication
     async function checkAuth() {
       const { data: { user } } = await supabase.auth.getUser();
@@ -250,13 +364,16 @@
           </td>
           <td>
             <strong>${artwork.title}</strong>
-            ${artwork.glb_url ? '<span class="ar-badge" title="AR Ready">AR</span>' : ''}
+            ${artwork.glb_url
+              ? '<span class="ar-badge" title="AR Ready">AR</span>'
+              : '<span class="ar-badge ar-missing" title="AR model missing - click Regenerate">No AR</span>'}
           </td>
           <td>${artwork.width_inches && artwork.height_inches ? `${artwork.width_inches}" × ${artwork.height_inches}"` : '-'}</td>
           <td>${artwork.price_usd ? '$' + artwork.price_usd.toFixed(2) : '-'}</td>
           <td>${(artwork.view_count || 0)} / ${(artwork.ar_view_count || 0)} AR</td>
           <td>${new Date(artwork.created_at).toLocaleDateString()}</td>
           <td class="actions">
+            ${!artwork.glb_url && artwork.image_url ? `<button class="action-btn regenerate-btn" title="Regenerate AR Model" onclick="regenerateGLB('${artwork.id}')" id="regen-${artwork.id}">🔄</button>` : ''}
             <button class="action-btn" title="View" onclick="viewArtwork('${artwork.id}')">👁️</button>
             <button class="action-btn" title="Edit" onclick="editArtwork('${artwork.id}')">✏️</button>
             <button class="action-btn" title="Delete" onclick="showDeleteModal('${artwork.id}')">🗑️</button>
@@ -349,6 +466,83 @@
       loadImages();
     };
 
+    window.regenerateGLB = async function(artworkId) {
+      const artwork = allArtworks.find(a => a.id === artworkId);
+      if (!artwork) {
+        showToast('Artwork not found', 'error');
+        return;
+      }
+
+      if (!artwork.image_url) {
+        showToast('No image available for AR generation', 'error');
+        return;
+      }
+
+      if (!artwork.width_inches || !artwork.height_inches) {
+        showToast('Artwork dimensions required for AR. Please edit the artwork first.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById(`regen-${artworkId}`);
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add('spinning');
+      }
+
+      showToast('Generating AR model...', 'info');
+
+      try {
+        // Fetch the image and convert to data URL
+        const response = await fetch(artwork.image_url);
+        if (!response.ok) throw new Error('Failed to fetch image');
+        const blob = await response.blob();
+        const imageDataUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+
+        // Generate GLB with retry
+        const glbBlob = await generateGLBWithRetry(imageDataUrl, artwork.width_inches, artwork.height_inches, 3);
+
+        // Upload to storage
+        const glbPath = `${currentUser.id}/${Date.now()}_model.glb`;
+        const { error: uploadError } = await supabase.storage
+          .from('artworks')
+          .upload(glbPath, glbBlob, {
+            cacheControl: '3600',
+            contentType: 'model/gltf-binary',
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl: glbUrl } } = supabase.storage
+          .from('artworks')
+          .getPublicUrl(glbPath);
+
+        // Update artwork record
+        const { error: updateError } = await supabase
+          .from('artworks')
+          .update({ glb_url: glbUrl })
+          .eq('id', artworkId)
+          .eq('user_id', currentUser.id);
+
+        if (updateError) throw updateError;
+
+        showToast('AR model generated successfully!', 'success');
+        loadImages(); // Refresh the table
+
+      } catch (err) {
+        console.error('AR regeneration failed:', err);
+        showToast('Failed to generate AR model: ' + err.message, 'error');
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('spinning');
+        }
+      }
+    };
+
     window.handleLogout = async function() {
       await supabase.auth.signOut();
       window.location.href = '/pages/auth/login.html';
@@ -424,6 +618,64 @@
       border-radius: 3px;
       margin-left: 0.5rem;
       vertical-align: middle;
+    }
+
+    .ar-badge.ar-missing {
+      background: #6c757d;
+    }
+
+    .regenerate-btn {
+      background: #ffc107 !important;
+      border-color: #ffc107 !important;
+    }
+
+    .regenerate-btn:hover {
+      background: #e0a800 !important;
+    }
+
+    .regenerate-btn.spinning {
+      animation: spin 1s linear infinite;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      color: white;
+      font-size: 0.9rem;
+      z-index: 10000;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.3s ease;
+      max-width: 350px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .toast-info {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .toast-success {
+      background: #28a745;
+    }
+
+    .toast-error {
+      background: #dc3545;
     }
 
     .thumbnail {

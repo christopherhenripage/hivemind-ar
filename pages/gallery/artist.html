@@ -1550,6 +1550,43 @@
 
       // Track page view (one per session)
       trackViews();
+
+      // Add error listeners to model-viewers to detect broken GLBs
+      addModelViewerErrorHandlers();
+    }
+
+    // Handle model-viewer errors (broken GLBs)
+    function addModelViewerErrorHandlers() {
+      document.querySelectorAll('model-viewer').forEach(mv => {
+        mv.addEventListener('error', (e) => {
+          console.error('Model-viewer error for artwork:', mv.closest('.artwork-card-wrapper')?.getAttribute('data-artwork-id'), e);
+          const wrapper = mv.closest('.artwork-card-wrapper');
+          if (wrapper) {
+            // Hide the AR button since the GLB is broken
+            const arButton = wrapper.querySelector('.custom-ar-button');
+            if (arButton) {
+              arButton.style.display = 'none';
+            }
+            // Hide frame selector since it won't work without valid GLB
+            const frameSelector = wrapper.querySelector('.frame-selector-compact');
+            if (frameSelector) {
+              frameSelector.style.display = 'none';
+            }
+            // Remove AR Ready badge from artwork info
+            const artworkCard = wrapper.closest('.artwork-card');
+            const arBadge = artworkCard?.querySelector('.ar-badge');
+            if (arBadge) {
+              arBadge.textContent = 'AR Unavailable';
+              arBadge.style.background = '#6c757d';
+            }
+          }
+        });
+
+        // Also listen for load success to ensure AR button is visible
+        mv.addEventListener('load', () => {
+          console.log('Model loaded successfully:', mv.getAttribute('src'));
+        });
+      });
     }
 
     // Track views
