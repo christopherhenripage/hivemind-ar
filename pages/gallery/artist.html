@@ -1721,7 +1721,39 @@
           trackAnalytics(currentArtist.id, 'ar_view', artworkId);
         }
 
-        // Launch AR directly
+        // Check if model is loaded - large files may still be loading
+        if (!modelViewer.loaded) {
+          // Show loading indicator on button
+          const originalText = button.textContent;
+          button.textContent = 'Loading AR...';
+          button.disabled = true;
+
+          // Wait for model to load, then activate AR
+          modelViewer.addEventListener('load', function onLoad() {
+            modelViewer.removeEventListener('load', onLoad);
+            button.textContent = originalText;
+            button.disabled = false;
+            try {
+              modelViewer.activateAR();
+            } catch(err) {
+              console.error('AR activation failed:', err);
+              alert('AR activation failed. Please try again.');
+            }
+          }, { once: true });
+
+          // Timeout after 15 seconds
+          setTimeout(() => {
+            if (!modelViewer.loaded) {
+              button.textContent = originalText;
+              button.disabled = false;
+              alert('Model is taking too long to load. Please wait and try again.');
+            }
+          }, 15000);
+
+          return false;
+        }
+
+        // Model is loaded, activate AR directly
         try {
           modelViewer.activateAR();
         } catch(err) {
