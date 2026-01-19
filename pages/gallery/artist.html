@@ -232,6 +232,7 @@
       gap: 0.5rem;
       transition: all 0.3s;
       z-index: 10;
+      text-decoration: none;
     }
 
     .custom-ar-button:hover {
@@ -1510,9 +1511,10 @@
                   <button class="frame-btn white-frame" data-frame="white" onclick="selectFrameCompact(this, '${artwork.id}', 'white')" title="White Frame"></button>
                   <button class="frame-btn silver-frame" data-frame="silver" onclick="selectFrameCompact(this, '${artwork.id}', 'silver')" title="Silver Frame"></button>
                 </div>
-                <button class="custom-ar-button pulse" onclick="activateAR(this)">
+                <a class="custom-ar-button pulse" rel="ar" href="${artwork.glb_url}">
+                  <img src="${artwork.image_url}" style="display:none">
                   View in AR
-                </button>
+                </a>
               </div>
               <div class="artwork-info">
                 <span class="ar-badge">AR Ready</span>
