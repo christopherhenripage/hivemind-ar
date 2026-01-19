@@ -1670,6 +1670,51 @@
              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     }
 
+    // Detect in-app browsers (Facebook, Instagram, etc.) that don't support AR
+    function isInAppBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      // Facebook Messenger, Facebook app, Instagram, Twitter, LinkedIn, Snapchat, etc.
+      return /FBAN|FBAV|Instagram|Twitter|LinkedInApp|Snapchat|Line\//i.test(ua);
+    }
+
+    // Show banner for in-app browser users
+    function showInAppBrowserBanner() {
+      if (!isInAppBrowser()) return;
+
+      const banner = document.createElement('div');
+      banner.id = 'inAppBrowserBanner';
+      banner.innerHTML = `
+        <div style="position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 20px; z-index: 10000; text-align: center; font-size: 14px; box-shadow: 0 -4px 20px rgba(0,0,0,0.2);">
+          <div style="margin-bottom: 10px;"><strong>AR works best in Safari</strong></div>
+          <div style="margin-bottom: 12px; opacity: 0.9;">Tap below to open this gallery in Safari for the full AR experience</div>
+          <button onclick="openInSafari()" style="background: white; color: #667eea; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-right: 10px;">Open in Safari</button>
+          <button onclick="this.parentElement.parentElement.remove()" style="background: transparent; color: white; border: 1px solid rgba(255,255,255,0.5); padding: 12px 24px; border-radius: 8px; cursor: pointer;">Dismiss</button>
+        </div>
+      `;
+      document.body.appendChild(banner);
+    }
+
+    // Open current page in Safari (iOS) or default browser
+    window.openInSafari = function() {
+      // On iOS, this URL scheme opens the link in Safari
+      const currentUrl = window.location.href;
+
+      // Try multiple methods to open in Safari
+      // Method 1: x-safari-https scheme (works on some iOS versions)
+      const safariUrl = currentUrl.replace(/^https?:\/\//, 'x-safari-https://');
+
+      // Method 2: Copy to clipboard and show instructions
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(currentUrl).then(() => {
+          alert('Link copied!\n\nOpen Safari and paste the link to view AR.');
+        }).catch(() => {
+          prompt('Copy this link and paste it in Safari:', currentUrl);
+        });
+      } else {
+        prompt('Copy this link and paste it in Safari:', currentUrl);
+      }
+    };
+
     // Setup AR buttons based on device
     function setupArButtons() {
       const arButtons = document.querySelectorAll('.custom-ar-button');
@@ -1833,6 +1878,9 @@
 
     // Initialize
     loadGallery();
+
+    // Show banner if opened in Facebook/Instagram/etc. in-app browser
+    showInAppBrowserBanner();
   </script>
 
   <script>
