@@ -1726,24 +1726,36 @@
       });
     }
 
-    // Activate AR function - simple and direct
+    // Activate AR function
     window.activateAR = function(button) {
-      const wrapper = button.closest('.artwork-card-wrapper');
-      const modelViewer = wrapper.querySelector('model-viewer');
-      const artworkId = wrapper.getAttribute('data-artwork-id');
+      try {
+        const wrapper = button.closest('.artwork-card-wrapper');
+        const modelViewer = wrapper.querySelector('model-viewer');
+        const artworkId = wrapper.getAttribute('data-artwork-id');
 
-      if (!modelViewer) {
-        alert('AR not ready. Please wait.');
-        return;
+        if (!modelViewer) {
+          alert('Error: Model viewer not found');
+          return;
+        }
+
+        const src = modelViewer.getAttribute('src');
+        alert('Attempting AR with: ' + src);
+
+        // Track AR view
+        if (currentArtist) {
+          trackAnalytics(currentArtist.id, 'ar_view', artworkId);
+        }
+
+        // Check if model-viewer supports AR
+        if (typeof modelViewer.activateAR !== 'function') {
+          alert('Error: activateAR not available');
+          return;
+        }
+
+        modelViewer.activateAR();
+      } catch (err) {
+        alert('AR Error: ' + err.message);
       }
-
-      // Track AR view
-      if (currentArtist) {
-        trackAnalytics(currentArtist.id, 'ar_view', artworkId);
-      }
-
-      // Just call activateAR - model-viewer handles iOS/Android
-      modelViewer.activateAR();
     }
 
     window.inquireAbout = function(artworkId, artworkTitle) {
