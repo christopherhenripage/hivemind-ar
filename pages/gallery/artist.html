@@ -200,8 +200,16 @@
       background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
     }
 
-    /* Use model-viewer's native AR button - styled to match our design */
+    /* Hide native AR button - we use custom button */
     .artwork-card model-viewer::part(default-ar-button) {
+      display: none;
+    }
+
+    .artwork-card-wrapper {
+      position: relative;
+    }
+
+    .custom-ar-button {
       position: absolute;
       bottom: 20px;
       left: 50%;
@@ -215,21 +223,25 @@
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
       z-index: 10;
-      opacity: 1;
     }
 
-    .artwork-card model-viewer::part(default-ar-button):active {
+    .custom-ar-button:hover {
+      transform: translateX(-50%) scale(1.05);
+      box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+    }
+
+    .custom-ar-button:active {
       transform: translateX(-50%) scale(0.98);
     }
 
-    .artwork-card-wrapper {
-      position: relative;
-    }
-
-    /* Hide custom AR button - using native instead */
-    .custom-ar-button {
-      display: none !important;
+    .custom-ar-button::before {
+      content: '📱';
+      font-size: 1.2rem;
     }
 
     /* Frame Selector - Compact inline version */
@@ -1714,116 +1726,24 @@
       });
     }
 
-    // Activate AR function
-    window.activateAR = function(button, event) {
-      event?.preventDefault();
-      event?.stopPropagation();
-
+    // Activate AR function - simple and direct
+    window.activateAR = function(button) {
       const wrapper = button.closest('.artwork-card-wrapper');
       const modelViewer = wrapper.querySelector('model-viewer');
       const artworkId = wrapper.getAttribute('data-artwork-id');
 
-      // Check if on desktop
-      if (!isMobileDevice()) {
-        const currentUrl = window.location.href;
-        const message = `AR viewing requires a mobile device.\n\nOpen this link on your phone:\n${currentUrl}`;
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(currentUrl).then(() => {
-            alert(message + '\n\n(Link copied to clipboard!)');
-          }).catch(() => {
-            alert(message);
-          });
-        } else {
-          alert(message);
-        }
-        return false;
+      if (!modelViewer) {
+        alert('AR not ready. Please wait.');
+        return;
       }
-
-      if (!modelViewer || modelViewer.tagName !== 'MODEL-VIEWER') {
-        alert('AR model not ready. Please wait for the image to load.');
-        return false;
-      }
-
-      const currentSrc = modelViewer.getAttribute('src');
-      const originalGlb = originalGLBs[artworkId];
-      const selectedFrame = artworkFrameSelections[artworkId] || 'none';
-
-      console.log('AR activation requested');
-      console.log('- Selected frame:', selectedFrame);
-      console.log('- Current src:', currentSrc);
-      console.log('- Original GLB:', originalGlb);
-
-      // Check if current GLB is a blob URL (framed version) - iOS can't use blob URLs for AR
-      const isBlobUrl = currentSrc && currentSrc.startsWith('blob:');
-
-      if (isBlobUrl && originalGlb) {
-        console.log('Blob URL detected, switching to original GLB for AR');
-        // Temporarily switch to original GLB for AR, then switch back
-        modelViewer.setAttribute('src', originalGlb);
-
-        // Wait for model to update, then activate AR
-        setTimeout(() => {
-          launchAR(modelViewer, artworkId);
-          // Switch back to framed version after AR closes (or after delay)
-          setTimeout(() => {
-            if (artworkFrameSelections[artworkId] !== 'none' && framedGLBs[`${artworkId}_${artworkFrameSelections[artworkId]}`]) {
-              modelViewer.setAttribute('src', framedGLBs[`${artworkId}_${artworkFrameSelections[artworkId]}`]);
-            }
-          }, 1000);
-        }, 100);
-      } else {
-        launchAR(modelViewer, artworkId);
-      }
-
-      return false;
-    };
-
-    // Helper function to actually launch AR
-    function launchAR(modelViewer, artworkId) {
-      const glbUrl = modelViewer.getAttribute('src');
-      console.log('Launching AR...');
-      console.log('- GLB URL:', glbUrl);
-      console.log('- canActivateAR:', modelViewer.canActivateAR);
 
       // Track AR view
       if (currentArtist) {
         trackAnalytics(currentArtist.id, 'ar_view', artworkId);
       }
 
-      // Detect iOS
-      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-      if (isIOS) {
-        console.log('iOS detected, using Quick Look link fallback');
-        // Create a temporary link for iOS Quick Look
-        const link = document.createElement('a');
-        link.setAttribute('rel', 'ar');
-        link.setAttribute('href', glbUrl);
-        // Add a child image (required for Quick Look)
-        const img = document.createElement('img');
-        img.src = modelViewer.getAttribute('poster') || '';
-        img.style.display = 'none';
-        link.appendChild(img);
-        document.body.appendChild(link);
-        link.click();
-        setTimeout(() => link.remove(), 100);
-        return;
-      }
-
-      // For Android/other, try activateAR
-      try {
-        if (modelViewer.canActivateAR) {
-          modelViewer.activateAR();
-          console.log('activateAR() called successfully');
-        } else {
-          console.warn('canActivateAR is false, trying anyway...');
-          modelViewer.activateAR();
-        }
-      } catch(err) {
-        console.error('AR activation error:', err);
-        alert('AR could not be launched. Please ensure your device supports AR.');
-      }
+      // Just call activateAR - model-viewer handles iOS/Android
+      modelViewer.activateAR();
     }
 
     window.inquireAbout = function(artworkId, artworkTitle) {
