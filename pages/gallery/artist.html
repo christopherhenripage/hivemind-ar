@@ -1370,8 +1370,7 @@
         document.getElementById('arHelper').style.display = 'block';
       }
 
-      // Setup device-aware AR buttons
-      setupArButtons();
+      // Note: setupArButtons() will be called after artworks are rendered
 
       // Update page
       document.title = `${artist.gallery_name || artist.full_name} - HiveMind AR`;
@@ -1553,6 +1552,9 @@
 
       // Add error listeners to model-viewers to detect broken GLBs
       addModelViewerErrorHandlers();
+
+      // Setup device-aware AR buttons (must be after artworks are rendered)
+      setupArButtons();
     }
 
     // Handle model-viewer errors (broken GLBs)
@@ -1582,10 +1584,36 @@
           }
         });
 
-        // Also listen for load success to ensure AR button is visible
+        // Listen for model load success
         mv.addEventListener('load', () => {
           console.log('Model loaded successfully:', mv.getAttribute('src'));
+          const wrapper = mv.closest('.artwork-card-wrapper');
+          const arButton = wrapper?.querySelector('.custom-ar-button');
+          if (arButton) {
+            arButton.classList.remove('loading');
+          }
         });
+
+        // Listen for AR status changes
+        mv.addEventListener('ar-status', (e) => {
+          console.log('AR status changed:', e.detail.status);
+          const wrapper = mv.closest('.artwork-card-wrapper');
+          const arButton = wrapper?.querySelector('.custom-ar-button');
+
+          if (e.detail.status === 'failed') {
+            console.error('AR session failed');
+            if (arButton) {
+              arButton.classList.remove('loading');
+            }
+          } else if (e.detail.status === 'session-started') {
+            console.log('AR session started successfully');
+          }
+        });
+
+        // Check initial AR support
+        if (mv.canActivateAR) {
+          console.log('AR is supported for:', mv.getAttribute('src'));
+        }
       });
     }
 
@@ -1726,6 +1754,9 @@
 
     // Activate AR function
     window.activateAR = function(button, event) {
+      event?.preventDefault();
+      event?.stopPropagation();
+
       const wrapper = button.closest('.artwork-card-wrapper');
       const modelViewer = wrapper.querySelector('model-viewer');
       const artworkId = wrapper.getAttribute('data-artwork-id');
@@ -1752,21 +1783,39 @@
       if (modelViewer && modelViewer.tagName === 'MODEL-VIEWER') {
         const selectedFrame = artworkFrameSelections[artworkId] || 'none';
         console.log('Launching AR with selected frame:', selectedFrame);
+        console.log('Model src:', modelViewer.getAttribute('src'));
+        console.log('Can activate AR:', modelViewer.canActivateAR);
 
         // Track AR view
         if (currentArtist) {
           trackAnalytics(currentArtist.id, 'ar_view', artworkId);
         }
 
-        // Launch AR directly
+        // Check if AR is available
+        if (!modelViewer.canActivateAR) {
+          console.warn('AR not available on this device/browser');
+          // Try to activate anyway - sometimes canActivateAR is false but it still works
+        }
+
+        // Launch AR
         try {
           modelViewer.activateAR();
         } catch(err) {
           console.error('AR activation failed:', err);
-          alert('AR activation failed. Please try again.');
+          // Fallback: try clicking the hidden native AR button
+          const nativeArButton = modelViewer.shadowRoot?.querySelector('button[slot="ar-button"]');
+          if (nativeArButton) {
+            console.log('Trying native AR button fallback...');
+            nativeArButton.click();
+          } else {
+            alert('AR activation failed. Please ensure your device supports AR.');
+          }
         }
 
         return false;
+      } else {
+        console.error('Model viewer not found');
+        alert('AR model not ready. Please wait for the image to load.');
       }
     };
 
