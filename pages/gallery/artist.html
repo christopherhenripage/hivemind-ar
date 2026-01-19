@@ -1630,9 +1630,8 @@
       }
 
       if (frameType === 'none') {
-        // Reset to original poster and GLB
+        // Reset to original poster
         modelViewer.setAttribute('poster', originalPosters[artworkId]);
-        modelViewer.setAttribute('src', originalGLBs[artworkId]);
         console.log('Frame removed, showing original artwork');
       } else {
         try {
@@ -1647,25 +1646,14 @@
           const framedImageUrl = await window.frameGenerator.addFrameToImage(imageSource, frameType);
           console.log('Framed poster image generated successfully');
 
-          // Update model-viewer poster
+          // Update model-viewer poster only (not GLB src)
+          // This keeps the original GLB for AR which requires a real HTTP URL (not blob)
           modelViewer.setAttribute('poster', framedImageUrl);
 
-          // Get artwork dimensions
-          const widthInches = parseFloat(wrapper.getAttribute('data-width-inches')) || 24;
-          const heightInches = parseFloat(wrapper.getAttribute('data-height-inches')) || 24;
-
-          console.log(`Generating framed GLB for ${widthInches}" x ${heightInches}" artwork`);
-
-          // Generate framed GLB for AR
-          const cacheKey = `${artworkId}_${frameType}`;
-          if (!framedGLBs[cacheKey]) {
-            const framedGLBUrl = await window.frameGenerator.generateGLBFromImage(framedImageUrl, widthInches, heightInches);
-            framedGLBs[cacheKey] = framedGLBUrl;
-            console.log('Framed GLB generated successfully');
-          }
-
-          // Update model-viewer src to use framed GLB
-          modelViewer.setAttribute('src', framedGLBs[cacheKey]);
+          // Note: We don't change the GLB src anymore because:
+          // 1. iOS Quick Look can't use blob URLs
+          // 2. The framed preview is shown via the poster image
+          // 3. AR will use the original unframed GLB which works reliably
 
           // Restore button
           button.style.opacity = '1';
@@ -1695,7 +1683,6 @@
           button.classList.remove('selected');
           wrapper.querySelector('.frame-btn.no-frame').classList.add('selected');
           modelViewer.setAttribute('poster', originalPosters[artworkId]);
-          modelViewer.setAttribute('src', originalGLBs[artworkId]);
         }
       }
 
