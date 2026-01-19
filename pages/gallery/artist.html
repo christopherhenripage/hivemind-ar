@@ -200,9 +200,13 @@
       background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
     }
 
-    /* Hide native AR button - we use custom button */
     .artwork-card model-viewer::part(default-ar-button) {
-      display: none;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      opacity: 0;
+      pointer-events: all;
+      z-index: 1;
     }
 
     .artwork-card-wrapper {
@@ -241,13 +245,22 @@
 
     .custom-ar-button::before {
       content: '📱';
-      font-size: 1.2rem;
+      font-size: 1.5rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .custom-ar-button.pulse {
+      animation: pulse 2s infinite;
     }
 
     /* Frame Selector - Compact inline version */
     .frame-selector-compact {
       position: absolute;
-      bottom: 80px;
+      bottom: 85px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(255, 255, 255, 0.95);
@@ -266,7 +279,7 @@
     .artwork-card-wrapper:hover .frame-selector-compact {
       opacity: 1;
       pointer-events: all;
-      bottom: 85px;
+      bottom: 90px;
     }
 
     .frame-btn {
@@ -1357,7 +1370,8 @@
         document.getElementById('arHelper').style.display = 'block';
       }
 
-      // Note: setupArButtons() will be called after artworks are rendered
+      // Setup device-aware AR buttons
+      setupArButtons();
 
       // Update page
       document.title = `${artist.gallery_name || artist.full_name} - HiveMind AR`;
@@ -1536,72 +1550,6 @@
 
       // Track page view (one per session)
       trackViews();
-
-      // Add error listeners to model-viewers to detect broken GLBs
-      addModelViewerErrorHandlers();
-
-      // Setup device-aware AR buttons (must be after artworks are rendered)
-      setupArButtons();
-    }
-
-    // Handle model-viewer errors (broken GLBs)
-    function addModelViewerErrorHandlers() {
-      document.querySelectorAll('model-viewer').forEach(mv => {
-        mv.addEventListener('error', (e) => {
-          console.error('Model-viewer error for artwork:', mv.closest('.artwork-card-wrapper')?.getAttribute('data-artwork-id'), e);
-          const wrapper = mv.closest('.artwork-card-wrapper');
-          if (wrapper) {
-            // Hide the AR button since the GLB is broken
-            const arButton = wrapper.querySelector('.custom-ar-button');
-            if (arButton) {
-              arButton.style.display = 'none';
-            }
-            // Hide frame selector since it won't work without valid GLB
-            const frameSelector = wrapper.querySelector('.frame-selector-compact');
-            if (frameSelector) {
-              frameSelector.style.display = 'none';
-            }
-            // Remove AR Ready badge from artwork info
-            const artworkCard = wrapper.closest('.artwork-card');
-            const arBadge = artworkCard?.querySelector('.ar-badge');
-            if (arBadge) {
-              arBadge.textContent = 'AR Unavailable';
-              arBadge.style.background = '#6c757d';
-            }
-          }
-        });
-
-        // Listen for model load success
-        mv.addEventListener('load', () => {
-          console.log('Model loaded successfully:', mv.getAttribute('src'));
-          const wrapper = mv.closest('.artwork-card-wrapper');
-          const arButton = wrapper?.querySelector('.custom-ar-button');
-          if (arButton) {
-            arButton.classList.remove('loading');
-          }
-        });
-
-        // Listen for AR status changes
-        mv.addEventListener('ar-status', (e) => {
-          console.log('AR status changed:', e.detail.status);
-          const wrapper = mv.closest('.artwork-card-wrapper');
-          const arButton = wrapper?.querySelector('.custom-ar-button');
-
-          if (e.detail.status === 'failed') {
-            console.error('AR session failed');
-            if (arButton) {
-              arButton.classList.remove('loading');
-            }
-          } else if (e.detail.status === 'session-started') {
-            console.log('AR session started successfully');
-          }
-        });
-
-        // Check initial AR support
-        if (mv.canActivateAR) {
-          console.log('AR is supported for:', mv.getAttribute('src'));
-        }
-      });
     }
 
     // Track views
@@ -1642,8 +1590,9 @@
       }
 
       if (frameType === 'none') {
-        // Reset to original poster
+        // Reset to original poster and GLB
         modelViewer.setAttribute('poster', originalPosters[artworkId]);
+        modelViewer.setAttribute('src', originalGLBs[artworkId]);
         console.log('Frame removed, showing original artwork');
       } else {
         try {
@@ -1658,14 +1607,25 @@
           const framedImageUrl = await window.frameGenerator.addFrameToImage(imageSource, frameType);
           console.log('Framed poster image generated successfully');
 
-          // Update model-viewer poster only (not GLB src)
-          // This keeps the original GLB for AR which requires a real HTTP URL (not blob)
+          // Update model-viewer poster
           modelViewer.setAttribute('poster', framedImageUrl);
 
-          // Note: We don't change the GLB src anymore because:
-          // 1. iOS Quick Look can't use blob URLs
-          // 2. The framed preview is shown via the poster image
-          // 3. AR will use the original unframed GLB which works reliably
+          // Get artwork dimensions
+          const widthInches = parseFloat(wrapper.getAttribute('data-width-inches')) || 24;
+          const heightInches = parseFloat(wrapper.getAttribute('data-height-inches')) || 24;
+
+          console.log(`Generating framed GLB for ${widthInches}" x ${heightInches}" artwork`);
+
+          // Generate framed GLB for AR
+          const cacheKey = `${artworkId}_${frameType}`;
+          if (!framedGLBs[cacheKey]) {
+            const framedGLBUrl = await window.frameGenerator.generateGLBFromImage(framedImageUrl, widthInches, heightInches);
+            framedGLBs[cacheKey] = framedGLBUrl;
+            console.log('Framed GLB generated successfully');
+          }
+
+          // Update model-viewer src to use framed GLB
+          modelViewer.setAttribute('src', framedGLBs[cacheKey]);
 
           // Restore button
           button.style.opacity = '1';
@@ -1695,6 +1655,7 @@
           button.classList.remove('selected');
           wrapper.querySelector('.frame-btn.no-frame').classList.add('selected');
           modelViewer.setAttribute('poster', originalPosters[artworkId]);
+          modelViewer.setAttribute('src', originalGLBs[artworkId]);
         }
       }
 
@@ -1727,36 +1688,50 @@
     }
 
     // Activate AR function
-    window.activateAR = function(button) {
-      try {
-        const wrapper = button.closest('.artwork-card-wrapper');
-        const modelViewer = wrapper.querySelector('model-viewer');
-        const artworkId = wrapper.getAttribute('data-artwork-id');
+    window.activateAR = function(button, event) {
+      const wrapper = button.closest('.artwork-card-wrapper');
+      const modelViewer = wrapper.querySelector('model-viewer');
+      const artworkId = wrapper.getAttribute('data-artwork-id');
 
-        if (!modelViewer) {
-          alert('Error: Model viewer not found');
-          return;
+      // Check if on desktop
+      if (!isMobileDevice()) {
+        // Show helpful message for desktop users
+        const currentUrl = window.location.href;
+        const message = `AR viewing requires a mobile device.\n\nOpen this link on your phone:\n${currentUrl}`;
+
+        // Try to copy to clipboard
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(currentUrl).then(() => {
+            alert(message + '\n\n(Link copied to clipboard!)');
+          }).catch(() => {
+            alert(message);
+          });
+        } else {
+          alert(message);
         }
+        return false;
+      }
 
-        const src = modelViewer.getAttribute('src');
-        alert('Attempting AR with: ' + src);
+      if (modelViewer && modelViewer.tagName === 'MODEL-VIEWER') {
+        const selectedFrame = artworkFrameSelections[artworkId] || 'none';
+        console.log('Launching AR with selected frame:', selectedFrame);
 
         // Track AR view
         if (currentArtist) {
           trackAnalytics(currentArtist.id, 'ar_view', artworkId);
         }
 
-        // Check if model-viewer supports AR
-        if (typeof modelViewer.activateAR !== 'function') {
-          alert('Error: activateAR not available');
-          return;
+        // Launch AR directly
+        try {
+          modelViewer.activateAR();
+        } catch(err) {
+          console.error('AR activation failed:', err);
+          alert('AR activation failed. Please try again.');
         }
 
-        modelViewer.activateAR();
-      } catch (err) {
-        alert('AR Error: ' + err.message);
+        return false;
       }
-    }
+    };
 
     window.inquireAbout = function(artworkId, artworkTitle) {
       document.getElementById('contactSubject').value = `Inquiry about: ${artworkTitle}`;
