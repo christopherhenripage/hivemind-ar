@@ -371,11 +371,34 @@
     .artwork-info .description {
       font-size: 0.9rem;
       color: var(--hm-text-light);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      white-space: pre-wrap;
+    }
+
+    .artwork-info .description.expanded {
+      display: block;
+      -webkit-line-clamp: unset;
+      overflow: visible;
+    }
+
+    .read-more-btn {
+      background: none;
+      border: none;
+      color: var(--hm-text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+    }
+
+    .read-more-btn:hover {
+      color: var(--hm-text);
+      text-decoration: underline;
     }
 
     .artwork-meta {
@@ -1517,7 +1540,10 @@
               <div class="artwork-info">
                 <span class="ar-badge">AR Ready</span>
                 <h3>${artwork.title}</h3>
-                ${artwork.description ? `<p class="description">${artwork.description}</p>` : ''}
+                ${artwork.description ? `
+                  <p class="description" id="desc-${artwork.id}">${artwork.description}</p>
+                  <button class="read-more-btn" id="readmore-${artwork.id}" onclick="toggleDescription('${artwork.id}')" style="display: none;">Read more</button>
+                ` : ''}
                 <div class="artwork-meta">
                   <span class="dimensions">${dimensions}</span>
                   <span class="price">${price}</span>
@@ -1534,7 +1560,10 @@
               <img class="artwork-image" src="${artwork.image_url || '/images/placeholder.png'}" alt="${artwork.title}">
               <div class="artwork-info">
                 <h3>${artwork.title}</h3>
-                ${artwork.description ? `<p class="description">${artwork.description}</p>` : ''}
+                ${artwork.description ? `
+                  <p class="description" id="desc-${artwork.id}">${artwork.description}</p>
+                  <button class="read-more-btn" id="readmore-${artwork.id}" onclick="toggleDescription('${artwork.id}')" style="display: none;">Read more</button>
+                ` : ''}
                 <div class="artwork-meta">
                   <span class="dimensions">${dimensions}</span>
                   <span class="price">${price}</span>
@@ -1547,6 +1576,17 @@
           `;
         }
       }).join('');
+
+      // Show "Read more" buttons for truncated descriptions
+      setTimeout(() => {
+        document.querySelectorAll('.description').forEach(desc => {
+          const id = desc.id.replace('desc-', '');
+          const btn = document.getElementById(`readmore-${id}`);
+          if (btn && desc.scrollHeight > desc.clientHeight) {
+            btn.style.display = 'inline-block';
+          }
+        });
+      }, 100);
 
       // Track page view (one per session)
       trackViews();
@@ -1814,6 +1854,15 @@
       document.getElementById('contactSubject').value = `Inquiry about: ${artworkTitle}`;
       document.getElementById('contactArtworkId').value = artworkId;
       showContactModal();
+    };
+
+    window.toggleDescription = function(artworkId) {
+      const desc = document.getElementById(`desc-${artworkId}`);
+      const btn = document.getElementById(`readmore-${artworkId}`);
+      if (desc && btn) {
+        const isExpanded = desc.classList.toggle('expanded');
+        btn.textContent = isExpanded ? 'Show less' : 'Read more';
+      }
     };
 
     window.showContactModal = function() {
