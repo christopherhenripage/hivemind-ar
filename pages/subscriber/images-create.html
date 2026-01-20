@@ -178,7 +178,7 @@
                 <div class="upload-placeholder">
                   <div style="font-size: 3rem; margin-bottom: 1rem;">📷</div>
                   <p>Click to upload your artwork image</p>
-                  <p style="font-size: 0.875rem; color: var(--hm-text-muted);">Recommended: High resolution JPG or PNG</p>
+                  <p style="font-size: 0.875rem; color: var(--hm-text-muted);">JPG or PNG, max 5MB</p>
                 </div>
               </div>
             </div>
@@ -578,9 +578,9 @@
       const file = event.target.files[0];
       if (!file) return;
 
-      // Validate file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        alert('Image file is too large. Maximum size is 10MB.');
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image file is too large. Maximum size is 5MB. Please resize or compress your image.');
         return;
       }
 
