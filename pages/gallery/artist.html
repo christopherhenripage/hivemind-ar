@@ -1588,6 +1588,28 @@
         });
       }, 100);
 
+      // Add error handlers to model-viewers to hide AR buttons if GLB fails to load
+      document.querySelectorAll('model-viewer').forEach(mv => {
+        mv.addEventListener('error', (e) => {
+          console.error('Model-viewer failed to load GLB:', e);
+          const wrapper = mv.closest('.artwork-card-wrapper');
+          if (wrapper) {
+            // Hide AR button
+            const arButton = wrapper.querySelector('.custom-ar-button');
+            if (arButton) arButton.style.display = 'none';
+            // Hide frame selector
+            const frameSelector = wrapper.querySelector('.frame-selector-compact');
+            if (frameSelector) frameSelector.style.display = 'none';
+          }
+          // Hide AR badge for this artwork
+          const card = mv.closest('.artwork-card');
+          if (card) {
+            const arBadge = card.querySelector('.ar-badge');
+            if (arBadge) arBadge.style.display = 'none';
+          }
+        });
+      });
+
       // Track page view (one per session)
       trackViews();
     }
