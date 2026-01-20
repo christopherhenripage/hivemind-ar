@@ -1324,29 +1324,12 @@
       try {
         const { supabase } = await import('/src/supabase.js');
 
-        // Get artworks from paid subscribers only (Artist and Professional tiers)
-        // Join with profiles, subscriptions, and subscription_plans to check tier
+        // Get all active artworks
         const { data: artworks, error } = await supabase
           .from('artworks')
-          .select(`
-            id,
-            title,
-            width_inches,
-            height_inches,
-            price_usd,
-            category,
-            glb_url,
-            usdz_url,
-            image_url,
-            thumbnail_url,
-            user_id,
-            profiles!artworks_user_id_fkey (
-              id,
-              gallery_name,
-              gallery_slug
-            )
-          `)
+          .select('*')
           .eq('is_active', true)
+          .order('created_at', { ascending: false })
           .limit(50);
 
         if (error) {
@@ -1356,13 +1339,31 @@
         }
 
         if (!artworks || artworks.length === 0) {
+          console.log('No artworks found');
           grid.innerHTML = renderEmptyState();
           return;
         }
 
-        // Get subscription info for each user to filter by paid tiers
+        console.log('Found artworks:', artworks.length);
+
+        // Get unique user IDs
         const userIds = [...new Set(artworks.map(a => a.user_id))];
 
+        // Get profiles for these users
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, gallery_name, gallery_slug')
+          .in('id', userIds);
+
+        // Create profile map
+        const profileMap = {};
+        if (profiles) {
+          profiles.forEach(p => {
+            profileMap[p.id] = p;
+          });
+        }
+
+        // Get subscription info for each user
         const { data: subscriptions } = await supabase
           .from('subscriptions')
           .select(`
@@ -1401,21 +1402,24 @@
             const sub = subMap[a.user_id];
             return sub && (sub.planSlug === 'artist' || sub.planSlug === 'professional');
           })
-          .map(a => ({
-            id: a.id,
-            title: a.title,
-            artist: a.profiles?.gallery_name || 'Artist',
-            artistSlug: a.profiles?.gallery_slug || 'unknown',
-            dimensions: `${a.width_inches}" x ${a.height_inches}"`,
-            widthInches: a.width_inches,
-            heightInches: a.height_inches,
-            price: a.price_usd ? `$${a.price_usd.toLocaleString()}` : 'Price on request',
-            category: a.category || 'paintings',
-            glbUrl: a.glb_url,
-            usdzUrl: a.usdz_url,
-            posterUrl: a.thumbnail_url || a.image_url || null,
-            featured: subMap[a.user_id]?.featured || false
-          }))
+          .map(a => {
+            const profile = profileMap[a.user_id] || {};
+            return {
+              id: a.id,
+              title: a.title,
+              artist: profile.gallery_name || 'Artist',
+              artistSlug: profile.gallery_slug || 'unknown',
+              dimensions: `${a.width_inches}" x ${a.height_inches}"`,
+              widthInches: a.width_inches,
+              heightInches: a.height_inches,
+              price: a.price_usd ? `$${a.price_usd.toLocaleString()}` : 'Price on request',
+              category: a.category || 'paintings',
+              glbUrl: a.glb_url,
+              usdzUrl: a.usdz_url,
+              posterUrl: a.thumbnail_url || a.image_url || null,
+              featured: subMap[a.user_id]?.featured || false
+            };
+          })
           // Sort: featured (Professional tier) first, then by most recent
           .sort((a, b) => {
             if (a.featured && !b.featured) return -1;
