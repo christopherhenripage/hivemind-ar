@@ -525,6 +525,26 @@
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+    }
+
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: linear-gradient(135deg, #C9A227 0%, #D4AF37 100%);
+      color: #1a1a1a;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    .artwork-card.featured {
+      border: 2px solid #C9A227;
+      box-shadow: 0 4px 20px rgba(201, 162, 39, 0.15);
       margin-bottom: 0.5rem;
     }
 
@@ -1137,60 +1157,16 @@
     const frameGenerator = new SimpleFrameGenerator();
     window.frameGenerator = frameGenerator;
 
-    // Sample artwork data (will be replaced with Supabase data in production)
-    const sampleArtworks = [
-      {
-        id: '1',
-        title: 'HiveMind Collective',
-        artist: 'Demo Artist',
-        artistSlug: 'demo-artist',
-        dimensions: '24" x 24"',
-        widthInches: 24,
-        heightInches: 24,
-        price: '$850',
-        category: 'digital',
-        glbUrl: '/models/sample-artwork.glb',
-        usdzUrl: null,
-        posterUrl: '/images/brand/HMC_Logo_AR.png'
-      },
-      {
-        id: '2',
-        title: 'HiveMind Classic',
-        artist: 'Demo Artist',
-        artistSlug: 'demo-artist',
-        dimensions: '18" x 18"',
-        widthInches: 18,
-        heightInches: 18,
-        price: '$650',
-        category: 'digital',
-        glbUrl: '/models/hivemind-logo.glb',
-        usdzUrl: null,
-        posterUrl: '/images/brand/HMC_Logo_04.png'
-      },
-      {
-        id: '3',
-        title: 'The Astronaut',
-        artist: 'Space Sculptor',
-        artistSlug: 'space-sculptor',
-        dimensions: '3D Sculpture',
-        widthInches: null,
-        heightInches: null,
-        price: '$2,400',
-        category: 'sculpture',
-        glbUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb',
-        usdzUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
-        posterUrl: 'https://modelviewer.dev/shared-assets/models/Astronaut.webp'
-      }
-    ];
-
     // Render artwork card
     function renderArtworkCard(artwork) {
       const usdzAttr = artwork.usdzUrl ? `ios-src="${artwork.usdzUrl}"` : '';
       const autoRotate = artwork.category === 'sculpture' ? 'auto-rotate' : '';
       const posterUrl = artwork.posterUrl || 'https://via.placeholder.com/400x400/667eea/ffffff?text=Tap+to+View+AR';
+      const featuredClass = artwork.featured ? ' featured' : '';
+      const featuredBadge = artwork.featured ? '<span class="featured-badge">Featured</span>' : '';
 
       return `
-        <div class="artwork-card" data-category="${artwork.category}">
+        <div class="artwork-card${featuredClass}" data-category="${artwork.category}">
           <div class="artwork-card-wrapper" data-artwork-id="${artwork.id}" data-width-inches="${artwork.widthInches || 24}" data-height-inches="${artwork.heightInches || 24}">
             <model-viewer
               src="${artwork.glbUrl}"
@@ -1216,12 +1192,12 @@
               <button class="frame-btn white-frame" data-frame="white" onclick="selectFrameCompact(this, '${artwork.id}', 'white')" title="White Frame"></button>
               <button class="frame-btn silver-frame" data-frame="silver" onclick="selectFrameCompact(this, '${artwork.id}', 'silver')" title="Silver Frame"></button>
             </div>
-            <button class="custom-ar-button pulse" onclick="activateAR(this)" id="custom-ar-btn">
+            <button class="custom-ar-button pulse" onclick="activateAR(this)">
               View in AR
             </button>
           </div>
           <div class="artwork-info">
-            <span class="ar-badge">AR Ready</span>
+            <span class="ar-badge">AR Ready</span>${featuredBadge}
             <h3><a href="/pages/gallery/artwork.html?id=${artwork.id}">${artwork.title}</a></h3>
             <p class="artist">by <a href="/pages/gallery/artist.html?slug=${artwork.artistSlug}">${artwork.artist}</a></p>
             <div class="artwork-meta">
@@ -1259,10 +1235,11 @@
     async function loadArtworks() {
       const grid = document.getElementById('artworkGrid');
 
-      // Try to load from Supabase first (for production)
       try {
         const { supabase } = await import('/src/supabase.js');
 
+        // Get artworks from paid subscribers only (Artist and Professional tiers)
+        // Join with profiles, subscriptions, and subscription_plans to check tier
         const { data: artworks, error } = await supabase
           .from('artworks')
           .select(`
@@ -1274,38 +1251,106 @@
             category,
             glb_url,
             usdz_url,
-            artists (
+            image_url,
+            thumbnail_url,
+            user_id,
+            profiles!artworks_user_id_fkey (
+              id,
               gallery_name,
-              slug
+              gallery_slug
             )
           `)
           .eq('is_active', true)
-          .order('created_at', { ascending: false })
-          .limit(20);
+          .not('glb_url', 'is', null)
+          .limit(50);
 
-        if (!error && artworks && artworks.length > 0) {
-          const formattedArtworks = artworks.map(a => ({
+        if (error) {
+          console.error('Error loading artworks:', error);
+          grid.innerHTML = renderEmptyState();
+          return;
+        }
+
+        if (!artworks || artworks.length === 0) {
+          grid.innerHTML = renderEmptyState();
+          return;
+        }
+
+        // Get subscription info for each user to filter by paid tiers
+        const userIds = [...new Set(artworks.map(a => a.user_id))];
+
+        const { data: subscriptions } = await supabase
+          .from('subscriptions')
+          .select(`
+            user_id,
+            subscription_plans (
+              slug,
+              featured_listing
+            )
+          `)
+          .in('user_id', userIds);
+
+        // Create a map of user_id to subscription info
+        const subMap = {};
+        if (subscriptions) {
+          subscriptions.forEach(sub => {
+            subMap[sub.user_id] = {
+              planSlug: sub.subscription_plans?.slug || 'free',
+              featured: sub.subscription_plans?.featured_listing || false
+            };
+          });
+        }
+
+        // Filter to only paid tiers (artist or professional) and format
+        const paidArtworks = artworks
+          .filter(a => {
+            const sub = subMap[a.user_id];
+            // Include if artist or professional tier
+            return sub && (sub.planSlug === 'artist' || sub.planSlug === 'professional');
+          })
+          .map(a => ({
             id: a.id,
             title: a.title,
-            artist: a.artists?.gallery_name || 'Unknown Artist',
-            artistSlug: a.artists?.slug || 'unknown',
+            artist: a.profiles?.gallery_name || 'Artist',
+            artistSlug: a.profiles?.gallery_slug || 'unknown',
             dimensions: `${a.width_inches}" x ${a.height_inches}"`,
+            widthInches: a.width_inches,
+            heightInches: a.height_inches,
             price: a.price_usd ? `$${a.price_usd.toLocaleString()}` : 'Price on request',
             category: a.category || 'paintings',
             glbUrl: a.glb_url,
             usdzUrl: a.usdz_url,
-            posterUrl: a.thumbnail_url || a.image_url || null
-          }));
+            posterUrl: a.thumbnail_url || a.image_url || null,
+            featured: subMap[a.user_id]?.featured || false
+          }))
+          // Sort: featured (Professional tier) first, then by most recent
+          .sort((a, b) => {
+            if (a.featured && !b.featured) return -1;
+            if (!a.featured && b.featured) return 1;
+            return 0;
+          });
 
-          grid.innerHTML = formattedArtworks.map(renderArtworkCard).join('') + renderPlaceholderCard();
+        if (paidArtworks.length === 0) {
+          grid.innerHTML = renderEmptyState();
           return;
         }
-      } catch (e) {
-        console.log('Supabase not configured, using sample data');
-      }
 
-      // Fall back to sample data
-      grid.innerHTML = sampleArtworks.map(renderArtworkCard).join('') + renderPlaceholderCard();
+        grid.innerHTML = paidArtworks.map(renderArtworkCard).join('') + renderPlaceholderCard();
+
+      } catch (e) {
+        console.error('Error loading gallery:', e);
+        grid.innerHTML = renderEmptyState();
+      }
+    }
+
+    // Empty state when no artworks available
+    function renderEmptyState() {
+      return `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; color: var(--hm-text-muted);">
+          <h3 style="margin-bottom: 1rem; color: var(--hm-dark);">Gallery Coming Soon</h3>
+          <p style="margin-bottom: 2rem;">Our featured artists are preparing their collections. Check back soon!</p>
+          <a href="/pages/auth/signup.html" class="btn" style="background: var(--hm-dark); color: white;">Become an Artist</a>
+        </div>
+      `;
     }
 
     // Filter functionality
