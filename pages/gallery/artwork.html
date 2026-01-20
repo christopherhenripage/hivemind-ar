@@ -411,6 +411,7 @@
     <div class="nav-links" id="navLinks">
       <a href="/">Home</a>
       <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/how-it-works.html">How It Works</a>
       <a href="/pages/public/about.html">About</a>
       <a href="/pages/public/contact.html">Contact</a>
       <a href="/pages/auth/login.html">Sign Up / Login</a>
@@ -510,8 +511,10 @@
     <div class="footer-links">
       <a href="/">Home</a>
       <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/how-it-works.html">How It Works</a>
       <a href="/pages/public/about.html">About</a>
       <a href="/pages/public/contact.html">Contact</a>
+      <a href="/pages/auth/login.html">Sign Up / Login</a>
     </div>
     <p class="copyright">&copy; 2026 HiveMind AR.</p>
   </footer>
@@ -550,30 +553,36 @@
       }
 
       try {
-        // Get artwork with artist info
+        // Get artwork first
         const { data: artwork, error } = await supabase
           .from('artworks')
-          .select(`
-            *,
-            profiles:user_id (
-              id,
-              full_name,
-              gallery_name,
-              gallery_slug,
-              email
-            )
-          `)
+          .select('*')
           .eq('id', artworkId)
           .eq('is_active', true)
           .single();
 
         if (error || !artwork) {
+          console.error('Artwork fetch error:', error);
           showError();
           return;
         }
 
+        // Get artist profile separately
+        let artist = null;
+        if (artwork.user_id) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('id, full_name, gallery_name, gallery_slug, email')
+            .eq('id', artwork.user_id)
+            .single();
+          artist = profile;
+        }
+
+        // Attach profile to artwork for rendering
+        artwork.profiles = artist;
+
         currentArtwork = artwork;
-        currentArtist = artwork.profiles;
+        currentArtist = artist;
 
         // Track view
         trackView(artworkId);
