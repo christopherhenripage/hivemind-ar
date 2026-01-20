@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
+  <title>Artwork - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+
+  <!-- Model-Viewer for AR -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.3.0/dist/model-viewer.min.js"></script>
+  <script type="module">
+    if (!customElements.get('model-viewer')) {
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js';
+      document.head.appendChild(script);
+    }
+  </script>
+
+  <style>
+    body {
+      background: #f5f5f5;
+    }
+
+    .artwork-detail-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .breadcrumb {
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      color: var(--hm-text-muted);
+    }
+
+    .breadcrumb a {
+      color: var(--hm-text-muted);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--hm-text);
+      text-decoration: underline;
+    }
+
+    .artwork-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .artwork-viewer {
+      position: sticky;
+      top: 100px;
+    }
+
+    .artwork-viewer model-viewer {
+      width: 100%;
+      height: 500px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .artwork-image-fallback {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .ar-button-container {
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .custom-ar-button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+    }
+
+    .custom-ar-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+    }
+
+    .custom-ar-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .custom-ar-button::before {
+      content: '📱';
+      font-size: 1.25rem;
+    }
+
+    .no-ar-notice {
+      color: var(--hm-text-muted);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .artwork-details {
+      padding: 1rem 0;
+    }
+
+    .ar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: var(--hm-dark);
+      color: var(--hm-white);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .artwork-title {
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+      color: var(--hm-dark);
+    }
+
+    .artwork-artist {
+      font-size: 1.1rem;
+      color: var(--hm-text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .artwork-artist a {
+      color: var(--hm-text-muted);
+      text-decoration: none;
+    }
+
+    .artwork-artist a:hover {
+      color: var(--hm-text);
+      text-decoration: underline;
+    }
+
+    .artwork-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .meta-item {
+      text-align: center;
+      padding: 0.75rem;
+    }
+
+    .meta-label {
+      font-size: 0.8rem;
+      color: var(--hm-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .meta-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--hm-dark);
+    }
+
+    .meta-value.price {
+      color: #28a745;
+    }
+
+    .artwork-description {
+      margin-bottom: 2rem;
+    }
+
+    .artwork-description h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--hm-dark);
+    }
+
+    .artwork-description p {
+      color: var(--hm-text-light);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .action-buttons .btn {
+      flex: 1;
+      min-width: 150px;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%);
+      color: #1a1a1a;
+      border: none;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 200, 170, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--hm-dark);
+      color: var(--hm-dark);
+    }
+
+    .btn-outline:hover {
+      background: var(--hm-dark);
+      color: white;
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--hm-text-muted);
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .error-state h2 {
+      color: var(--hm-dark);
+      margin-bottom: 1rem;
+    }
+
+    .error-state p {
+      color: var(--hm-text-muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Frame selector */
+    .frame-selector {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+
+    .frame-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #f5f5f5;
+      position: relative;
+    }
+
+    .frame-btn:hover {
+      transform: scale(1.1);
+      border-color: #999;
+    }
+
+    .frame-btn.selected {
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+    }
+
+    .frame-btn::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    }
+
+    .frame-btn.no-frame::before {
+      border: 2px dashed #ccc;
+      background: white;
+    }
+
+    .frame-btn.wood-frame::before {
+      border: 4px solid #8B4513;
+    }
+
+    .frame-btn.black-frame::before {
+      border: 4px solid #1a1a1a;
+    }
+
+    .frame-btn.gold-frame::before {
+      border: 4px solid #C9A227;
+      box-shadow: 0 0 5px rgba(201, 162, 39, 0.5);
+    }
+
+    .frame-btn.white-frame::before {
+      border: 4px solid #f8f8f8;
+    }
+
+    .frame-btn.silver-frame::before {
+      border: 4px solid #c0c0c0;
+    }
+
+    /* In-app browser banner */
+    .in-app-browser-banner {
+      display: none;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .in-app-browser-banner.show {
+      display: block;
+    }
+
+    .in-app-browser-banner p {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .in-app-browser-banner a {
+      color: white;
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .artwork-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .artwork-viewer {
+        position: static;
+      }
+
+      .artwork-viewer model-viewer {
+        height: 400px;
+      }
+
+      .artwork-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .artwork-detail-container {
+        padding: 5rem 1rem 2rem;
+      }
+
+      .artwork-viewer model-viewer {
+        height: 300px;
+      }
+
+      .artwork-meta-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .action-buttons .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="public-nav">
+    <a href="/" class="logo">
+      <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
+    </a>
+    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/contact.html">Contact</a>
+      <a href="/pages/auth/login.html">Sign Up / Login</a>
+    </div>
+  </nav>
+
+  <div class="artwork-detail-container">
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-state">
+      <p>Loading artwork...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="error-state" style="display: none;">
+      <h2>Artwork Not Found</h2>
+      <p>This artwork may have been removed or is no longer available.</p>
+      <a href="/pages/gallery/" class="btn btn-outline">Browse Gallery</a>
+    </div>
+
+    <!-- Artwork Content -->
+    <div id="artworkContent" style="display: none;">
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="/">Home</a> /
+        <a href="/pages/gallery/">Gallery</a> /
+        <a href="#" id="artistBreadcrumb">Artist</a> /
+        <span id="titleBreadcrumb">Artwork</span>
+      </div>
+
+      <div class="artwork-layout">
+        <!-- Left: Artwork Viewer -->
+        <div class="artwork-viewer">
+          <div id="modelViewerContainer">
+            <!-- model-viewer or image inserted here -->
+          </div>
+
+          <div id="arControls" style="display: none;">
+            <div class="frame-selector">
+              <button class="frame-btn no-frame selected" data-frame="none" onclick="selectFrame(this, 'none')" title="No Frame"></button>
+              <button class="frame-btn wood-frame" data-frame="wood" onclick="selectFrame(this, 'wood')" title="Wood Frame"></button>
+              <button class="frame-btn black-frame" data-frame="black" onclick="selectFrame(this, 'black')" title="Black Frame"></button>
+              <button class="frame-btn gold-frame" data-frame="gold" onclick="selectFrame(this, 'gold')" title="Gold Frame"></button>
+              <button class="frame-btn white-frame" data-frame="white" onclick="selectFrame(this, 'white')" title="White Frame"></button>
+              <button class="frame-btn silver-frame" data-frame="silver" onclick="selectFrame(this, 'silver')" title="Silver Frame"></button>
+            </div>
+
+            <div class="ar-button-container">
+              <button class="custom-ar-button" id="arButton" onclick="activateAR()">
+                View in AR
+              </button>
+              <p class="no-ar-notice" id="noArNotice" style="display: none;">
+                AR viewing requires a mobile device with iOS Safari or Android Chrome.
+              </p>
+            </div>
+
+            <div class="in-app-browser-banner" id="inAppBrowserBanner">
+              <p>For AR to work, please open this page in Safari or Chrome.</p>
+              <p><a href="#" onclick="copyLink()">Copy link</a> and paste in your browser.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Artwork Details -->
+        <div class="artwork-details">
+          <span class="ar-badge" id="arBadge" style="display: none;">AR Ready</span>
+
+          <h1 class="artwork-title" id="artworkTitle">Loading...</h1>
+          <p class="artwork-artist">by <a href="#" id="artistLink">Artist Name</a></p>
+
+          <div class="artwork-meta-grid">
+            <div class="meta-item">
+              <div class="meta-label">Dimensions</div>
+              <div class="meta-value" id="artworkDimensions">--</div>
+            </div>
+            <div class="meta-item">
+              <div class="meta-label">Price</div>
+              <div class="meta-value price" id="artworkPrice">--</div>
+            </div>
+          </div>
+
+          <div class="artwork-description" id="descriptionSection" style="display: none;">
+            <h3>About This Artwork</h3>
+            <p id="artworkDescription"></p>
+          </div>
+
+          <div class="action-buttons">
+            <a href="#" class="btn btn-primary" id="contactBtn">Contact Artist</a>
+            <a href="#" class="btn btn-outline" id="viewGalleryBtn">View Full Gallery</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="public-footer">
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/contact.html">Contact</a>
+    </div>
+    <p class="copyright">&copy; 2026 HiveMind AR.</p>
+  </footer>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    let currentArtwork = null;
+    let currentArtist = null;
+    let modelViewer = null;
+
+    // Get artwork ID from URL
+    function getArtworkId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    // Check if in-app browser
+    function isInAppBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      return /FBAN|FBAV|Instagram|Twitter|LinkedInApp|Snapchat|Line\//i.test(ua);
+    }
+
+    // Check if mobile device
+    function isMobile() {
+      return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    }
+
+    // Load artwork data
+    async function loadArtwork() {
+      const artworkId = getArtworkId();
+
+      if (!artworkId) {
+        showError();
+        return;
+      }
+
+      try {
+        // Get artwork with artist info
+        const { data: artwork, error } = await supabase
+          .from('artworks')
+          .select(`
+            *,
+            profiles:user_id (
+              id,
+              full_name,
+              gallery_name,
+              gallery_slug,
+              email
+            )
+          `)
+          .eq('id', artworkId)
+          .eq('is_active', true)
+          .single();
+
+        if (error || !artwork) {
+          showError();
+          return;
+        }
+
+        currentArtwork = artwork;
+        currentArtist = artwork.profiles;
+
+        // Track view
+        trackView(artworkId);
+
+        // Render artwork
+        renderArtwork(artwork);
+
+      } catch (err) {
+        console.error('Error loading artwork:', err);
+        showError();
+      }
+    }
+
+    // Track artwork view
+    async function trackView(artworkId) {
+      try {
+        // Increment view count
+        await supabase.rpc('increment_artwork_views', { artwork_id: artworkId });
+      } catch (err) {
+        console.log('View tracking error:', err);
+      }
+    }
+
+    // Show error state
+    function showError() {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+    }
+
+    // Render artwork details
+    function renderArtwork(artwork) {
+      const artist = artwork.profiles;
+      const hasGLB = !!artwork.glb_url;
+
+      // Update page title
+      document.title = `${artwork.title} - ${artist?.gallery_name || artist?.full_name || 'Artist'} - HiveMind AR`;
+
+      // Breadcrumb
+      const artistName = artist?.gallery_name || artist?.full_name || 'Artist';
+      const artistLink = artist?.gallery_slug ? `/pages/gallery/artist.html?slug=${artist.gallery_slug}` : '/pages/gallery/';
+      document.getElementById('artistBreadcrumb').textContent = artistName;
+      document.getElementById('artistBreadcrumb').href = artistLink;
+      document.getElementById('titleBreadcrumb').textContent = artwork.title;
+
+      // Title and artist
+      document.getElementById('artworkTitle').textContent = artwork.title;
+      document.getElementById('artistLink').textContent = artistName;
+      document.getElementById('artistLink').href = artistLink;
+
+      // Dimensions
+      const dimensions = artwork.width_inches && artwork.height_inches
+        ? `${artwork.width_inches}" x ${artwork.height_inches}"`
+        : 'Dimensions not specified';
+      document.getElementById('artworkDimensions').textContent = dimensions;
+
+      // Price
+      const price = artwork.price_usd
+        ? `$${artwork.price_usd.toLocaleString()}`
+        : 'Price on request';
+      document.getElementById('artworkPrice').textContent = price;
+
+      // Description
+      if (artwork.description) {
+        document.getElementById('artworkDescription').textContent = artwork.description;
+        document.getElementById('descriptionSection').style.display = 'block';
+      }
+
+      // Action buttons
+      document.getElementById('contactBtn').href = artistLink + '#contact';
+      document.getElementById('viewGalleryBtn').href = artistLink;
+
+      // Render viewer
+      const container = document.getElementById('modelViewerContainer');
+
+      if (hasGLB) {
+        document.getElementById('arBadge').style.display = 'inline-flex';
+        document.getElementById('arControls').style.display = 'block';
+
+        container.innerHTML = `
+          <model-viewer
+            id="modelViewer"
+            src="${artwork.glb_url}"
+            poster="${artwork.image_url}"
+            alt="${artwork.title}"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            ar-scale="fixed"
+            camera-controls
+            touch-action="pan-y"
+            shadow-intensity="0.3"
+            exposure="1.1"
+            loading="eager">
+          </model-viewer>
+        `;
+
+        modelViewer = document.getElementById('modelViewer');
+
+        // Setup AR button visibility
+        setupArButton();
+
+        // Add error handler for model-viewer
+        modelViewer.addEventListener('error', (e) => {
+          console.error('Model-viewer error:', e);
+          document.getElementById('arControls').style.display = 'none';
+          document.getElementById('arBadge').style.display = 'none';
+        });
+
+      } else {
+        // No GLB - show image only
+        container.innerHTML = `
+          <img
+            src="${artwork.image_url}"
+            alt="${artwork.title}"
+            class="artwork-image-fallback"
+          >
+        `;
+      }
+
+      // Show content
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('artworkContent').style.display = 'block';
+    }
+
+    // Setup AR button based on device
+    function setupArButton() {
+      const arButton = document.getElementById('arButton');
+      const noArNotice = document.getElementById('noArNotice');
+      const inAppBanner = document.getElementById('inAppBrowserBanner');
+
+      if (isInAppBrowser()) {
+        inAppBanner.classList.add('show');
+        arButton.disabled = true;
+        arButton.textContent = 'AR Not Available';
+      } else if (!isMobile()) {
+        noArNotice.style.display = 'block';
+        arButton.style.display = 'none';
+      }
+    }
+
+    // Activate AR
+    window.activateAR = function() {
+      if (!modelViewer) return;
+
+      // Check if model is loaded
+      if (!modelViewer.loaded) {
+        const arButton = document.getElementById('arButton');
+        const originalText = arButton.textContent;
+        arButton.textContent = 'Loading AR...';
+        arButton.disabled = true;
+
+        modelViewer.addEventListener('load', function onLoad() {
+          modelViewer.removeEventListener('load', onLoad);
+          arButton.textContent = originalText;
+          arButton.disabled = false;
+
+          try {
+            modelViewer.activateAR();
+          } catch(err) {
+            console.error('AR activation failed:', err);
+            alert('AR activation failed. Please try again.');
+          }
+        }, { once: true });
+
+        // Timeout
+        setTimeout(() => {
+          if (!modelViewer.loaded) {
+            arButton.textContent = originalText;
+            arButton.disabled = false;
+            alert('Model is taking too long to load. Please wait and try again.');
+          }
+        }, 15000);
+
+        return;
+      }
+
+      try {
+        modelViewer.activateAR();
+      } catch(err) {
+        console.error('AR activation failed:', err);
+        alert('AR could not be launched. Please ensure you are using iOS Safari or Android Chrome.');
+      }
+    };
+
+    // Frame selection (placeholder for now)
+    window.selectFrame = function(button, frameType) {
+      document.querySelectorAll('.frame-btn').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      console.log('Frame selected:', frameType);
+      // Frame generation would go here - similar to artist.html implementation
+    };
+
+    // Copy link for in-app browser users
+    window.copyLink = function() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert('Link copied! Paste it in Safari or Chrome to view in AR.');
+      }).catch(() => {
+        prompt('Copy this link:', window.location.href);
+      });
+      return false;
+    };
+
+    // Toggle mobile nav
+    window.toggleMobileNav = function() {
+      const navLinks = document.getElementById('navLinks');
+      navLinks.classList.toggle('active');
+    };
+
+    // Initialize
+    loadArtwork();
+  </script>
+</body>
+</html>

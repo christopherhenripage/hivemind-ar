@@ -58,6 +58,7 @@ export default defineConfig({
         // Gallery
         'gallery': resolve(__dirname, 'pages/gallery/index.html'),
         'gallery-artist': resolve(__dirname, 'pages/gallery/artist.html'),
+        'gallery-artwork': resolve(__dirname, 'pages/gallery/artwork.html'),
         // Subscriber pages
         'subscriber-dashboard': resolve(__dirname, 'pages/subscriber/dashboard.html'),
         'subscriber-profile': resolve(__dirname, 'pages/subscriber/profile.html'),
