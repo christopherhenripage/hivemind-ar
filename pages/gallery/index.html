@@ -20,10 +20,75 @@
 
   <style>
     .gallery-hero {
-      background: var(--hm-dark);
-      padding: 8rem 2rem 4rem;
+      background: #000000;
+      min-height: 55vh;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .hero-logo-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 550px;
+      height: 550px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-logo-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 40px rgba(180, 60, 60, 0.6))
+              drop-shadow(0 0 80px rgba(180, 60, 60, 0.4))
+              drop-shadow(0 0 120px rgba(180, 60, 60, 0.2))
+              sepia(0.5)
+              hue-rotate(-30deg)
+              saturate(1.8)
+              brightness(1.1)
+              contrast(1.05);
+      clip-path: inset(23% 0 0 0);
+      mix-blend-mode: lighten;
+      animation: logoGlowRuby 4s ease-in-out infinite;
+    }
+
+    @keyframes logoGlowRuby {
+      0%, 100% {
+        opacity: 0.3;
+        filter: drop-shadow(0 0 40px rgba(180, 60, 60, 0.6))
+                drop-shadow(0 0 80px rgba(180, 60, 60, 0.4))
+                drop-shadow(0 0 120px rgba(180, 60, 60, 0.2))
+                sepia(0.5)
+                hue-rotate(-30deg)
+                saturate(1.8)
+                brightness(1.1)
+                contrast(1.05);
+      }
+      50% {
+        opacity: 0.6;
+        filter: drop-shadow(0 0 60px rgba(180, 60, 60, 0.8))
+                drop-shadow(0 0 120px rgba(180, 60, 60, 0.6))
+                drop-shadow(0 0 180px rgba(180, 60, 60, 0.4))
+                sepia(0.5)
+                hue-rotate(-30deg)
+                saturate(1.8)
+                brightness(1.2)
+                contrast(1.05);
+      }
+    }
+
+    .gallery-hero .hero-content {
+      position: relative;
+      z-index: 1;
       text-align: center;
       color: var(--hm-white);
+      max-width: 700px;
     }
 
     .gallery-hero h1 {
@@ -33,9 +98,9 @@
     }
 
     .gallery-hero p {
-      opacity: 0.8;
-      max-width: 600px;
-      margin: 0 auto;
+      opacity: 0.9;
+      font-size: 1.1rem;
+      line-height: 1.7;
     }
 
     .gallery-filters {
@@ -580,11 +645,17 @@
 
     @media (max-width: 768px) {
       .gallery-hero {
-        padding: 6rem 1.5rem 3rem;
+        padding: 5rem 1.5rem 3rem;
+        min-height: 40vh;
       }
 
       .gallery-hero h1 {
-        font-size: 2rem;
+        font-size: 1.75rem;
+      }
+
+      .hero-logo-bg {
+        width: 350px;
+        height: 350px;
       }
 
       .gallery-container {
@@ -610,6 +681,12 @@
         font-size: 0.85rem;
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-logo-bg img {
+        animation: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -621,17 +698,23 @@
     <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="/">Home</a>
-      <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/gallery/" class="active">Gallery</a>
+      <a href="/pages/public/how-it-works.html">How It Works</a>
       <a href="/pages/public/about.html">About</a>
       <a href="/pages/public/contact.html">Contact</a>
-      <a href="/pages/auth/login.html">Subscribe</a>
+      <a href="/pages/auth/login.html">Sign Up / Login</a>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="gallery-hero">
-    <h1>Discover Art in AR</h1>
-    <p>Browse artwork from independent artists worldwide. Tap the AR button on mobile to see any piece at true scale on your wall.</p>
+    <div class="hero-logo-bg">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+    </div>
+    <div class="hero-content">
+      <h1>Discover Art in AR</h1>
+      <p>Browse artwork from independent artists worldwide. Tap the AR button on mobile to see any piece at true scale on your wall.</p>
+    </div>
   </section>
 
   <!-- Filters -->
@@ -650,12 +733,6 @@
     </div>
   </div>
 
-  <!-- CTA -->
-  <section class="cta-section">
-    <h2>Are You an Artist?</h2>
-    <p>Share your work with collectors worldwide through AR technology.</p>
-    <a href="/pages/auth/signup.html" class="btn">Start Your Gallery</a>
-  </section>
 
   <!-- Frame Picker Modal -->
   <div class="frame-picker-overlay" id="framePickerOverlay" onclick="closeFramePicker()">
@@ -716,8 +793,10 @@
     <div class="footer-links">
       <a href="/">Home</a>
       <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/how-it-works.html">How It Works</a>
       <a href="/pages/public/about.html">About</a>
       <a href="/pages/public/contact.html">Contact</a>
+      <a href="/pages/auth/login.html">Sign Up / Login</a>
     </div>
     <p class="copyright">&copy; 2026 HiveMind AR.</p>
   </footer>
