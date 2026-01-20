@@ -1300,11 +1300,20 @@
           });
         }
 
-        // Filter to only paid tiers (artist or professional) and format
-        const paidArtworks = artworks
+        // =================================================================
+        // TEMPORARY: Show ALL artworks during development/launch phase
+        // TODO: Once you have 5-10 paid subscribers, change SHOW_ALL_TIERS to false
+        // to only show paid tier artworks (Artist + Professional)
+        // =================================================================
+        const SHOW_ALL_TIERS = true;
+
+        const displayArtworks = artworks
           .filter(a => {
+            // During launch: show all artworks
+            if (SHOW_ALL_TIERS) return true;
+
+            // After launch: only show paid tiers (artist or professional)
             const sub = subMap[a.user_id];
-            // Include if artist or professional tier
             return sub && (sub.planSlug === 'artist' || sub.planSlug === 'professional');
           })
           .map(a => ({
@@ -1329,12 +1338,12 @@
             return 0;
           });
 
-        if (paidArtworks.length === 0) {
+        if (displayArtworks.length === 0) {
           grid.innerHTML = renderEmptyState();
           return;
         }
 
-        grid.innerHTML = paidArtworks.map(renderArtworkCard).join('') + renderPlaceholderCard();
+        grid.innerHTML = displayArtworks.map(renderArtworkCard).join('') + renderPlaceholderCard();
 
       } catch (e) {
         console.error('Error loading gallery:', e);
