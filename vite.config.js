@@ -2,13 +2,20 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
- root: '.',
-   server: {
+  root: '.',
+  server: {
     port: 5173,
     strictPort: true
   },
- build: {
- rollupOptions: {
+  build: {
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    rollupOptions: {
  input: {
  main: resolve(__dirname, 'index.html'),
  'super-admin-dashboard': resolve(__dirname, 'pages/super-admin/dashboard.html'),

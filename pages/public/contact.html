@@ -302,6 +302,11 @@
             <label for="message">Message</label>
             <textarea id="message" class="form-control" rows="5" required></textarea>
           </div>
+          <!-- Honeypot field - hidden from humans, bots will fill it -->
+          <div class="form-group" style="position: absolute; left: -9999px;" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
           <p class="error-text" id="errorMessage"></p>
           <p class="success-text" id="successMessage"></p>
           <button type="submit" class="btn" id="submitBtn">Send Message</button>
@@ -340,6 +345,20 @@
       event.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
       const successMessage = document.getElementById('successMessage');
+      const honeypot = document.getElementById('website');
+
+      // Honeypot check - if filled, silently "succeed" but do nothing
+      if (honeypot && honeypot.value) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        setTimeout(() => {
+          successMessage.textContent = 'Thank you for your message! We will get back to you soon.';
+          document.getElementById('contactForm').reset();
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Message';
+        }, 1000);
+        return; // Don't actually send
+      }
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending...';

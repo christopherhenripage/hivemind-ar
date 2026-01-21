@@ -838,6 +838,11 @@
           <label>Message</label>
           <textarea id="contactMessage" class="form-control" rows="4" required></textarea>
         </div>
+        <!-- Honeypot field - hidden from humans, bots will fill it -->
+        <div class="form-group" style="position: absolute; left: -9999px;" aria-hidden="true">
+          <label for="contactWebsite">Website</label>
+          <input type="text" id="contactWebsite" name="website" tabindex="-1" autocomplete="off">
+        </div>
         <input type="hidden" id="contactArtworkId">
         <p class="error-text" id="contactError"></p>
         <p id="contactSuccess" style="color: var(--hm-success); text-align: center;"></p>
@@ -1907,12 +1912,30 @@
       const subject = document.getElementById('contactSubject').value.trim();
       const message = document.getElementById('contactMessage').value.trim();
       const artworkId = document.getElementById('contactArtworkId').value || null;
+      const honeypot = document.getElementById('contactWebsite');
       const submitBtn = document.getElementById('contactSubmitBtn');
       const errorEl = document.getElementById('contactError');
       const successEl = document.getElementById('contactSuccess');
 
       errorEl.textContent = '';
       successEl.textContent = '';
+
+      // Honeypot check - if filled, silently "succeed" but don't send
+      if (honeypot && honeypot.value) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        setTimeout(() => {
+          successEl.textContent = 'Message sent! The artist will respond to your email.';
+          document.getElementById('contactForm').reset();
+          setTimeout(() => {
+            hideContactModal();
+            successEl.textContent = '';
+          }, 3000);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Message';
+        }, 1000);
+        return; // Don't actually send
+      }
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending...';
