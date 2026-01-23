@@ -103,6 +103,9 @@ a {
   color: var(--hm-white);
   font-size: 1.5rem;
   cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
 }
 
 /* Hero Section */
@@ -648,13 +651,15 @@ a {
 }
 
 .data-table .action-btn {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--hm-border);
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--hm-white);
   cursor: pointer;
   transition: background 0.2s;
@@ -672,7 +677,8 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.5rem;
+  min-height: 44px;
   border: none;
   border-radius: 8px;
   font-size: 0.9rem;
@@ -751,8 +757,9 @@ a {
 }
 
 .btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.8rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.85rem;
+  min-height: 44px;
 }
 
 .btn-block {
@@ -801,6 +808,110 @@ textarea.form-control {
   font-size: 0.8rem;
   color: var(--hm-text-muted);
   margin-top: 0.25rem;
+}
+
+/* Required Field Asterisk */
+.form-group label.required::after {
+  content: ' *';
+  color: var(--hm-danger);
+}
+
+/* Form Validation States */
+.form-control.error,
+.form-control.is-invalid {
+  border-color: var(--hm-danger);
+  background-color: rgba(220, 53, 69, 0.05);
+}
+
+.form-control.error:focus,
+.form-control.is-invalid:focus {
+  border-color: var(--hm-danger);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+.form-control.success,
+.form-control.is-valid {
+  border-color: var(--hm-success);
+}
+
+.form-control.success:focus,
+.form-control.is-valid:focus {
+  border-color: var(--hm-success);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+}
+
+/* Error and Success Messages */
+.error-text {
+  color: var(--hm-danger);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.success-text {
+  color: var(--hm-success);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Alert Messages with ARIA */
+[role="alert"] {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+[role="alert"].alert-error {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: var(--hm-danger);
+}
+
+[role="alert"].alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  color: var(--hm-success);
+}
+
+/* Button Loading State */
+.btn.loading,
+.btn-auth.loading {
+  position: relative;
+  pointer-events: none;
+  color: transparent !important;
+}
+
+.btn.loading::after,
+.btn-auth.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  margin-left: -9px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #1a1a1a;
+  border-radius: 50%;
+  animation: btnSpinner 0.7s linear infinite;
+}
+
+@keyframes btnSpinner {
+  to { transform: rotate(360deg); }
+}
+
+/* Focus Visible for Keyboard Navigation */
+.form-control:focus-visible {
+  outline: 2px solid var(--hm-dark);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--hm-dark);
+  outline-offset: 2px;
 }
 
 /* ==================== */
@@ -1422,4 +1533,131 @@ textarea.form-control {
 
 .mobile-overlay.active {
   display: block;
+}
+
+/* ==================== */
+/* DARK MODE SUPPORT    */
+/* ==================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hm-light-gray: #2a2a2a;
+    --hm-white: #1a1a1a;
+    --hm-text: #e5e5e5;
+    --hm-text-light: #b0b0b0;
+    --hm-text-muted: #888888;
+    --hm-border: #3a3a3a;
+  }
+
+  body {
+    background: #121212;
+  }
+
+  /* Content cards and sections */
+  .content-card,
+  .form-card,
+  .profile-card,
+  .subscription-card,
+  .stat-card,
+  .feature-card,
+  .step-card,
+  .artwork-card,
+  .message-thread,
+  .ticket-card,
+  .transaction-item {
+    background: #1e1e1e;
+    border-color: var(--hm-border);
+  }
+
+  /* Form inputs */
+  .form-control,
+  .form-select,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  textarea,
+  select {
+    background: #2a2a2a;
+    border-color: var(--hm-border);
+    color: var(--hm-text);
+  }
+
+  .form-control:focus,
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #555;
+    background: #2a2a2a;
+  }
+
+  /* Tables */
+  .data-table {
+    background: #1e1e1e;
+  }
+
+  .data-table th {
+    background: #252525;
+    border-color: var(--hm-border);
+  }
+
+  .data-table td {
+    border-color: var(--hm-border);
+  }
+
+  .data-table tbody tr:hover {
+    background: #252525;
+  }
+
+  /* Modals */
+  .modal-content {
+    background: #1e1e1e;
+    border-color: var(--hm-border);
+  }
+
+  /* Gallery filters */
+  .gallery-filters {
+    background: #1e1e1e;
+  }
+
+  /* Auth pages background */
+  .auth-container {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  /* Skeleton loading in dark mode */
+  .skeleton {
+    background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+  }
+
+  /* Footer */
+  .public-footer {
+    background: #0a0a0a;
+    border-top-color: #2a2a2a;
+  }
+
+  /* Links in dark mode */
+  a:not(.btn):not(.nav-links a):not(.btn-auth) {
+    color: #8cb4ff;
+  }
+
+  /* Code/pre blocks if any */
+  pre, code {
+    background: #2a2a2a;
+  }
+
+  /* Image placeholders */
+  .artwork-image-placeholder,
+  .upload-zone {
+    background: #2a2a2a;
+    border-color: var(--hm-border);
+  }
+
+  /* Status badges adjustments */
+  .status-badge {
+    opacity: 0.9;
+  }
 }

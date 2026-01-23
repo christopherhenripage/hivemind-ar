@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HiveMind AR pricing plans for artists. Start free, upgrade as you grow. Showcase unlimited artworks with AR viewing from $12/month.">
+  <link rel="canonical" href="https://hivemindar.com/pages/public/pricing.html">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hivemindar.com/pages/public/pricing.html">
+  <meta property="og:title" content="Pricing - HiveMind AR">
+  <meta property="og:description" content="Plans for every artist. Start free with 3 artworks, or go unlimited from $12/month with true-scale AR viewing.">
+  <meta property="og:image" content="https://media.hivemindar.com/images/common/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pricing - HiveMind AR">
+  <meta name="twitter:description" content="Plans for every artist. Start free with 3 artworks, or go unlimited from $12/month with true-scale AR viewing.">
+  <meta name="twitter:image" content="https://media.hivemindar.com/images/common/og-image.png">
+
+  <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
+  <title>Pricing - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    body {
+      background: #f5f5f5;
+    }
+
+    .hero-section {
+      background: #000000;
+      color: var(--hm-white);
+      min-height: 45vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .hero-logo-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 500px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-logo-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: hue-rotate(45deg)
+              saturate(1.2)
+              brightness(1.2)
+              drop-shadow(0 0 20px rgba(100, 200, 150, 0.9))
+              drop-shadow(0 0 40px rgba(80, 180, 130, 0.7))
+              drop-shadow(0 0 80px rgba(60, 160, 110, 0.5))
+              drop-shadow(0 0 120px rgba(40, 140, 90, 0.3));
+      clip-path: inset(23% 0 0 0);
+      mix-blend-mode: lighten;
+      animation: logoGlowEmerald 5s ease-in-out infinite;
+    }
+
+    @keyframes logoGlowEmerald {
+      0%, 100% {
+        opacity: 0.2;
+        filter: hue-rotate(45deg)
+                saturate(1.0)
+                brightness(1.1)
+                drop-shadow(0 0 20px rgba(100, 200, 150, 0.7))
+                drop-shadow(0 0 40px rgba(80, 180, 130, 0.5))
+                drop-shadow(0 0 80px rgba(60, 160, 110, 0.3));
+      }
+      50% {
+        opacity: 0.75;
+        filter: hue-rotate(45deg)
+                saturate(1.4)
+                brightness(1.3)
+                drop-shadow(0 0 30px rgba(120, 220, 170, 1))
+                drop-shadow(0 0 60px rgba(100, 200, 150, 0.8))
+                drop-shadow(0 0 100px rgba(80, 180, 130, 0.6))
+                drop-shadow(0 0 160px rgba(60, 160, 110, 0.4));
+      }
+    }
+
+    .hero-section .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+
+    .hero-section h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .hero-section p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+
+    .pricing-section {
+      padding: 4rem 2rem;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .plan-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .plan-card.recommended {
+      border-color: #667eea;
+    }
+
+    .plan-card.recommended::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.35rem 1.25rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .plan-name {
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #1a1a1a;
+    }
+
+    .plan-tagline {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+
+    .plan-price {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .plan-price .amount {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .plan-price .period {
+      color: #6b7280;
+      font-size: 1rem;
+    }
+
+    .artwork-limit {
+      background: linear-gradient(135deg, rgba(220, 200, 170, 0.3) 0%, rgba(200, 180, 140, 0.2) 100%);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .plan-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.5rem 0;
+      flex-grow: 1;
+    }
+
+    .plan-features li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #374151;
+      font-size: 0.9rem;
+    }
+
+    .plan-features li .check {
+      color: #10b981;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .plan-features li .cross {
+      color: #9ca3af;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .plan-features li.disabled {
+      color: #9ca3af;
+    }
+
+    .plan-card .btn {
+      width: 100%;
+      padding: 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary-gradient {
+      background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%);
+      color: #1a1a1a;
+      border: none;
+    }
+
+    .btn-primary-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 200, 170, 0.5);
+    }
+
+    .btn-upgrade-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+    }
+
+    .btn-upgrade-gradient:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .comparison-section {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 3rem;
+    }
+
+    .comparison-section h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      color: #1a1a1a;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .comparison-table th {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .comparison-table th:first-child,
+    .comparison-table td:first-child {
+      text-align: left;
+      font-weight: 500;
+    }
+
+    .comparison-table tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .comparison-table .check {
+      color: #10b981;
+    }
+
+    .comparison-table .cross {
+      color: #d1d5db;
+    }
+
+    .faq-section {
+      margin-bottom: 3rem;
+    }
+
+    .faq-section h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      color: #1a1a1a;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .faq-item {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .faq-item h4 {
+      margin: 0 0 0.75rem 0;
+      font-size: 1rem;
+      color: #1a1a1a;
+    }
+
+    .faq-item p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .cta-section {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      color: white;
+    }
+
+    .cta-section h2 {
+      font-size: 1.75rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      opacity: 0.85;
+      margin-bottom: 1.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-section .btn {
+      display: inline-block;
+    }
+
+    @media (max-width: 768px) {
+      .hero-section h1 {
+        font-size: 1.75rem;
+      }
+
+      .plans-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .plan-price .amount {
+        font-size: 2.5rem;
+      }
+
+      .comparison-table {
+        font-size: 0.8rem;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 0.75rem 0.5rem;
+      }
+
+      .hero-logo-bg {
+        width: 350px;
+        height: 350px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-logo-bg img,
+      .plan-card {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="public-nav">
+    <a href="/" class="logo">
+      <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
+    </a>
+    <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/pages/gallery/">Gallery</a>
+      <a href="/pages/public/how-it-works.html">How It Works</a>
+      <a href="/pages/public/pricing.html" class="active">Pricing</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/contact.html">Contact</a>
+      <a href="/pages/auth/login.html">Sign Up / Login</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-logo-bg">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+    </div>
+    <div class="hero-content">
+      <h1>Simple, Transparent Pricing</h1>
+      <p>Start free and upgrade as you grow. All plans include AR viewing for your collectors.</p>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing-section">
+    <!-- Plans Grid -->
+    <div class="plans-grid">
+      <!-- Free Plan -->
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-tagline">Perfect for getting started</div>
+        <div class="plan-price">
+          <span class="amount">$0</span>
+          <span class="period">/month</span>
+        </div>
+        <div class="artwork-limit">3 Artworks</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> AR viewing for collectors</li>
+          <li><span class="check">✓</span> Basic gallery page</li>
+          <li><span class="check">✓</span> Basic view count</li>
+          <li class="disabled"><span class="cross">✗</span> Custom gallery URL</li>
+          <li class="disabled"><span class="cross">✗</span> Remove HiveMind branding</li>
+          <li class="disabled"><span class="cross">✗</span> Social media links</li>
+        </ul>
+        <a href="/pages/auth/signup.html" class="btn btn-primary-gradient">Get Started Free</a>
+      </div>
+
+      <!-- Artist Plan -->
+      <div class="plan-card">
+        <div class="plan-name">Artist</div>
+        <div class="plan-tagline">For growing artists</div>
+        <div class="plan-price">
+          <span class="amount">$12</span>
+          <span class="period">/month</span>
+        </div>
+        <div class="artwork-limit">10 Artworks</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> AR viewing for collectors</li>
+          <li><span class="check">✓</span> Custom gallery URL</li>
+          <li><span class="check">✓</span> Your branding only</li>
+          <li><span class="check">✓</span> Verified artist badge</li>
+          <li><span class="check">✓</span> Social media links</li>
+          <li><span class="check">✓</span> Views + AR analytics</li>
+        </ul>
+        <a href="/pages/auth/signup.html" class="btn btn-primary-gradient">Start with Artist</a>
+      </div>
+
+      <!-- Established Plan (Recommended) -->
+      <div class="plan-card recommended">
+        <div class="plan-name">Established</div>
+        <div class="plan-tagline">Best value for serious artists</div>
+        <div class="plan-price">
+          <span class="amount">$19</span>
+          <span class="period">/month</span>
+        </div>
+        <div class="artwork-limit">25 Artworks</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Artist</li>
+          <li><span class="check">✓</span> Full analytics dashboard</li>
+          <li><span class="check">✓</span> Geographic visitor map</li>
+          <li><span class="check">✓</span> Profile banner effects</li>
+          <li><span class="check">✓</span> Email support</li>
+          <li><span class="check">✓</span> Export analytics data</li>
+        </ul>
+        <a href="/pages/auth/signup.html" class="btn btn-upgrade-gradient">Start with Established</a>
+      </div>
+
+      <!-- Professional Plan -->
+      <div class="plan-card">
+        <div class="plan-name">Professional</div>
+        <div class="plan-tagline">For galleries & power sellers</div>
+        <div class="plan-price">
+          <span class="amount">$29</span>
+          <span class="period">/month</span>
+        </div>
+        <div class="artwork-limit">Unlimited Artworks</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Established</li>
+          <li><span class="check">✓</span> Unlimited artworks</li>
+          <li><span class="check">✓</span> Featured artist listing</li>
+          <li><span class="check">✓</span> Custom domain support</li>
+          <li><span class="check">✓</span> Priority support</li>
+          <li><span class="check">✓</span> Early access to features</li>
+        </ul>
+        <a href="/pages/auth/signup.html" class="btn btn-primary-gradient">Start with Professional</a>
+      </div>
+    </div>
+
+    <!-- Feature Comparison Table -->
+    <div class="comparison-section">
+      <h2>Compare All Features</h2>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Free</th>
+            <th>Artist</th>
+            <th>Established</th>
+            <th>Professional</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Artworks</td>
+            <td>3</td>
+            <td>10</td>
+            <td>25</td>
+            <td>Unlimited</td>
+          </tr>
+          <tr>
+            <td>AR viewing</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Custom gallery URL</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Remove HiveMind branding</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Verified artist badge</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Social media links</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Custom profile banner</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Banner effects</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Full analytics + map</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Featured listing</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Custom domain</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Priority support</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h4>Can I upgrade or downgrade anytime?</h4>
+          <p>Yes! You can change your plan at any time. Upgrades take effect immediately, and downgrades take effect at the end of your billing period.</p>
+        </div>
+        <div class="faq-item">
+          <h4>What happens to my artworks if I downgrade?</h4>
+          <p>Your existing artworks stay in your account. You just won't be able to add new ones until you're under your plan's limit.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How does AR viewing work?</h4>
+          <p>Collectors scan a QR code or visit your gallery link. They can view any artwork in augmented reality at true-to-life scale on their walls.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Do collectors need to download an app?</h4>
+          <p>No app needed. AR works directly in the browser on iOS Safari and Android Chrome. Collectors just tap "View in AR."</p>
+        </div>
+        <div class="faq-item">
+          <h4>What payment methods do you accept?</h4>
+          <p>We accept payments through PayPal, which supports credit cards, debit cards, and PayPal balance. More payment options coming soon.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Is there a contract or commitment?</h4>
+          <p>No contracts. All plans are month-to-month and you can cancel anytime. No hidden fees or cancellation charges.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+      <h2>Ready to Showcase Your Art in AR?</h2>
+      <p>Join artists who are already using HiveMind AR to help collectors visualize their work.</p>
+      <a href="/pages/auth/signup.html" class="btn btn-primary-gradient">Get Started Free</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="public-footer">
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/pages/public/about.html">About</a>
+      <a href="/pages/public/pricing.html">Pricing</a>
+      <a href="/pages/public/privacy.html">Privacy</a>
+      <a href="/pages/public/contact.html">Contact</a>
+    </div>
+    <p class="copyright">&copy; 2026 HiveMind AR.</p>
+  </footer>
+
+  <script>
+    function toggleMobileNav() {
+      const navLinks = document.getElementById('navLinks');
+      const toggle = document.querySelector('.nav-toggle');
+      const isExpanded = navLinks.classList.toggle('active');
+      toggle.setAttribute('aria-expanded', isExpanded);
+    }
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        const menu = document.getElementById('navLinks');
+        menu.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -3,6 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HiveMind AR empowers artists to showcase and sell artwork globally with true-scale augmented reality. Let collectors see your art in their space before they buy.">
+  <meta name="keywords" content="augmented reality, AR art, artist platform, sell art online, AR gallery, virtual gallery">
+  <link rel="canonical" href="https://hivemindar.com/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hivemindar.com/">
+  <meta property="og:title" content="HiveMind AR - Augmented Reality for Artists">
+  <meta property="og:description" content="Showcase and sell your artwork globally with true-scale AR. Let collectors experience your art in their space.">
+  <meta property="og:image" content="https://media.hivemindar.com/images/common/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://hivemindar.com/">
+  <meta name="twitter:title" content="HiveMind AR - Augmented Reality for Artists">
+  <meta name="twitter:description" content="Showcase and sell your artwork globally with true-scale AR. Let collectors experience your art in their space.">
+  <meta name="twitter:image" content="https://media.hivemindar.com/images/common/og-image.png">
+
   <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
   <title>HiveMind AR - Augmented Reality for Artists</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
@@ -410,11 +428,12 @@
     <a href="/" class="logo">
       <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
     </a>
-    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="/">Home</a>
       <a href="/pages/gallery/">Gallery</a>
       <a href="/pages/public/how-it-works.html">How It Works</a>
+      <a href="/pages/public/pricing.html">Pricing</a>
       <a href="/pages/public/about.html">About</a>
       <a href="/pages/public/contact.html">Contact</a>
       <a href="/pages/auth/login.html">Sign Up / Login</a>
@@ -513,7 +532,9 @@
   <script>
     function toggleMobileNav() {
       const navLinks = document.getElementById('navLinks');
-      navLinks.classList.toggle('active');
+      const toggle = document.querySelector('.nav-toggle');
+      const isExpanded = navLinks.classList.toggle('active');
+      toggle.setAttribute('aria-expanded', isExpanded);
     }
 
     // Close mobile menu when clicking a link

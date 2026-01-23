@@ -141,6 +141,41 @@
     </div>
   </div>
 
+  <!-- Upgrade Modal -->
+  <div class="modal-overlay" id="upgradeModal">
+    <div class="modal upgrade-modal" style="max-width: 420px; text-align: center;">
+      <div class="upgrade-icon">⭐</div>
+      <h2 style="margin-bottom: 0.75rem;">You've Reached Your Limit</h2>
+      <p style="color: var(--hm-text-muted); margin-bottom: 0.5rem;">
+        You're currently on the <strong id="currentPlanName">Free</strong> plan with <strong id="currentPlanLimit">3</strong> artworks.
+      </p>
+      <p style="color: var(--hm-text-muted); margin-bottom: 1.5rem;">
+        Upgrade to showcase more of your work and unlock additional features.
+      </p>
+      <div class="upgrade-tiers">
+        <div class="upgrade-tier">
+          <span class="tier-name">Artist</span>
+          <span class="tier-limit">10 artworks</span>
+          <span class="tier-price">$12/mo</span>
+        </div>
+        <div class="upgrade-tier">
+          <span class="tier-name">Established</span>
+          <span class="tier-limit">25 artworks</span>
+          <span class="tier-price">$19/mo</span>
+        </div>
+        <div class="upgrade-tier highlight">
+          <span class="tier-name">Professional</span>
+          <span class="tier-limit">Unlimited</span>
+          <span class="tier-price">$29/mo</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+        <button class="btn btn-light" onclick="hideUpgradeModal()">Maybe Later</button>
+        <a href="/pages/subscriber/upgrade.html" class="btn btn-dark">View Plans</a>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { supabase } from '/src/supabase.js';
 
@@ -324,13 +359,16 @@
           document.getElementById('upgradeBannerBtn').style.display = 'none';
         }
 
-        // Disable add artwork if at limit
+        // Handle add artwork button when at limit
         if (count >= limit && limit < 9999) {
           const addBtn = document.getElementById('addArtworkBtn');
-          addBtn.classList.add('disabled');
-          addBtn.style.opacity = '0.5';
-          addBtn.style.pointerEvents = 'none';
-          addBtn.textContent = 'Limit Reached';
+          addBtn.classList.add('at-limit');
+          addBtn.textContent = 'Add Artwork';
+          addBtn.href = '#';
+          addBtn.onclick = function(e) {
+            e.preventDefault();
+            showUpgradeModal(plan.name, limit);
+          };
         }
       }
 
@@ -418,6 +456,16 @@
     window.hideDeleteModal = function() {
       deleteId = null;
       document.getElementById('deleteModal').classList.remove('active');
+    };
+
+    window.showUpgradeModal = function(planName, limit) {
+      document.getElementById('currentPlanName').textContent = planName;
+      document.getElementById('currentPlanLimit').textContent = limit;
+      document.getElementById('upgradeModal').classList.add('active');
+    };
+
+    window.hideUpgradeModal = function() {
+      document.getElementById('upgradeModal').classList.remove('active');
     };
 
     window.confirmDelete = async function() {
@@ -692,6 +740,68 @@
     .btn-sm {
       padding: 0.5rem 1rem;
       font-size: 0.875rem;
+    }
+
+    /* Upgrade Modal Styles */
+    .upgrade-modal {
+      padding: 2rem 2.5rem;
+    }
+
+    .upgrade-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .upgrade-tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .upgrade-tier {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--hm-light-gray);
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .upgrade-tier.highlight {
+      background: linear-gradient(135deg, rgba(220, 200, 170, 0.3) 0%, rgba(220, 200, 170, 0.15) 100%);
+      border: 1px solid rgba(220, 200, 170, 0.5);
+    }
+
+    .tier-name {
+      font-weight: 600;
+      color: var(--hm-dark);
+    }
+
+    .tier-limit {
+      color: var(--hm-text-muted);
+    }
+
+    .tier-price {
+      font-weight: 600;
+      color: var(--hm-dark);
+    }
+
+    .at-limit {
+      position: relative;
+    }
+
+    .at-limit::after {
+      content: '';
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 10px;
+      height: 10px;
+      background: #f59e0b;
+      border-radius: 50%;
+      border: 2px solid white;
     }
   </style>
 </body>

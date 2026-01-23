@@ -201,6 +201,49 @@
       box-shadow: 0 6px 20px rgba(220, 200, 170, 0.4);
     }
 
+    /* Password Toggle */
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      color: #666;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .password-toggle:hover {
+      color: #1a1a1a;
+    }
+
+    .password-wrapper .form-control {
+      padding-right: 60px;
+    }
+
+    /* Form Validation in Auth */
+    .auth-form .form-control.error {
+      border-color: #dc3545;
+      background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .auth-form .form-control.error:focus {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+    }
+
+    .auth-form label.required::after {
+      content: ' *';
+      color: #ff6b6b;
+    }
+
     /* Reduce motion */
     @media (prefers-reduced-motion: reduce) {
       body::before,
@@ -222,7 +265,7 @@
     <a href="/" class="logo">
       <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
     </a>
-    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="/">Home</a>
       <a href="/pages/public/how-it-works.html">How It Works</a>
@@ -242,18 +285,21 @@
 
       <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" class="form-control" required>
-          <p class="error-text" id="emailError"></p>
+          <label for="email" class="required">Email</label>
+          <input type="email" id="email" name="email" class="form-control" required aria-required="true">
+          <p class="error-text" id="emailError" role="alert" aria-live="polite"></p>
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" class="form-control" required>
-          <p class="error-text" id="passwordError"></p>
+          <label for="password" class="required">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" class="form-control" required aria-required="true">
+            <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Show password">Show</button>
+          </div>
+          <p class="error-text" id="passwordError" role="alert" aria-live="polite"></p>
         </div>
 
-        <p class="error-text" id="generalError"></p>
+        <div id="generalError" class="error-text" role="alert" aria-live="polite"></div>
 
         <button type="submit" class="btn-auth" id="submitBtn">Login</button>
       </form>
@@ -274,29 +320,39 @@
     window.handleLogin = async function(event) {
       event.preventDefault();
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
       const submitBtn = document.getElementById('submitBtn');
       const generalError = document.getElementById('generalError');
+      const emailError = document.getElementById('emailError');
+      const passwordError = document.getElementById('passwordError');
 
-      // Clear errors
-      document.getElementById('emailError').textContent = '';
-      document.getElementById('passwordError').textContent = '';
+      // Clear errors and styling
+      emailError.textContent = '';
+      passwordError.textContent = '';
       generalError.textContent = '';
+      emailInput.classList.remove('error');
+      passwordInput.classList.remove('error');
 
       // Validate
+      let hasError = false;
       if (!email) {
-        document.getElementById('emailError').textContent = 'Email cannot be blank.';
-        return;
+        emailError.textContent = 'Email is required.';
+        emailInput.classList.add('error');
+        hasError = true;
       }
       if (!password) {
-        document.getElementById('passwordError').textContent = 'Password cannot be blank.';
-        return;
+        passwordError.textContent = 'Password is required.';
+        passwordInput.classList.add('error');
+        hasError = true;
       }
+      if (hasError) return;
 
-      // Disable button
+      // Show loading state
+      submitBtn.classList.add('loading');
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Logging in...';
 
       try {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -306,8 +362,8 @@
 
         if (error) {
           generalError.textContent = error.message;
+          submitBtn.classList.remove('loading');
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Login';
           return;
         }
 
@@ -315,8 +371,8 @@
         window.location.href = '/pages/subscriber/dashboard.html';
       } catch (err) {
         generalError.textContent = 'An error occurred. Please try again.';
+        submitBtn.classList.remove('loading');
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Login';
       }
     };
 
@@ -324,6 +380,19 @@
       const navLinks = document.getElementById('navLinks');
       navLinks.classList.toggle('active');
     }
+
+    window.togglePassword = function(inputId, button) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        button.textContent = 'Hide';
+        button.setAttribute('aria-label', 'Hide password');
+      } else {
+        input.type = 'password';
+        button.textContent = 'Show';
+        button.setAttribute('aria-label', 'Show password');
+      }
+    };
 
     // Close mobile menu when clicking a link
     document.querySelectorAll('.nav-links a').forEach(link => {

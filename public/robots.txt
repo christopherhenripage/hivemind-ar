@@ -1,0 +1,24 @@
+# robots.txt for HiveMind AR
+# https://hivemindar.com
+
+User-agent: *
+Allow: /
+
+# Allow all public pages
+Allow: /pages/public/
+Allow: /pages/gallery/
+
+# Disallow private/authenticated areas
+Disallow: /pages/subscriber/
+Disallow: /pages/auth/
+Disallow: /pages/super-admin/
+Disallow: /pages/subscriber-admin/
+Disallow: /pages/sales-agent/
+Disallow: /pages/client/
+
+# Disallow build artifacts
+Disallow: /dist/
+Disallow: /node_modules/
+
+# Sitemap location
+Sitemap: https://hivemindar.com/sitemap.xml

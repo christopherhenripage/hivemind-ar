@@ -3,6 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HiveMind Collective is a global network of artists and technologists united to bridge creativity and innovation through augmented reality.">
+  <link rel="canonical" href="https://hivemindar.com/pages/public/about.html">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hivemindar.com/pages/public/about.html">
+  <meta property="og:title" content="About HiveMind Collective">
+  <meta property="og:description" content="A global network of artists and technologists bridging creativity and innovation through AR technology.">
+  <meta property="og:image" content="https://media.hivemindar.com/images/common/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About HiveMind Collective">
+  <meta name="twitter:description" content="A global network of artists and technologists bridging creativity and innovation through AR technology.">
+  <meta name="twitter:image" content="https://media.hivemindar.com/images/common/og-image.png">
+
   <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
   <title>About - HiveMind Collective</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
@@ -213,11 +229,12 @@
     <a href="/" class="logo">
       <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
     </a>
-    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="/">Home</a>
       <a href="/pages/gallery/">Gallery</a>
       <a href="/pages/public/how-it-works.html">How It Works</a>
+      <a href="/pages/public/pricing.html">Pricing</a>
       <a href="/pages/public/about.html" class="active">About</a>
       <a href="/pages/public/contact.html">Contact</a>
       <a href="/pages/auth/login.html">Sign Up / Login</a>
@@ -308,7 +325,9 @@
   <script>
     function toggleMobileNav() {
       const navLinks = document.getElementById('navLinks');
-      navLinks.classList.toggle('active');
+      const toggle = document.querySelector('.nav-toggle');
+      const isExpanded = navLinks.classList.toggle('active');
+      toggle.setAttribute('aria-expanded', isExpanded);
     }
   </script>
 </body>

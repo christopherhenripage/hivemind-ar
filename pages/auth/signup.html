@@ -201,6 +201,94 @@
       box-shadow: 0 6px 20px rgba(220, 200, 170, 0.4);
     }
 
+    /* Password Toggle */
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      color: #666;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .password-toggle:hover {
+      color: #1a1a1a;
+    }
+
+    .password-wrapper .form-control {
+      padding-right: 60px;
+    }
+
+    /* Form Validation in Auth */
+    .auth-form .form-control.error {
+      border-color: #dc3545;
+      background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .auth-form .form-control.error:focus {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+    }
+
+    .auth-form label.required::after {
+      content: ' *';
+      color: #ff6b6b;
+    }
+
+    /* Password Strength Meter */
+    .password-strength {
+      margin-top: 0.5rem;
+    }
+
+    .strength-meter {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 0.25rem;
+    }
+
+    .strength-bar {
+      height: 4px;
+      flex: 1;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      transition: background 0.3s ease;
+    }
+
+    .strength-bar.active.weak {
+      background: #dc3545;
+    }
+
+    .strength-bar.active.fair {
+      background: #ffc107;
+    }
+
+    .strength-bar.active.good {
+      background: #28a745;
+    }
+
+    .strength-bar.active.strong {
+      background: #20c997;
+    }
+
+    .strength-text {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .strength-text.weak { color: #dc3545; }
+    .strength-text.fair { color: #ffc107; }
+    .strength-text.good { color: #28a745; }
+    .strength-text.strong { color: #20c997; }
+
     /* Reduce motion */
     @media (prefers-reduced-motion: reduce) {
       body::before,
@@ -222,7 +310,7 @@
     <a href="/" class="logo">
       <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
     </a>
-    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <button class="nav-toggle" onclick="toggleMobileNav()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="/">Home</a>
       <a href="/pages/public/how-it-works.html">How It Works</a>
@@ -242,39 +330,54 @@
 
       <form class="auth-form" id="signupForm" onsubmit="handleSignup(event)">
         <div class="form-group">
-          <label for="fullName">Your Name</label>
-          <input type="text" id="fullName" name="fullName" class="form-control" placeholder="e.g., John Smith" required>
-          <p class="error-text" id="fullNameError"></p>
+          <label for="fullName" class="required">Your Name</label>
+          <input type="text" id="fullName" name="fullName" class="form-control" placeholder="e.g., John Smith" required aria-required="true">
+          <p class="error-text" id="fullNameError" role="alert" aria-live="polite"></p>
         </div>
 
         <div class="form-group">
           <label for="galleryName">Gallery Name</label>
           <input type="text" id="galleryName" name="galleryName" class="form-control" placeholder="e.g., Smith Art Studio">
           <p class="form-hint">This will be your public gallery name</p>
-          <p class="error-text" id="galleryNameError"></p>
+          <p class="error-text" id="galleryNameError" role="alert" aria-live="polite"></p>
         </div>
 
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" class="form-control" required>
-          <p class="error-text" id="emailError"></p>
+          <label for="email" class="required">Email</label>
+          <input type="email" id="email" name="email" class="form-control" required aria-required="true">
+          <p class="error-text" id="emailError" role="alert" aria-live="polite"></p>
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" class="form-control" minlength="6" required>
-          <p class="form-hint">Minimum 6 characters</p>
-          <p class="error-text" id="passwordError"></p>
+          <label for="password" class="required">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" class="form-control" minlength="6" required aria-required="true" oninput="checkPasswordStrength(this.value)">
+            <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Show password">Show</button>
+          </div>
+          <div class="password-strength" id="passwordStrength" style="display: none;">
+            <div class="strength-meter">
+              <div class="strength-bar" id="strengthBar1"></div>
+              <div class="strength-bar" id="strengthBar2"></div>
+              <div class="strength-bar" id="strengthBar3"></div>
+              <div class="strength-bar" id="strengthBar4"></div>
+            </div>
+            <span class="strength-text" id="strengthText"></span>
+          </div>
+          <p class="form-hint">Use 8+ characters with uppercase, numbers & symbols</p>
+          <p class="error-text" id="passwordError" role="alert" aria-live="polite"></p>
         </div>
 
         <div class="form-group">
-          <label for="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
-          <p class="error-text" id="confirmPasswordError"></p>
+          <label for="confirmPassword" class="required">Confirm Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required aria-required="true">
+            <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', this)" aria-label="Show password">Show</button>
+          </div>
+          <p class="error-text" id="confirmPasswordError" role="alert" aria-live="polite"></p>
         </div>
 
-        <p class="error-text" id="generalError"></p>
-        <p class="success-text" id="successMessage" style="color: #28a745; text-align: center;"></p>
+        <div id="generalError" class="error-text" role="alert" aria-live="polite"></div>
+        <p class="success-text" id="successMessage" style="color: #28a745; text-align: center;" role="status" aria-live="polite"></p>
 
         <button type="submit" class="btn-auth" id="submitBtn">Create Account</button>
       </form>
@@ -303,39 +406,49 @@
     window.handleSignup = async function(event) {
       event.preventDefault();
 
-      const fullName = document.getElementById('fullName').value.trim();
+      const fullNameInput = document.getElementById('fullName');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('confirmPassword');
+
+      const fullName = fullNameInput.value.trim();
       const galleryName = document.getElementById('galleryName').value.trim() || fullName + "'s Gallery";
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
       const submitBtn = document.getElementById('submitBtn');
       const generalError = document.getElementById('generalError');
       const successMessage = document.getElementById('successMessage');
 
-      // Clear errors
+      // Clear errors and styling
       document.querySelectorAll('.error-text').forEach(el => el.textContent = '');
       successMessage.textContent = '';
+      [fullNameInput, emailInput, passwordInput, confirmPasswordInput].forEach(el => el.classList.remove('error'));
 
       // Validate
       let hasError = false;
       if (!fullName) {
         document.getElementById('fullNameError').textContent = 'Name is required.';
+        fullNameInput.classList.add('error');
         hasError = true;
       }
       if (!email) {
         document.getElementById('emailError').textContent = 'Email is required.';
+        emailInput.classList.add('error');
         hasError = true;
       }
       if (!password) {
         document.getElementById('passwordError').textContent = 'Password is required.';
+        passwordInput.classList.add('error');
         hasError = true;
-      }
-      if (password.length < 6) {
+      } else if (password.length < 6) {
         document.getElementById('passwordError').textContent = 'Password must be at least 6 characters.';
+        passwordInput.classList.add('error');
         hasError = true;
       }
       if (password !== confirmPassword) {
         document.getElementById('confirmPasswordError').textContent = 'Passwords do not match.';
+        confirmPasswordInput.classList.add('error');
         hasError = true;
       }
 
@@ -344,9 +457,9 @@
       // Generate slug from gallery name
       const slug = generateSlug(galleryName);
 
-      // Disable button
+      // Show loading state
+      submitBtn.classList.add('loading');
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Creating account...';
 
       try {
         // 1. Create auth user (this triggers auto-creation of profile and subscription)
@@ -362,8 +475,8 @@
 
         if (authError) {
           generalError.textContent = authError.message;
+          submitBtn.classList.remove('loading');
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Create Account';
           return;
         }
 
@@ -387,6 +500,7 @@
 
         // Success
         successMessage.textContent = 'Account created! Check your email to verify, then sign in.';
+        submitBtn.classList.remove('loading');
         submitBtn.textContent = 'Account Created';
         document.getElementById('signupForm').reset();
 
@@ -398,8 +512,8 @@
       } catch (err) {
         console.error('Signup error:', err);
         generalError.textContent = 'An error occurred. Please try again.';
+        submitBtn.classList.remove('loading');
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Create Account';
       }
     };
 
@@ -407,6 +521,80 @@
       const navLinks = document.getElementById('navLinks');
       navLinks.classList.toggle('active');
     }
+
+    window.togglePassword = function(inputId, button) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        button.textContent = 'Hide';
+        button.setAttribute('aria-label', 'Hide password');
+      } else {
+        input.type = 'password';
+        button.textContent = 'Show';
+        button.setAttribute('aria-label', 'Show password');
+      }
+    };
+
+    window.checkPasswordStrength = function(password) {
+      const strengthContainer = document.getElementById('passwordStrength');
+      const strengthText = document.getElementById('strengthText');
+      const bars = [
+        document.getElementById('strengthBar1'),
+        document.getElementById('strengthBar2'),
+        document.getElementById('strengthBar3'),
+        document.getElementById('strengthBar4')
+      ];
+
+      if (!password) {
+        strengthContainer.style.display = 'none';
+        return;
+      }
+
+      strengthContainer.style.display = 'block';
+
+      // Calculate strength
+      let score = 0;
+      const checks = {
+        length: password.length >= 8,
+        lowercase: /[a-z]/.test(password),
+        uppercase: /[A-Z]/.test(password),
+        numbers: /[0-9]/.test(password),
+        symbols: /[^a-zA-Z0-9]/.test(password),
+        longLength: password.length >= 12
+      };
+
+      if (checks.length) score++;
+      if (checks.lowercase && checks.uppercase) score++;
+      if (checks.numbers) score++;
+      if (checks.symbols) score++;
+      if (checks.longLength) score++;
+
+      // Normalize to 4 levels
+      let level, label;
+      if (score <= 1) {
+        level = 1; label = 'Weak';
+      } else if (score === 2) {
+        level = 2; label = 'Fair';
+      } else if (score === 3) {
+        level = 3; label = 'Good';
+      } else {
+        level = 4; label = 'Strong';
+      }
+
+      const strengthClass = ['weak', 'fair', 'good', 'strong'][level - 1];
+
+      // Update bars
+      bars.forEach((bar, i) => {
+        bar.className = 'strength-bar';
+        if (i < level) {
+          bar.classList.add('active', strengthClass);
+        }
+      });
+
+      // Update text
+      strengthText.textContent = label;
+      strengthText.className = 'strength-text ' + strengthClass;
+    };
 
     // Close mobile menu when clicking a link
     document.querySelectorAll('.nav-links a').forEach(link => {

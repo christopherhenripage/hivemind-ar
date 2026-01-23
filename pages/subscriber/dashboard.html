@@ -89,22 +89,23 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-          <div class="stat-card" style="background: var(--hm-white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <h3 style="font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 0.5rem;">Total Artworks</h3>
-            <div class="value" style="font-size: 2rem; font-weight: 600;" id="totalArtworks">0</div>
+        <div class="stats-grid" id="statsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <!-- Skeleton loading state -->
+          <div class="skeleton-card">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-number"></div>
           </div>
-          <div class="stat-card" style="background: var(--hm-white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <h3 style="font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 0.5rem;">Total Views</h3>
-            <div class="value" style="font-size: 2rem; font-weight: 600;" id="totalViews">0</div>
+          <div class="skeleton-card">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-number"></div>
           </div>
-          <div class="stat-card" style="background: var(--hm-white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <h3 style="font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 0.5rem;">AR Views</h3>
-            <div class="value" style="font-size: 2rem; font-weight: 600;" id="totalARViews">0</div>
+          <div class="skeleton-card">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-number"></div>
           </div>
-          <div class="stat-card" style="background: var(--hm-white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <h3 style="font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 0.5rem;">Messages</h3>
-            <div class="value" style="font-size: 2rem; font-weight: 600;" id="totalMessages">0</div>
+          <div class="skeleton-card">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-number"></div>
           </div>
         </div>
 
@@ -136,7 +137,35 @@
             <a href="/pages/subscriber/images.html" style="font-size: 0.9rem; color: var(--hm-text-muted);">View All →</a>
           </div>
           <div id="recentArtworks" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
-            <p style="color: var(--hm-text-muted);">Loading...</p>
+            <!-- Skeleton loading state -->
+            <div class="skeleton-artwork">
+              <div class="skeleton skeleton-image"></div>
+              <div class="skeleton-artwork-info">
+                <div class="skeleton skeleton-artwork-title"></div>
+                <div class="skeleton skeleton-artwork-price"></div>
+              </div>
+            </div>
+            <div class="skeleton-artwork">
+              <div class="skeleton skeleton-image"></div>
+              <div class="skeleton-artwork-info">
+                <div class="skeleton skeleton-artwork-title"></div>
+                <div class="skeleton skeleton-artwork-price"></div>
+              </div>
+            </div>
+            <div class="skeleton-artwork">
+              <div class="skeleton skeleton-image"></div>
+              <div class="skeleton-artwork-info">
+                <div class="skeleton skeleton-artwork-title"></div>
+                <div class="skeleton skeleton-artwork-price"></div>
+              </div>
+            </div>
+            <div class="skeleton-artwork">
+              <div class="skeleton skeleton-image"></div>
+              <div class="skeleton-artwork-info">
+                <div class="skeleton skeleton-artwork-title"></div>
+                <div class="skeleton skeleton-artwork-price"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -266,7 +295,26 @@
         .eq('user_id', currentUser.id);
 
       const totalArtworks = artworkCount || 0;
-      document.getElementById('totalArtworks').textContent = totalArtworks;
+
+      // Replace stats skeleton with actual cards
+      document.getElementById('statsGrid').innerHTML = `
+        <div class="stat-card" style="background: var(--hm-white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+          <h3 style="font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 0.5rem;">Total Artworks</h3>
+          <div class="value" style="font-size: 2rem; font-weight: 600;" id="totalArtworks">${totalArtworks}</div>
+        </div>
+        <div class="stat-card" style="background: var(--hm-white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+          <h3 style="font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 0.5rem;">Total Views</h3>
+          <div class="value" style="font-size: 2rem; font-weight: 600;" id="totalViews">0</div>
+        </div>
+        <div class="stat-card" style="background: var(--hm-white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+          <h3 style="font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 0.5rem;">AR Views</h3>
+          <div class="value" style="font-size: 2rem; font-weight: 600;" id="totalARViews">0</div>
+        </div>
+        <div class="stat-card" style="background: var(--hm-white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+          <h3 style="font-size: 0.875rem; color: var(--hm-text-muted); margin-bottom: 0.5rem;">Messages</h3>
+          <div class="value" style="font-size: 2rem; font-weight: 600;" id="totalMessages">0</div>
+        </div>
+      `;
 
       // Update subscription banner
       if (subscription && subscription.subscription_plans) {
@@ -428,6 +476,76 @@
     .sidebar-nav a.active {
       background: rgba(255,255,255,0.15);
       color: white;
+    }
+
+    /* Skeleton Loading */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-text {
+      height: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .skeleton-title {
+      height: 0.875rem;
+      width: 60%;
+      margin-bottom: 0.5rem;
+    }
+
+    .skeleton-number {
+      height: 2rem;
+      width: 50%;
+    }
+
+    .skeleton-image {
+      aspect-ratio: 1;
+      width: 100%;
+    }
+
+    .skeleton-card {
+      background: var(--hm-white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-left: 4px solid var(--hm-dark);
+    }
+
+    .skeleton-artwork {
+      background: var(--hm-light-gray);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .skeleton-artwork-info {
+      padding: 0.75rem;
+    }
+
+    .skeleton-artwork-title {
+      height: 0.875rem;
+      width: 80%;
+      margin-bottom: 0.5rem;
+    }
+
+    .skeleton-artwork-price {
+      height: 0.75rem;
+      width: 40%;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skeleton {
+        animation: none;
+        background: #e0e0e0;
+      }
     }
   </style>
 </body>
