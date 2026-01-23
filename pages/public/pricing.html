@@ -138,6 +138,11 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      overflow: visible;
+    }
+
+    .plan-features {
+      overflow: visible;
     }
 
     .plan-card:hover {
@@ -214,26 +219,115 @@
     .plan-features li {
       padding: 0.5rem 0;
       display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      align-items: flex-start;
+      gap: 0.5rem;
       color: #374151;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
     }
 
-    .plan-features li .check {
+    .plan-features li::before {
+      content: '✓';
       color: #10b981;
       font-weight: bold;
-      font-size: 1rem;
-    }
-
-    .plan-features li .cross {
-      color: #9ca3af;
-      font-weight: bold;
-      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
     }
 
     .plan-features li.disabled {
       color: #9ca3af;
+      text-decoration: line-through;
+    }
+
+    .plan-features li.disabled::before {
+      content: '✗';
+      color: #d1d5db;
+    }
+
+    .plan-features li .feature-text {
+      flex: 1;
+    }
+
+    .plan-features li .info-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #e5e7eb;
+      border-radius: 50%;
+      font-size: 10px;
+      color: #6b7280;
+      cursor: help;
+      flex-shrink: 0;
+      position: relative;
+      margin-left: 0.25rem;
+      font-style: normal;
+    }
+
+    .plan-features li .info-icon:hover {
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .plan-features li .info-icon .tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: 0;
+      transform: none;
+      background: #1a1a2e;
+      color: white;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: normal;
+      width: 240px;
+      text-align: left;
+      z-index: 9999;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      line-height: 1.4;
+      text-decoration: none;
+    }
+
+    .plan-features li .info-icon .tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 4px;
+      border: 6px solid transparent;
+      border-top-color: #1a1a2e;
+    }
+
+    .plan-features li .info-icon:hover .tooltip {
+      display: block;
+    }
+
+    /* Ensure tooltips aren't clipped */
+    .plans-grid {
+      overflow: visible;
+    }
+
+    /* Feature category dividers */
+    .plan-features .feature-category {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #9ca3af;
+      margin-top: 0.75rem;
+      margin-bottom: 0.25rem;
+      padding: 0;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 0.75rem;
+    }
+
+    .plan-features .feature-category:first-child {
+      margin-top: 0;
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .plan-features .feature-category::before {
+      display: none;
     }
 
     .plan-card .btn {
@@ -448,7 +542,7 @@
         "price": "12",
         "priceCurrency": "USD",
         "billingIncrement": "P1M",
-        "description": "15 artworks, full AR features, analytics"
+        "description": "10 artworks, custom URL, no branding, analytics"
       },
       {
         "@type": "Offer",
@@ -456,7 +550,7 @@
         "price": "19",
         "priceCurrency": "USD",
         "billingIncrement": "P1M",
-        "description": "50 artworks, priority support, custom gallery"
+        "description": "25 artworks, full analytics, custom gallery"
       },
       {
         "@type": "Offer",
@@ -464,7 +558,7 @@
         "price": "29",
         "priceCurrency": "USD",
         "billingIncrement": "P1M",
-        "description": "Unlimited artworks, API access, white-label options"
+        "description": "75 artworks, featured listing, priority support, custom domain"
       }
     ]
   }
@@ -513,12 +607,42 @@
         </div>
         <div class="artwork-limit">3 Artworks</div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> AR viewing for collectors</li>
-          <li><span class="check">✓</span> Basic gallery page</li>
-          <li><span class="check">✓</span> Basic view count</li>
-          <li class="disabled"><span class="cross">✗</span> Custom gallery URL</li>
-          <li class="disabled"><span class="cross">✗</span> Remove HiveMind branding</li>
-          <li class="disabled"><span class="cross">✗</span> Social media links</li>
+          <li class="feature-category">Gallery</li>
+          <li>
+            <span class="feature-text">3 artworks</span>
+            <span class="info-icon">?<span class="tooltip">The maximum number of artworks you can upload and display in your AR gallery.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">AR viewing for collectors</span>
+            <span class="info-icon">?<span class="tooltip">Collectors can view your artwork in augmented reality at true-to-life scale on their walls before purchasing.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Basic gallery URL</span>
+            <span class="info-icon">?<span class="tooltip">Your gallery will be at hivemindar.com/gallery/[your-id]. Upgrade for a custom URL slug.</span></span>
+          </li>
+          <li class="feature-category">Branding</li>
+          <li>
+            <span class="feature-text">"Powered by HiveMind" badge</span>
+            <span class="info-icon">?<span class="tooltip">Your gallery displays a small "Powered by HiveMind AR" badge. Upgrade to remove.</span></span>
+          </li>
+          <li class="disabled">
+            <span class="feature-text">Custom profile banner</span>
+            <span class="info-icon">?<span class="tooltip">Upload and customize your gallery profile banner with zoom, positioning, and visual effects.</span></span>
+          </li>
+          <li class="disabled">
+            <span class="feature-text">Verified artist badge</span>
+            <span class="info-icon">?<span class="tooltip">Display a gold verified badge on your gallery page showing you are a professional, paying artist.</span></span>
+          </li>
+          <li class="feature-category">Analytics</li>
+          <li>
+            <span class="feature-text">Basic view count</span>
+            <span class="info-icon">?<span class="tooltip">See how many times your gallery and artworks have been viewed.</span></span>
+          </li>
+          <li class="feature-category">Support</li>
+          <li>
+            <span class="feature-text">Community support</span>
+            <span class="info-icon">?<span class="tooltip">Get help from our community forums and knowledge base articles.</span></span>
+          </li>
         </ul>
         <a href="/pages/auth/signup.html" class="btn btn-primary-gradient">Get Started Free</a>
       </div>
@@ -533,12 +657,46 @@
         </div>
         <div class="artwork-limit">10 Artworks</div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> AR viewing for collectors</li>
-          <li><span class="check">✓</span> Custom gallery URL</li>
-          <li><span class="check">✓</span> Your branding only</li>
-          <li><span class="check">✓</span> Verified artist badge</li>
-          <li><span class="check">✓</span> Social media links</li>
-          <li><span class="check">✓</span> Views + AR analytics</li>
+          <li class="feature-category">Gallery</li>
+          <li>
+            <span class="feature-text">10 artworks</span>
+            <span class="info-icon">?<span class="tooltip">The maximum number of artworks you can upload and display in your AR gallery.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">AR viewing for collectors</span>
+            <span class="info-icon">?<span class="tooltip">Collectors can view your artwork in augmented reality at true-to-life scale on their walls before purchasing.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Custom gallery URL</span>
+            <span class="info-icon">?<span class="tooltip">Choose your own custom URL slug like hivemindar.com/gallery/yourname for better branding.</span></span>
+          </li>
+          <li class="feature-category">Branding</li>
+          <li>
+            <span class="feature-text">Your branding only</span>
+            <span class="info-icon">?<span class="tooltip">Remove HiveMind branding and display only your artist identity on your gallery.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Custom profile banner</span>
+            <span class="info-icon">?<span class="tooltip">Upload and customize your gallery profile banner with zoom, positioning, and visual effects.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Verified artist badge</span>
+            <span class="info-icon">?<span class="tooltip">Display a gold verified badge on your gallery page showing you are a professional, paying artist.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Social media links</span>
+            <span class="info-icon">?<span class="tooltip">Add links to your Instagram, Twitter, website, and other social profiles on your gallery page.</span></span>
+          </li>
+          <li class="feature-category">Analytics</li>
+          <li>
+            <span class="feature-text">Views + AR analytics</span>
+            <span class="info-icon">?<span class="tooltip">Track gallery views, artwork views, and see how many collectors activate AR viewing for each piece.</span></span>
+          </li>
+          <li class="feature-category">Support</li>
+          <li>
+            <span class="feature-text">Email support</span>
+            <span class="info-icon">?<span class="tooltip">Direct email support from our team, typically within 24-48 hours.</span></span>
+          </li>
         </ul>
         <a href="/pages/auth/signup.html" class="btn btn-primary-gradient">Start with Artist</a>
       </div>
@@ -553,12 +711,46 @@
         </div>
         <div class="artwork-limit">25 Artworks</div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> Everything in Artist</li>
-          <li><span class="check">✓</span> Full analytics dashboard</li>
-          <li><span class="check">✓</span> Geographic visitor map</li>
-          <li><span class="check">✓</span> Profile banner effects</li>
-          <li><span class="check">✓</span> Email support</li>
-          <li><span class="check">✓</span> Export analytics data</li>
+          <li class="feature-category">Gallery</li>
+          <li>
+            <span class="feature-text">25 artworks</span>
+            <span class="info-icon">?<span class="tooltip">The maximum number of artworks you can upload and display in your AR gallery.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">AR viewing for collectors</span>
+            <span class="info-icon">?<span class="tooltip">Collectors can view your artwork in augmented reality at true-to-life scale on their walls before purchasing.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Custom gallery URL</span>
+            <span class="info-icon">?<span class="tooltip">Choose your own custom URL slug like hivemindar.com/gallery/yourname for better branding.</span></span>
+          </li>
+          <li class="feature-category">Branding</li>
+          <li>
+            <span class="feature-text">Your branding only</span>
+            <span class="info-icon">?<span class="tooltip">Remove HiveMind branding and display only your artist identity on your gallery.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Custom banner + effects</span>
+            <span class="info-icon">?<span class="tooltip">Apply professional effects to your profile banner including blur, darken overlays, and color tints.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Verified artist badge</span>
+            <span class="info-icon">?<span class="tooltip">Display a gold verified badge on your gallery page showing you are a professional, paying artist.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Social media links</span>
+            <span class="info-icon">?<span class="tooltip">Add links to your Instagram, Twitter, website, and other social profiles on your gallery page.</span></span>
+          </li>
+          <li class="feature-category">Analytics</li>
+          <li>
+            <span class="feature-text">Full analytics + map</span>
+            <span class="info-icon">?<span class="tooltip">Complete analytics including geographic visitor map, traffic sources, device breakdown, and export capabilities.</span></span>
+          </li>
+          <li class="feature-category">Support</li>
+          <li>
+            <span class="feature-text">Email support</span>
+            <span class="info-icon">?<span class="tooltip">Direct email support from our team, typically within 24-48 hours.</span></span>
+          </li>
         </ul>
         <a href="/pages/auth/signup.html" class="btn btn-upgrade-gradient">Start with Established</a>
       </div>
@@ -571,14 +763,57 @@
           <span class="amount">$29</span>
           <span class="period">/month</span>
         </div>
-        <div class="artwork-limit">Unlimited Artworks</div>
+        <div class="artwork-limit">75 Artworks</div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> Everything in Established</li>
-          <li><span class="check">✓</span> Unlimited artworks</li>
-          <li><span class="check">✓</span> Featured artist listing</li>
-          <li><span class="check">✓</span> Custom domain support</li>
-          <li><span class="check">✓</span> Priority support</li>
-          <li><span class="check">✓</span> Early access to features</li>
+          <li class="feature-category">Gallery</li>
+          <li>
+            <span class="feature-text">75 artworks</span>
+            <span class="info-icon">?<span class="tooltip">The maximum number of artworks you can upload and display in your AR gallery.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">AR viewing for collectors</span>
+            <span class="info-icon">?<span class="tooltip">Collectors can view your artwork in augmented reality at true-to-life scale on their walls before purchasing.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Custom gallery URL</span>
+            <span class="info-icon">?<span class="tooltip">Choose your own custom URL slug like hivemindar.com/gallery/yourname for better branding.</span></span>
+          </li>
+          <li class="feature-category">Branding</li>
+          <li>
+            <span class="feature-text">Your branding only</span>
+            <span class="info-icon">?<span class="tooltip">Remove HiveMind branding and display only your artist identity on your gallery.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Custom banner + effects</span>
+            <span class="info-icon">?<span class="tooltip">Apply professional effects to your profile banner including blur, darken overlays, and color tints.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Verified artist badge</span>
+            <span class="info-icon">?<span class="tooltip">Display a gold verified badge on your gallery page showing you are a professional, paying artist.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Social media links</span>
+            <span class="info-icon">?<span class="tooltip">Add links to your Instagram, Twitter, website, and other social profiles on your gallery page.</span></span>
+          </li>
+          <li class="feature-category">Analytics</li>
+          <li>
+            <span class="feature-text">Full analytics + map</span>
+            <span class="info-icon">?<span class="tooltip">Complete analytics including geographic visitor map, traffic sources, device breakdown, and export capabilities.</span></span>
+          </li>
+          <li class="feature-category">Support</li>
+          <li>
+            <span class="feature-text">Priority support</span>
+            <span class="info-icon">?<span class="tooltip">Fast-track support with responses within 4-8 hours, plus dedicated account assistance.</span></span>
+          </li>
+          <li class="feature-category">Pro Features</li>
+          <li>
+            <span class="feature-text">Featured artist listing</span>
+            <span class="info-icon">?<span class="tooltip">Get promoted in our featured artists section on the homepage and discovery pages.</span></span>
+          </li>
+          <li>
+            <span class="feature-text">Custom domain support</span>
+            <span class="info-icon">?<span class="tooltip">Connect your own domain (like yourgallery.com) to your HiveMind AR gallery.</span></span>
+          </li>
         </ul>
         <a href="/pages/auth/signup.html" class="btn btn-primary-gradient">Start with Professional</a>
       </div>
@@ -603,7 +838,7 @@
             <td>3</td>
             <td>10</td>
             <td>25</td>
-            <td>Unlimited</td>
+            <td>75</td>
           </tr>
           <tr>
             <td>AR viewing</td>
