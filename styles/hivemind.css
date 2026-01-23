@@ -89,11 +89,18 @@ a {
 .public-nav .nav-links a {
   color: var(--hm-white);
   font-size: 0.95rem;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, border-bottom 0.2s;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid transparent;
 }
 
 .public-nav .nav-links a:hover {
-  opacity: 0.8;
+  opacity: 0.9;
+}
+
+.public-nav .nav-links a.active {
+  opacity: 1;
+  border-bottom: 2px solid rgba(220, 200, 170, 0.8);
 }
 
 .nav-toggle {

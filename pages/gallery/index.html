@@ -783,6 +783,7 @@
       <a href="/">Home</a>
       <a href="/pages/gallery/" class="active">Gallery</a>
       <a href="/pages/public/how-it-works.html">How It Works</a>
+      <a href="/pages/public/pricing.html">Pricing</a>
       <a href="/pages/public/about.html">About</a>
       <a href="/pages/public/contact.html">Contact</a>
       <a href="/pages/auth/login.html">Sign Up / Login</a>
@@ -1483,6 +1484,7 @@
 
         // =================================================================
         // TEMPORARY: Show ALL artworks during development/launch phase
+        // This includes FREE tier users to populate the gallery with content
         // TODO: Once you have 5-10 paid subscribers, change SHOW_ALL_TIERS to false
         // to only show paid tier artworks (Artist + Professional)
         // =================================================================
@@ -1490,12 +1492,17 @@
 
         const displayArtworks = artworks
           .filter(a => {
-            // During launch: show all artworks
-            if (SHOW_ALL_TIERS) return true;
+            // During launch: show ALL artworks regardless of subscription tier
+            // This includes free tier users and users without subscription records
+            if (SHOW_ALL_TIERS) {
+              console.log(`Including artwork "${a.title}" from user ${a.user_id} (launch mode)`);
+              return true;
+            }
 
             // After launch: only show paid tiers (artist or professional)
             const sub = subMap[a.user_id];
-            return sub && (sub.planSlug === 'artist' || sub.planSlug === 'professional');
+            const planSlug = sub?.planSlug || 'free';
+            return planSlug === 'artist' || planSlug === 'professional';
           })
           .map(a => {
             const profile = profileMap[a.user_id] || {};

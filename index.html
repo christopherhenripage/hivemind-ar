@@ -407,7 +407,39 @@
       transform: translateY(-1px);
     }
 
+    /* Hero CTA Button Styles */
+    .btn-hero-primary {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(220, 200, 170, 0.5) !important;
+    }
+
+    .btn-hero-secondary {
+      transition: all 0.2s ease;
+    }
+
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border-color: rgba(255, 255, 255, 0.9) !important;
+      transform: translateY(-2px);
+    }
+
     @media (max-width: 768px) {
+      .hero-cta-group {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn-hero-primary,
+      .btn-hero-secondary {
+        width: 100%;
+        max-width: 280px;
+        text-align: center;
+      }
+
       .testimonial-card {
         grid-template-columns: 1fr;
       }
@@ -506,8 +538,12 @@
     </div>
     <div class="hero-content">
       <h1 class="scale-in visible" style="animation-delay: 0.2s;">Share Your ARt With The World</h1>
-      <p class="slide-in-up visible" style="animation-delay: 0.4s;">HiveMind AR empowers independent artists and dealers to showcase their work globally through augmented reality technology. Buyers simply open your gallery link on their smartphone to see your ARtwork at true scale in their space - no app download needed.</p>
-      <a href="/pages/auth/signup.html" class="btn slide-in-up visible" style="margin-top: 2rem; animation-delay: 0.6s; background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%); color: #1a1a1a; font-weight: 600; border: none; border-radius: 8px; padding: 1rem 2rem;">Get Started Free</a>
+      <p class="slide-in-up visible" style="animation-delay: 0.4s;">Let collectors see your artwork on their wall before they buy. No app needed - just share your gallery link and they'll view your art in true-scale AR on any smartphone.</p>
+      <div class="hero-cta-group slide-in-up visible" style="margin-top: 2rem; animation-delay: 0.6s; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <a href="/pages/auth/signup.html" class="btn btn-hero-primary" style="background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%); color: #1a1a1a; font-weight: 600; border: none; border-radius: 8px; padding: 1.1rem 2.5rem; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(220, 200, 170, 0.4);">Get Started Free</a>
+        <a href="/pages/public/how-it-works.html" class="btn btn-hero-secondary" style="background: transparent; color: #fff; font-weight: 500; border: 2px solid rgba(255, 255, 255, 0.6); border-radius: 8px; padding: 1rem 2rem; font-size: 1rem; backdrop-filter: blur(4px);">See How It Works</a>
+      </div>
+      <p class="hero-subtext slide-in-up visible" style="animation-delay: 0.8s; margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.7;">Free to start · No credit card required · Works on iOS & Android</p>
     </div>
   </section>
 
