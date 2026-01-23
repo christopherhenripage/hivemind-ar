@@ -62,6 +62,9 @@ export default defineConfig({
         'public-contact': resolve(__dirname, 'pages/public/contact.html'),
         'public-how-it-works': resolve(__dirname, 'pages/public/how-it-works.html'),
         'public-ar-demo': resolve(__dirname, 'pages/public/ar-demo.html'),
+        'public-pricing': resolve(__dirname, 'pages/public/pricing.html'),
+        'public-404': resolve(__dirname, 'pages/public/404.html'),
+        'public-terms': resolve(__dirname, 'pages/public/terms.html'),
         // Gallery
         'gallery': resolve(__dirname, 'pages/gallery/index.html'),
         'gallery-artist': resolve(__dirname, 'pages/gallery/artist.html'),

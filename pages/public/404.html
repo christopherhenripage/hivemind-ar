@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Page not found - HiveMind AR">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
+  <title>Page Not Found - HiveMind AR</title>
+  <link rel="stylesheet" href="/styles/hivemind.css">
+  <style>
+    .error-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #ffffff;
+    }
+
+    .error-code {
+      font-size: 8rem;
+      font-weight: 200;
+      line-height: 1;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #c9a227 0%, #b48c1e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .error-title {
+      font-size: 2rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .error-message {
+      color: #999;
+      max-width: 400px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .error-actions a {
+      padding: 0.875rem 2rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary-error {
+      background: linear-gradient(135deg, #c9a227 0%, #b48c1e 100%);
+      color: #000;
+    }
+
+    .btn-primary-error:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(201, 162, 39, 0.3);
+    }
+
+    .btn-secondary-error {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary-error:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .error-links {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .error-links p {
+      color: #666;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .error-links ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .error-links a {
+      color: #999;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .error-links a:hover {
+      color: #c9a227;
+    }
+
+    .error-logo {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+    }
+
+    .error-logo img {
+      height: 40px;
+    }
+
+    @media (max-width: 480px) {
+      .error-code {
+        font-size: 5rem;
+      }
+
+      .error-title {
+        font-size: 1.5rem;
+      }
+
+      .error-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .error-actions a {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="error-logo">
+    <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
+  </a>
+
+  <div class="error-container">
+    <div class="error-code">404</div>
+    <h1 class="error-title">Page Not Found</h1>
+    <p class="error-message">
+      The page you're looking for doesn't exist or has been moved.
+      Let's get you back on track.
+    </p>
+
+    <div class="error-actions">
+      <a href="/" class="btn-primary-error">Go Home</a>
+      <a href="/pages/gallery/" class="btn-secondary-error">Browse Gallery</a>
+    </div>
+
+    <div class="error-links">
+      <p>Or try one of these:</p>
+      <ul>
+        <li><a href="/pages/public/about.html">About Us</a></li>
+        <li><a href="/pages/public/how-it-works.html">How It Works</a></li>
+        <li><a href="/pages/public/pricing.html">Pricing</a></li>
+        <li><a href="/pages/public/contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

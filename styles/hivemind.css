@@ -1661,3 +1661,165 @@ a:focus-visible {
     opacity: 0.9;
   }
 }
+
+/* ==================== */
+/* PRINT STYLES         */
+/* ==================== */
+
+@media print {
+  /* Reset colors for printing */
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Hide non-essential elements */
+  .public-nav,
+  .nav-toggle,
+  .sidebar,
+  .public-footer,
+  .btn,
+  .btn-auth,
+  .cookie-consent-banner,
+  #cookie-consent-banner,
+  .ar-actions,
+  .ar-button,
+  .mobile-overlay,
+  .modal,
+  .toast,
+  video,
+  audio,
+  iframe {
+    display: none !important;
+  }
+
+  /* Ensure content is visible */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* Main content takes full width */
+  .main-content,
+  .page-content,
+  .content-card {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  h1 { font-size: 24pt; }
+  h2 { font-size: 18pt; }
+  h3 { font-size: 14pt; }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Links - show URL */
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 10pt;
+    color: #666 !important;
+  }
+
+  /* Don't show URL for internal links */
+  a[href^="/"]:after,
+  a[href^="#"]:after {
+    content: "";
+  }
+
+  /* Tables */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    border: 1px solid #ddd !important;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background: #f5f5f5 !important;
+    font-weight: bold;
+  }
+
+  /* Page breaks */
+  .page-break {
+    page-break-before: always;
+  }
+
+  .no-break {
+    page-break-inside: avoid;
+  }
+
+  /* Cards - remove shadows and borders */
+  .content-card,
+  .artwork-card,
+  .subscription-card,
+  .stat-card {
+    border: 1px solid #ddd !important;
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+  }
+
+  /* Transaction/invoice specific */
+  .transaction-item {
+    border-bottom: 1px solid #ddd !important;
+    padding: 10px 0;
+  }
+
+  /* Form elements - hide in print */
+  input,
+  textarea,
+  select,
+  button {
+    display: none !important;
+  }
+
+  /* Show form values as text if needed */
+  input[type="text"]:not(:placeholder-shown),
+  textarea:not(:placeholder-shown) {
+    display: block !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* Artwork grid - single column for print */
+  .artwork-grid,
+  .gallery-grid {
+    display: block !important;
+  }
+
+  .artwork-card {
+    width: 100% !important;
+    margin-bottom: 20px;
+  }
+
+  /* Stats grid - horizontal for print */
+  .stats-grid {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .stat-card {
+    flex: 1;
+    min-width: 150px;
+  }
+}

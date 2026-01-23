@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Preconnect for faster loading -->
+  <link rel="preconnect" href="https://jxzkqccqpodvgtvgwuzq.supabase.co">
+  <link rel="preconnect" href="https://media.hivemindar.com">
+
   <meta name="description" content="HiveMind AR pricing plans for artists. Start free, upgrade as you grow. Showcase unlimited artworks with AR viewing from $12/month.">
   <link rel="canonical" href="https://hivemindar.com/pages/public/pricing.html">
 
@@ -20,6 +25,9 @@
   <meta name="twitter:image" content="https://media.hivemindar.com/images/common/og-image.png">
 
   <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a1a1a">
+  <link rel="apple-touch-icon" href="/images/brand/icon-192.png">
   <title>Pricing - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
   <style>
@@ -414,6 +422,53 @@
       }
     }
   </style>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "HiveMind AR Subscription",
+    "description": "AR platform subscription for artists to showcase and sell artwork with augmented reality viewing",
+    "brand": {
+      "@type": "Brand",
+      "name": "HiveMind AR"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Free Plan",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "3 artworks, basic AR viewing"
+      },
+      {
+        "@type": "Offer",
+        "name": "Artist Plan",
+        "price": "12",
+        "priceCurrency": "USD",
+        "billingIncrement": "P1M",
+        "description": "15 artworks, full AR features, analytics"
+      },
+      {
+        "@type": "Offer",
+        "name": "Established Plan",
+        "price": "19",
+        "priceCurrency": "USD",
+        "billingIncrement": "P1M",
+        "description": "50 artworks, priority support, custom gallery"
+      },
+      {
+        "@type": "Offer",
+        "name": "Professional Plan",
+        "price": "29",
+        "priceCurrency": "USD",
+        "billingIncrement": "P1M",
+        "description": "Unlimited artworks, API access, white-label options"
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <!-- Navigation -->
@@ -698,5 +753,8 @@
       });
     });
   </script>
+
+  <!-- Cookie Consent -->
+  <script src="/scripts/cookie-consent.js"></script>
 </body>
 </html>

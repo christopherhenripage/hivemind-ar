@@ -3,6 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Preconnect for faster loading -->
+  <link rel="preconnect" href="https://jxzkqccqpodvgtvgwuzq.supabase.co">
+  <link rel="preconnect" href="https://media.hivemindar.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+  <meta name="description" content="Browse and discover artwork from artists worldwide. View pieces in true-scale augmented reality before you buy.">
+  <link rel="canonical" href="https://hivemindar.com/pages/gallery/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hivemindar.com/pages/gallery/">
+  <meta property="og:title" content="Gallery - HiveMind AR">
+  <meta property="og:description" content="Discover artwork from artists worldwide. View pieces in true-scale AR before you buy.">
+  <meta property="og:image" content="https://media.hivemindar.com/images/common/og-image.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Gallery - HiveMind AR">
+  <meta name="twitter:description" content="Discover artwork from artists worldwide. View pieces in true-scale AR before you buy.">
+  <meta name="twitter:image" content="https://media.hivemindar.com/images/common/og-image.png">
+
+  <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a1a1a">
+  <link rel="apple-touch-icon" href="/images/brand/icon-192.png">
   <title>Gallery - HiveMind AR</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
 
@@ -724,6 +750,27 @@
       }
     }
   </style>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "HiveMind AR Gallery",
+    "description": "Browse and discover artwork from artists worldwide. View pieces in true-scale augmented reality.",
+    "url": "https://hivemindar.com/pages/gallery/",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "HiveMind AR",
+      "url": "https://hivemindar.com"
+    },
+    "about": {
+      "@type": "Thing",
+      "name": "Visual Artwork",
+      "description": "Original artwork from independent artists"
+    }
+  }
+  </script>
 </head>
 <body>
   <!-- Navigation -->
@@ -1845,5 +1892,8 @@
       toggle.setAttribute('aria-expanded', !isOpen);
     }
   </script>
+
+  <!-- Cookie Consent -->
+  <script src="/scripts/cookie-consent.js"></script>
 </body>
 </html>

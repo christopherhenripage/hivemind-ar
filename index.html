@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Preconnect for faster loading -->
+  <link rel="preconnect" href="https://jxzkqccqpodvgtvgwuzq.supabase.co">
+  <link rel="preconnect" href="https://media.hivemindar.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
   <meta name="description" content="HiveMind AR empowers artists to showcase and sell artwork globally with true-scale augmented reality. Let collectors see your art in their space before they buy.">
   <meta name="keywords" content="augmented reality, AR art, artist platform, sell art online, AR gallery, virtual gallery">
   <link rel="canonical" href="https://hivemindar.com/">
@@ -21,7 +27,21 @@
   <meta name="twitter:description" content="Showcase and sell your artwork globally with true-scale AR. Let collectors experience your art in their space.">
   <meta name="twitter:image" content="https://media.hivemindar.com/images/common/og-image.png">
 
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/brand/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/brand/favicon-16.png">
   <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/brand/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/brand/icon-152.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/brand/icon-120.png">
+  <link rel="mask-icon" href="/images/brand/safari-pinned-tab.svg" color="#1a1a1a">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="msapplication-TileColor" content="#1a1a1a">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HiveMind AR">
   <title>HiveMind AR - Augmented Reality for Artists</title>
   <link rel="stylesheet" href="/styles/hivemind.css">
   <style>
@@ -421,6 +441,45 @@
       }
     }
   </style>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "HiveMind AR",
+    "alternateName": "HiveMind Collective",
+    "url": "https://hivemindar.com",
+    "logo": "https://media.hivemindar.com/images/common/og-image.png",
+    "description": "Augmented reality platform empowering artists to showcase and sell artwork globally with true-scale AR viewing.",
+    "sameAs": [],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "url": "https://hivemindar.com/pages/public/contact.html"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "USD",
+      "lowPrice": "0",
+      "highPrice": "29",
+      "offerCount": "4"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "HiveMind AR",
+    "url": "https://hivemindar.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://hivemindar.com/pages/gallery/?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
 </head>
 <body>
   <!-- Navigation -->
@@ -603,5 +662,8 @@
       });
     });
   </script>
+
+  <!-- Cookie Consent -->
+  <script src="/scripts/cookie-consent.js"></script>
 </body>
 </html>
