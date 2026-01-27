@@ -71,10 +71,10 @@ async function createArtworkGLB(imagePath, widthInches, heightInches, outputName
   ]);
 
   const uvs = new Float32Array([
-    0, 0,  // bottom-left
-    1, 0,  // bottom-right
-    1, 1,  // top-right
-    0, 1,  // top-left
+    0, 1,  // bottom-left vertex → bottom of image
+    1, 1,  // bottom-right vertex → bottom of image
+    1, 0,  // top-right vertex → top of image
+    0, 0,  // top-left vertex → top of image
   ]);
 
   const indices = new Uint16Array([
