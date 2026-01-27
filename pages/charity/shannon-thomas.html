@@ -178,8 +178,16 @@
     .charity-hero .auction-date {
       font-size: 0.95rem;
       color: #c9a227;
-      margin: 0 0 2rem;
+      margin: 0 0 1.25rem;
       font-weight: 500;
+    }
+
+    .charity-hero .hero-ar-note {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 480px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
     }
 
     .charity-hero .btn-auction {
@@ -564,15 +572,8 @@
     <a href="/" class="logo">
       <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR">
     </a>
-    <button class="nav-toggle" onclick="toggleMobileNav()">&#9776;</button>
     <div class="nav-links" id="navLinks">
-      <a href="/">Home</a>
-      <a href="/pages/gallery/">Gallery</a>
-      <a href="/pages/public/how-it-works.html">How It Works</a>
-      <a href="/pages/public/pricing.html">Pricing</a>
-      <a href="/pages/public/about.html">About</a>
-      <a href="/pages/public/contact.html">Contact</a>
-      <a href="/pages/auth/login.html">Sign Up / Login</a>
+      <a href="https://www.32auctions.com/organizations/135580/auctions/194605" target="_blank" rel="noopener" onclick="trackEvent('bid_click', 'nav_auction')">View Auction</a>
     </div>
   </nav>
 
@@ -582,6 +583,7 @@
     <p class="subtitle">A Collection by Shannon E Thomas</p>
     <p class="charity-line">8 Original Paintings Benefiting Son of a Saint</p>
     <p class="auction-date">Auction ends February 17, 2026</p>
+    <p class="hero-ar-note">View each painting in augmented reality — see it on your wall, at true scale, directly from your phone. No app required.</p>
     <a href="https://www.32auctions.com/organizations/135580/auctions/194605" target="_blank" rel="noopener" class="btn-auction" onclick="trackEvent('bid_click', 'auction_main')">View Full Auction</a>
   </section>
 
@@ -922,17 +924,8 @@
 
   <!-- Footer -->
   <footer class="public-footer">
-    <div class="footer-links">
-      <a href="/">Home</a>
-      <a href="/pages/gallery/">Gallery</a>
-      <a href="/pages/public/how-it-works.html">How It Works</a>
-      <a href="/pages/public/pricing.html">Pricing</a>
-      <a href="/pages/public/about.html">About</a>
-      <a href="/pages/public/contact.html">Contact</a>
-      <a href="/pages/auth/login.html">Sign Up / Login</a>
-    </div>
     <p class="copyright">&copy; 2026 HiveMind AR.</p>
-    <p class="hosted-by">Gallery hosted by <a href="https://hivemindar.com">HiveMind AR</a></p>
+    <p class="hosted-by">Gallery hosted by <a href="/">HiveMind AR</a></p>
   </footer>
 
   <!-- Scripts -->
