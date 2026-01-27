@@ -69,6 +69,9 @@ export default defineConfig({
         'gallery': resolve(__dirname, 'pages/gallery/index.html'),
         'gallery-artist': resolve(__dirname, 'pages/gallery/artist.html'),
         'gallery-artwork': resolve(__dirname, 'pages/gallery/artwork.html'),
+        // Charity galleries
+        'charity-shannon-thomas': resolve(__dirname, 'pages/charity/shannon-thomas.html'),
+        'charity-shannon-thomas-admin': resolve(__dirname, 'pages/charity/shannon-thomas-admin.html'),
         // Subscriber pages
         'subscriber-dashboard': resolve(__dirname, 'pages/subscriber/dashboard.html'),
         'subscriber-profile': resolve(__dirname, 'pages/subscriber/profile.html'),

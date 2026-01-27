@@ -7,6 +7,22 @@
     {
       "source": "/gallery/:slug/",
       "destination": "/pages/gallery/artist.html?slug=:slug"
+    },
+    {
+      "source": "/charity/shannon-thomas",
+      "destination": "/pages/charity/shannon-thomas.html"
+    },
+    {
+      "source": "/charity/shannon-thomas/",
+      "destination": "/pages/charity/shannon-thomas.html"
+    },
+    {
+      "source": "/charity/shannon-thomas/admin",
+      "destination": "/pages/charity/shannon-thomas-admin.html"
+    },
+    {
+      "source": "/charity/shannon-thomas/admin/",
+      "destination": "/pages/charity/shannon-thomas-admin.html"
     }
   ],
   "headers": [

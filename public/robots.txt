@@ -8,6 +8,10 @@ Allow: /
 Allow: /pages/public/
 Allow: /pages/gallery/
 
+# Allow charity gallery pages
+Allow: /pages/charity/
+Disallow: /pages/charity/*-admin.html
+
 # Disallow private/authenticated areas
 Disallow: /pages/subscriber/
 Disallow: /pages/auth/

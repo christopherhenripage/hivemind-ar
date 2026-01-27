@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Queen Freret XIV</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/images/favicon-32x32.png">
+  <link rel="stylesheet" href="/styles/hivemind.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    body {
+      background: #0f0f13;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    /* Passcode Screen */
+    .passcode-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .passcode-screen h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+
+    .passcode-form {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .passcode-form input {
+      padding: 0.75rem 1rem;
+      border: 1px solid #333;
+      background: #1a1a22;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 220px;
+    }
+
+    .passcode-form input:focus {
+      outline: none;
+      border-color: #803cb4;
+    }
+
+    .passcode-form button {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #803cb4 0%, #6a2c9a 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .passcode-form button:hover {
+      transform: translateY(-1px);
+    }
+
+    .passcode-error {
+      color: #ef4444;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* Dashboard */
+    .dashboard {
+      display: none;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .dashboard.visible {
+      display: block;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .dashboard-header h1 {
+      font-size: 1.75rem;
+      color: #fff;
+    }
+
+    .dashboard-header .subtitle {
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .back-link {
+      color: #803cb4;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: #1a1a22;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #2a2a35;
+    }
+
+    .stat-card h3 {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0 0 0.75rem;
+    }
+
+    .stat-card .value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-card .sub-value {
+      font-size: 0.85rem;
+      color: #803cb4;
+      margin-top: 0.25rem;
+    }
+
+    /* Time Filter */
+    .time-filter {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .time-filter button {
+      padding: 0.5rem 1rem;
+      border: 1px solid #2a2a35;
+      background: #1a1a22;
+      color: #888;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .time-filter button.active {
+      background: #803cb4;
+      color: #fff;
+      border-color: #803cb4;
+    }
+
+    .time-filter button:hover:not(.active) {
+      background: #2a2a35;
+      color: #e0e0e0;
+    }
+
+    /* Chart Containers */
+    .chart-section {
+      background: #1a1a22;
+      border-radius: 12px;
+      border: 1px solid #2a2a35;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-section h2 {
+      font-size: 1.1rem;
+      color: #fff;
+      margin: 0 0 1rem;
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #2a2a35;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .data-table th:hover {
+      color: #803cb4;
+    }
+
+    .data-table th .sort-arrow {
+      margin-left: 4px;
+      opacity: 0.5;
+    }
+
+    .data-table th.sorted .sort-arrow {
+      opacity: 1;
+      color: #803cb4;
+    }
+
+    .data-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #1f1f2a;
+      font-size: 0.9rem;
+    }
+
+    .data-table tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(128, 60, 180, 0.08);
+    }
+
+    .data-table tbody tr.top-performer {
+      background: rgba(128, 60, 180, 0.12);
+    }
+
+    .data-table tbody tr.top-performer td:first-child::after {
+      content: ' *';
+      color: #c9a227;
+    }
+
+    /* Referrer Table */
+    .referrer-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .referrer-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #2a2a35;
+    }
+
+    .referrer-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid #1f1f2a;
+      font-size: 0.85rem;
+    }
+
+    /* Loading */
+    .loading-msg {
+      text-align: center;
+      color: #888;
+      padding: 3rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .chart-row {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard {
+        padding: 1rem;
+      }
+
+      .data-table {
+        font-size: 0.8rem;
+      }
+
+      .data-table th, .data-table td {
+        padding: 0.5rem 0.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Passcode Screen -->
+  <div class="passcode-screen" id="passcodeScreen">
+    <h1>Queen Freret XIV — Admin Dashboard</h1>
+    <div class="passcode-form">
+      <input type="password" id="passcodeInput" placeholder="Enter passcode" autofocus>
+      <button onclick="checkPasscode()">Enter</button>
+    </div>
+    <p class="passcode-error" id="passcodeError" style="display: none;">Access denied. Incorrect passcode.</p>
+  </div>
+
+  <!-- Dashboard (hidden until authenticated) -->
+  <div class="dashboard" id="dashboard">
+    <div class="dashboard-header">
+      <div>
+        <h1>Queen Freret XIV</h1>
+        <p class="subtitle">Shannon E Thomas &mdash; Charity Gallery Analytics</p>
+      </div>
+      <a href="/charity/shannon-thomas" class="back-link">&larr; View Gallery</a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Page Views</h3>
+        <div class="value" id="statPageViews">-</div>
+        <div class="sub-value" id="statUniqueVisitors">- unique visitors</div>
+      </div>
+      <div class="stat-card">
+        <h3>AR Activations</h3>
+        <div class="value" id="statArViews">-</div>
+        <div class="sub-value" id="statArRate">- engagement rate</div>
+      </div>
+      <div class="stat-card">
+        <h3>Bid Clicks</h3>
+        <div class="value" id="statBidClicks">-</div>
+        <div class="sub-value" id="statConversion">- conversion rate</div>
+      </div>
+      <div class="stat-card">
+        <h3>Auction Status</h3>
+        <div class="value" id="statDaysLeft">-</div>
+        <div class="sub-value">days remaining</div>
+      </div>
+    </div>
+
+    <!-- Time Filter -->
+    <div class="time-filter">
+      <button class="active" data-days="7" onclick="setTimeFilter(7, this)">7 Days</button>
+      <button data-days="30" onclick="setTimeFilter(30, this)">30 Days</button>
+      <button data-days="0" onclick="setTimeFilter(0, this)">All Time</button>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="chart-row">
+      <div class="chart-section">
+        <h2>Traffic Over Time</h2>
+        <canvas id="trafficChart" height="250"></canvas>
+      </div>
+      <div class="chart-section">
+        <h2>Device Breakdown</h2>
+        <canvas id="deviceChart" height="250"></canvas>
+      </div>
+    </div>
+
+    <!-- Per-Artwork Table -->
+    <div class="chart-section">
+      <h2>Per-Artwork Performance</h2>
+      <table class="data-table" id="artworkTable">
+        <thead>
+          <tr>
+            <th onclick="sortTable(0)">Title <span class="sort-arrow">&#9650;</span></th>
+            <th onclick="sortTable(1)">Views <span class="sort-arrow">&#9650;</span></th>
+            <th onclick="sortTable(2)">AR Views <span class="sort-arrow">&#9650;</span></th>
+            <th onclick="sortTable(3)">Bid Clicks <span class="sort-arrow">&#9650;</span></th>
+            <th onclick="sortTable(4)">Conversion <span class="sort-arrow">&#9650;</span></th>
+          </tr>
+        </thead>
+        <tbody id="artworkTableBody">
+          <tr><td colspan="5" class="loading-msg">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Referrer Table -->
+    <div class="chart-section">
+      <h2>Traffic Sources</h2>
+      <table class="referrer-table" id="referrerTable">
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Visits</th>
+            <th>Share</th>
+          </tr>
+        </thead>
+        <tbody id="referrerTableBody">
+          <tr><td colspan="3" class="loading-msg">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from '/src/supabase.js';
+
+    // ==========================================
+    // Passcode Protection
+    // ==========================================
+
+    const PASSCODE = 'QueenFreret2026';
+
+    function checkStoredPasscode() {
+      return sessionStorage.getItem('charity_admin_auth') === 'true';
+    }
+
+    window.checkPasscode = function() {
+      const input = document.getElementById('passcodeInput').value;
+      if (input === PASSCODE) {
+        sessionStorage.setItem('charity_admin_auth', 'true');
+        showDashboard();
+      } else {
+        document.getElementById('passcodeError').style.display = 'block';
+        document.getElementById('passcodeInput').value = '';
+        document.getElementById('passcodeInput').focus();
+      }
+    };
+
+    document.getElementById('passcodeInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') checkPasscode();
+    });
+
+    if (checkStoredPasscode()) {
+      showDashboard();
+    }
+
+    function showDashboard() {
+      document.getElementById('passcodeScreen').style.display = 'none';
+      document.getElementById('dashboard').classList.add('visible');
+      loadDashboard();
+    }
+
+    // ==========================================
+    // Dashboard Data
+    // ==========================================
+
+    let allEvents = [];
+    let currentDaysFilter = 7;
+    let trafficChartInstance = null;
+    let deviceChartInstance = null;
+    let sortCol = -1;
+    let sortAsc = true;
+
+    async function loadDashboard() {
+      try {
+        if (!supabase) {
+          document.getElementById('artworkTableBody').innerHTML = '<tr><td colspan="5" class="loading-msg">Supabase not configured</td></tr>';
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('charity_gallery_analytics')
+          .select('*')
+          .eq('gallery_id', 'shannon-thomas')
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        allEvents = data || [];
+        updateDashboard();
+      } catch (err) {
+        console.error('Failed to load analytics:', err);
+        document.getElementById('artworkTableBody').innerHTML = `<tr><td colspan="5" class="loading-msg">Error loading data: ${err.message}</td></tr>`;
+      }
+    }
+
+    function getFilteredEvents() {
+      if (currentDaysFilter === 0) return allEvents;
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - currentDaysFilter);
+      return allEvents.filter(e => new Date(e.created_at) >= cutoff);
+    }
+
+    window.setTimeFilter = function(days, btn) {
+      currentDaysFilter = days;
+      document.querySelectorAll('.time-filter button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updateDashboard();
+    };
+
+    function updateDashboard() {
+      const events = getFilteredEvents();
+
+      // Auction countdown
+      const auctionEnd = new Date('2026-02-17T23:59:59');
+      const now = new Date();
+      const daysLeft = Math.max(0, Math.ceil((auctionEnd - now) / (1000 * 60 * 60 * 24)));
+      document.getElementById('statDaysLeft').textContent = daysLeft;
+
+      // Summary stats
+      const pageViews = events.filter(e => e.event_type === 'page_view');
+      const arViews = events.filter(e => e.event_type === 'ar_view');
+      const bidClicks = events.filter(e => e.event_type === 'bid_click');
+      const artworkViews = events.filter(e => e.event_type === 'artwork_view');
+
+      const uniqueVisitors = new Set(pageViews.map(e => e.visitor_fingerprint)).size;
+
+      document.getElementById('statPageViews').textContent = pageViews.length.toLocaleString();
+      document.getElementById('statUniqueVisitors').textContent = `${uniqueVisitors.toLocaleString()} unique visitors`;
+
+      document.getElementById('statArViews').textContent = arViews.length.toLocaleString();
+      const arRate = pageViews.length > 0 ? ((arViews.length / pageViews.length) * 100).toFixed(1) : '0';
+      document.getElementById('statArRate').textContent = `${arRate}% engagement rate`;
+
+      document.getElementById('statBidClicks').textContent = bidClicks.length.toLocaleString();
+      const convRate = pageViews.length > 0 ? ((bidClicks.length / pageViews.length) * 100).toFixed(1) : '0';
+      document.getElementById('statConversion').textContent = `${convRate}% conversion rate`;
+
+      // Per-artwork table
+      updateArtworkTable(artworkViews, arViews, bidClicks);
+
+      // Traffic chart
+      updateTrafficChart(events);
+
+      // Device breakdown
+      updateDeviceChart(events);
+
+      // Referrer table
+      updateReferrerTable(events);
+    }
+
+    // ==========================================
+    // Artwork Table
+    // ==========================================
+
+    const ARTWORKS = ['Clair', 'Fleur', 'Koda', 'Lane', 'Lilac', 'Revel', 'Roux', 'Vesper'];
+
+    function updateArtworkTable(artworkViews, arViews, bidClicks) {
+      const rows = ARTWORKS.map(name => {
+        const views = artworkViews.filter(e => e.artwork_name === name).length;
+        const ar = arViews.filter(e => e.artwork_name === name).length;
+        const bids = bidClicks.filter(e => e.artwork_name === name).length;
+        const conv = views > 0 ? ((bids / views) * 100).toFixed(1) : '0.0';
+        return { name, views, ar, bids, conv: parseFloat(conv) };
+      });
+
+      // Sort if active
+      if (sortCol >= 0) {
+        const keys = ['name', 'views', 'ar', 'bids', 'conv'];
+        const key = keys[sortCol];
+        rows.sort((a, b) => {
+          if (key === 'name') return sortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+          return sortAsc ? a[key] - b[key] : b[key] - a[key];
+        });
+      }
+
+      // Find top performer by bid clicks
+      const maxBids = Math.max(...rows.map(r => r.bids));
+
+      const tbody = document.getElementById('artworkTableBody');
+      tbody.innerHTML = rows.map(r => `
+        <tr class="${r.bids > 0 && r.bids === maxBids ? 'top-performer' : ''}">
+          <td>${r.name}</td>
+          <td>${r.views}</td>
+          <td>${r.ar}</td>
+          <td>${r.bids}</td>
+          <td>${r.conv}%</td>
+        </tr>
+      `).join('');
+    }
+
+    window.sortTable = function(colIndex) {
+      if (sortCol === colIndex) {
+        sortAsc = !sortAsc;
+      } else {
+        sortCol = colIndex;
+        sortAsc = false;
+      }
+
+      // Update arrow indicators
+      document.querySelectorAll('.data-table th').forEach((th, i) => {
+        th.classList.toggle('sorted', i === sortCol);
+        const arrow = th.querySelector('.sort-arrow');
+        if (arrow) arrow.innerHTML = (i === sortCol && sortAsc) ? '&#9650;' : '&#9660;';
+      });
+
+      updateDashboard();
+    };
+
+    // ==========================================
+    // Traffic Chart
+    // ==========================================
+
+    function updateTrafficChart(events) {
+      const days = {};
+      events.forEach(e => {
+        const day = e.created_at.substring(0, 10);
+        if (!days[day]) days[day] = { page_view: 0, ar_view: 0, bid_click: 0 };
+        if (days[day][e.event_type] !== undefined) {
+          days[day][e.event_type]++;
+        }
+      });
+
+      const labels = Object.keys(days).sort();
+      const pageData = labels.map(d => days[d].page_view);
+      const arData = labels.map(d => days[d].ar_view);
+      const bidData = labels.map(d => days[d].bid_click);
+
+      if (trafficChartInstance) trafficChartInstance.destroy();
+
+      const ctx = document.getElementById('trafficChart').getContext('2d');
+      trafficChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels.map(d => { const dt = new Date(d + 'T00:00:00'); return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }),
+          datasets: [
+            {
+              label: 'Page Views',
+              data: pageData,
+              borderColor: '#803cb4',
+              backgroundColor: 'rgba(128, 60, 180, 0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'AR Views',
+              data: arData,
+              borderColor: '#c9a227',
+              backgroundColor: 'rgba(201, 162, 39, 0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Bid Clicks',
+              data: bidData,
+              borderColor: '#22c55e',
+              backgroundColor: 'rgba(34, 197, 94, 0.1)',
+              fill: true,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#888' } }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#666' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: '#666', stepSize: 1 },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            }
+          }
+        }
+      });
+    }
+
+    // ==========================================
+    // Device Breakdown Chart
+    // ==========================================
+
+    function updateDeviceChart(events) {
+      const devices = {};
+      events.forEach(e => {
+        const d = e.device_type || 'unknown';
+        devices[d] = (devices[d] || 0) + 1;
+      });
+
+      const labels = Object.keys(devices);
+      const data = Object.values(devices);
+      const colors = {
+        mobile: '#803cb4',
+        desktop: '#c9a227',
+        tablet: '#22c55e',
+        unknown: '#666'
+      };
+
+      if (deviceChartInstance) deviceChartInstance.destroy();
+
+      const ctx = document.getElementById('deviceChart').getContext('2d');
+      deviceChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels.map(l => l.charAt(0).toUpperCase() + l.slice(1)),
+          datasets: [{
+            data: data,
+            backgroundColor: labels.map(l => colors[l] || '#666'),
+            borderColor: '#1a1a22',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: '#888', padding: 16 }
+            }
+          }
+        }
+      });
+    }
+
+    // ==========================================
+    // Referrer Table
+    // ==========================================
+
+    function updateReferrerTable(events) {
+      const refs = {};
+      const pageViews = events.filter(e => e.event_type === 'page_view');
+
+      pageViews.forEach(e => {
+        let source = 'Direct';
+        if (e.referrer) {
+          try {
+            const url = new URL(e.referrer);
+            const host = url.hostname.replace('www.', '');
+            if (host.includes('facebook') || host.includes('fb.com')) source = 'Facebook';
+            else if (host.includes('instagram')) source = 'Instagram';
+            else if (host.includes('twitter') || host.includes('x.com')) source = 'X (Twitter)';
+            else if (host.includes('linkedin')) source = 'LinkedIn';
+            else if (host.includes('google')) source = 'Google';
+            else if (host.includes('32auctions')) source = '32auctions';
+            else if (host.includes('sonofasaint')) source = 'Son of a Saint';
+            else source = host;
+          } catch { source = 'Other'; }
+        }
+        refs[source] = (refs[source] || 0) + 1;
+      });
+
+      const total = pageViews.length || 1;
+      const sorted = Object.entries(refs).sort((a, b) => b[1] - a[1]);
+
+      const tbody = document.getElementById('referrerTableBody');
+      if (sorted.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="color: #666; text-align: center;">No data yet</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = sorted.map(([source, count]) => `
+        <tr>
+          <td>${source}</td>
+          <td>${count}</td>
+          <td>${((count / total) * 100).toFixed(1)}%</td>
+        </tr>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
