@@ -185,14 +185,14 @@
 
     .step-card:hover .step-icon-container svg {
       transform: translateY(-4px);
-      filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.15));
+      filter: drop-shadow(0 4px 8px rgba(200, 169, 107, 0.25));
     }
 
     .step-label {
       display: inline-block;
       font-size: 0.7rem;
       font-weight: 600;
-      color: #667eea;
+      color: #B8956B;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       margin-bottom: 0.5rem;
@@ -518,25 +518,32 @@
         <div class="step-icon-container">
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
-            <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
-            <path d="M40 70 L60 80 M80 70 L60 80 M60 60 L60 80" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
-            <!-- Clipboard slab - back face -->
-            <path d="M35 25 L35 70 L60 82 L60 37 Z" stroke="#1E293B" stroke-width="1" fill="#F1F5F9" opacity="0.5"/>
-            <!-- Clipboard slab - top face -->
-            <path d="M35 25 L60 13 L85 25 L60 37 Z" stroke="#1E293B" stroke-width="2" fill="#F8FAFC"/>
-            <!-- Clipboard slab - front face -->
-            <path d="M60 37 L85 25 L85 70 L60 82 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
-            <!-- Paper layer on top -->
-            <path d="M42 30 L60 21 L78 30 L60 39 Z" stroke="#1E293B" stroke-width="1" fill="#FFFFFF"/>
-            <path d="M60 39 L60 75 L78 66 L78 30 Z" stroke="#1E293B" stroke-width="1" fill="#FAFAFA"/>
-            <!-- Clip tab -->
-            <path d="M52 16 L60 12 L68 16 L68 22 L60 26 L52 22 Z" stroke="#6366F1" stroke-width="1.5" fill="#6366F1" fill-opacity="0.15"/>
-            <!-- Form lines -->
-            <line x1="64" y1="38" x2="74" y2="33" stroke="#CBD5E1" stroke-width="1"/>
-            <line x1="64" y1="45" x2="72" y2="41" stroke="#CBD5E1" stroke-width="1"/>
-            <line x1="64" y1="52" x2="70" y2="49" stroke="#CBD5E1" stroke-width="1"/>
-            <!-- Checkmark -->
-            <path d="M64 60 L67 63 L74 54" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M60 105 L20 85 L60 65 L100 85 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
+            <path d="M40 75 L60 85 M80 75 L60 85 M60 65 L60 85" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
+            <!-- Shadow on floor -->
+            <ellipse cx="55" cy="82" rx="22" ry="10" fill="#1E293B" opacity="0.06"/>
+            <!-- Artist Palette - back/left face -->
+            <path d="M18 45 L18 60 Q18 72 35 75 L55 78 Q75 78 80 65 L80 50" stroke="#1E293B" stroke-width="1" fill="#F5ECD8" opacity="0.6"/>
+            <!-- Artist Palette - top face (kidney shape) -->
+            <path d="M18 45 Q18 30 40 28 Q55 26 70 32 Q88 38 85 50 Q82 62 65 62 Q50 62 45 55 Q42 52 38 55 Q32 60 25 58 Q18 55 18 45 Z" stroke="#1E293B" stroke-width="2" fill="#FDFBF7"/>
+            <!-- Palette thickness -->
+            <path d="M18 45 L18 50 Q18 60 30 62 M85 50 L85 55 Q82 65 70 65" stroke="#1E293B" stroke-width="1" fill="none" opacity="0.5"/>
+            <!-- Thumb hole -->
+            <ellipse cx="32" cy="48" rx="8" ry="6" stroke="#1E293B" stroke-width="1.5" fill="#F8FAFC"/>
+            <!-- Paint blobs -->
+            <circle cx="50" cy="38" r="5" fill="#E53E3E" stroke="#1E293B" stroke-width="0.75"/>
+            <circle cx="62" cy="42" r="4" fill="#3182CE" stroke="#1E293B" stroke-width="0.75"/>
+            <circle cx="72" cy="50" r="4.5" fill="#C8A96B" stroke="#1E293B" stroke-width="0.75"/>
+            <circle cx="58" cy="52" r="3.5" fill="#38A169" stroke="#1E293B" stroke-width="0.75"/>
+            <ellipse cx="45" cy="48" rx="3" ry="2.5" fill="#9F7AEA" stroke="#1E293B" stroke-width="0.5"/>
+            <!-- Paintbrush laying across -->
+            <path d="M75 25 L100 55" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+            <path d="M76 26 L98 53" stroke="#DEB887" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Brush ferrule -->
+            <path d="M72 22 L77 27 L74 30 L69 25 Z" stroke="#1E293B" stroke-width="1" fill="#A0AEC0"/>
+            <!-- Brush bristles -->
+            <path d="M65 18 L72 22 L69 25 L62 21 Z" stroke="#1E293B" stroke-width="1.5" fill="#C8A96B"/>
+            <path d="M62 15 L65 18 L62 21 L59 18 Z" stroke="#C8A96B" stroke-width="1" fill="#C8A96B" opacity="0.7"/>
           </svg>
         </div>
         <span class="step-label">Step 1</span>
@@ -551,18 +558,29 @@
             <!-- Floor grid -->
             <path d="M60 105 L20 85 L60 65 L100 85 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
             <path d="M40 75 L60 85 M80 75 L60 85 M60 65 L60 85" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
-            <!-- Cloud volume - back bumps -->
-            <ellipse cx="42" cy="42" rx="14" ry="10" stroke="#1E293B" stroke-width="1" fill="#F1F5F9" opacity="0.6"/>
-            <ellipse cx="78" cy="42" rx="12" ry="9" stroke="#1E293B" stroke-width="1" fill="#F1F5F9" opacity="0.6"/>
-            <!-- Cloud volume - main body -->
-            <path d="M25 50 C15 50 10 42 18 35 C20 25 32 18 48 20 C52 12 65 10 75 18 C90 15 100 25 95 40 C105 45 102 58 90 58 L30 58 C18 58 15 52 25 50 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
-            <!-- Cloud depth/thickness -->
-            <path d="M30 58 L30 68 C30 72 35 75 42 75 L78 75 C88 75 92 70 90 65 L90 58" stroke="#1E293B" stroke-width="1" fill="#F8FAFC"/>
-            <!-- Upload arrow -->
-            <path d="M60 80 L60 45" stroke="#6366F1" stroke-width="2.5" stroke-linecap="round"/>
-            <path d="M50 55 L60 42 L70 55" stroke="#6366F1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- Arrow glow line to floor -->
-            <path d="M60 80 L60 95" stroke="#6366F1" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>
+            <!-- Shadow on floor -->
+            <ellipse cx="60" cy="82" rx="20" ry="9" fill="#1E293B" opacity="0.06"/>
+            <!-- Picture Frame - back/left face -->
+            <path d="M25 35 L25 75 L60 92 L60 52 Z" stroke="#1E293B" stroke-width="1" fill="#F5ECD8" opacity="0.5"/>
+            <!-- Picture Frame - top face -->
+            <path d="M25 35 L60 20 L95 35 L60 52 Z" stroke="#1E293B" stroke-width="2" fill="#FDFBF7"/>
+            <!-- Picture Frame - front/right face -->
+            <path d="M60 52 L95 35 L95 75 L60 92 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
+            <!-- Frame border - ornate gold -->
+            <path d="M30 38 L60 25 L90 38 L60 53 Z" stroke="#C8A96B" stroke-width="2.5" fill="none"/>
+            <path d="M60 53 L90 38 L90 72 L60 87 Z" stroke="#C8A96B" stroke-width="2.5" fill="none"/>
+            <!-- Canvas inner area -->
+            <path d="M35 42 L60 30 L85 42 L60 55 Z" stroke="#1E293B" stroke-width="0.75" fill="#FAFAFA"/>
+            <path d="M60 55 L85 42 L85 68 L60 82 Z" stroke="#1E293B" stroke-width="0.75" fill="#FFFFFF"/>
+            <!-- Abstract art hint inside -->
+            <circle cx="72" cy="52" r="6" fill="#E2E8F0" opacity="0.6"/>
+            <path d="M65 62 L70 55 L75 60 L82 52" stroke="#CBD5E1" stroke-width="1" fill="none"/>
+            <!-- Upload arrow emerging from canvas -->
+            <path d="M60 70 L60 12" stroke="#C8A96B" stroke-width="3" stroke-linecap="round"/>
+            <path d="M48 24 L60 8 L72 24" stroke="#C8A96B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Arrow energy lines -->
+            <path d="M52 18 L48 14" stroke="#C8A96B" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+            <path d="M68 18 L72 14" stroke="#C8A96B" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
           </svg>
         </div>
         <span class="step-label">Step 2</span>
@@ -577,27 +595,34 @@
             <!-- Floor grid -->
             <path d="M60 105 L20 85 L60 65 L100 85 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
             <path d="M40 75 L60 85 M80 75 L60 85" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
-            <!-- Floating picture frame - back -->
-            <path d="M55 30 L55 65 L80 78 L80 43 Z" stroke="#1E293B" stroke-width="1" fill="#F1F5F9" opacity="0.5"/>
-            <!-- Floating picture frame - top -->
-            <path d="M55 30 L80 18 L105 30 L80 43 Z" stroke="#1E293B" stroke-width="2" fill="#FAFAFA"/>
-            <!-- Floating picture frame - front -->
-            <path d="M80 43 L105 30 L105 65 L80 78 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
-            <!-- Inner frame area -->
-            <path d="M84 46 L100 36 L100 58 L84 68 Z" stroke="#CBD5E1" stroke-width="0.75" fill="none"/>
-            <!-- Pencil body - isometric cylinder -->
-            <path d="M20 75 L45 52 L52 56 L27 79 Z" stroke="#1E293B" stroke-width="2" fill="#FEF3C7"/>
-            <!-- Pencil tip -->
-            <path d="M45 52 L55 45 L52 56 Z" stroke="#1E293B" stroke-width="1.5" fill="#F59E0B"/>
-            <path d="M52 48 L55 45" stroke="#1E293B" stroke-width="1"/>
-            <!-- Pencil point -->
-            <path d="M55 45 L58 42" stroke="#6366F1" stroke-width="2" stroke-linecap="round"/>
-            <!-- Pencil eraser end -->
-            <path d="M20 75 L15 80 L22 84 L27 79 Z" stroke="#1E293B" stroke-width="1.5" fill="#F472B6"/>
-            <!-- Edit sparkles -->
-            <circle cx="70" cy="25" r="2" fill="#6366F1"/>
-            <circle cx="95 " cy="20" r="1.5" fill="#6366F1" opacity="0.6"/>
-            <path d="M62 35 L64 32 L66 35 L64 38 Z" fill="#6366F1" opacity="0.5"/>
+            <!-- 3D Wall section - back/left face -->
+            <path d="M55 25 L55 80 L80 95 L80 40 Z" stroke="#1E293B" stroke-width="1" fill="#E2E8F0" opacity="0.5"/>
+            <!-- 3D Wall section - top face -->
+            <path d="M55 25 L80 12 L105 25 L80 40 Z" stroke="#1E293B" stroke-width="2" fill="#F1F5F9"/>
+            <!-- 3D Wall section - front/right face (being painted) -->
+            <path d="M80 40 L105 25 L105 80 L80 95 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
+            <!-- Painted area on wall (gold color being applied) -->
+            <path d="M80 40 L105 25 L105 55 L80 70 Z" stroke="#C8A96B" stroke-width="1" fill="#F5ECD8"/>
+            <!-- Unpainted area below -->
+            <path d="M80 70 L105 55 L105 80 L80 95 Z" stroke="#1E293B" stroke-width="0.75" fill="#FAFAFA"/>
+            <!-- Paint drip edge -->
+            <path d="M82 70 Q84 74 83 78 M90 67 Q91 70 90 73 M98 64 Q100 68 98 72" stroke="#C8A96B" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Paint Roller - handle -->
+            <path d="M15 70 L35 50" stroke="#8B4513" stroke-width="4" stroke-linecap="round"/>
+            <path d="M16 69 L34 51" stroke="#DEB887" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Roller frame arm -->
+            <path d="M35 50 L45 42 L50 47" stroke="#A0AEC0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Roller cylinder - 3D -->
+            <ellipse cx="58" cy="38" rx="4" ry="8" stroke="#1E293B" stroke-width="1" fill="#E2E8F0" transform="rotate(-30 58 38)"/>
+            <path d="M50 47 L65 32" stroke="#1E293B" stroke-width="1" fill="none"/>
+            <path d="M52 52 L67 37" stroke="#1E293B" stroke-width="1" fill="none"/>
+            <!-- Roller covered in paint -->
+            <ellipse cx="58" cy="42" rx="5" ry="10" stroke="#C8A96B" stroke-width="2" fill="#C8A96B" fill-opacity="0.3" transform="rotate(-30 58 42)"/>
+            <!-- Paint texture on roller -->
+            <path d="M54 38 L56 36 M58 44 L60 42 M62 48 L64 46" stroke="#C8A96B" stroke-width="1" opacity="0.6"/>
+            <!-- Customization sparkles -->
+            <circle cx="95" cy="18" r="2" fill="#C8A96B"/>
+            <circle cx="108" cy="35" r="1.5" fill="#C8A96B" opacity="0.6"/>
           </svg>
         </div>
         <span class="step-label">Step 3</span>
@@ -612,24 +637,29 @@
             <!-- Floor grid -->
             <path d="M60 105 L20 85 L60 65 L100 85 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
             <path d="M40 75 L60 85 M80 75 L60 85" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
-            <!-- Chain link 1 (back/left) - 3D rounded rectangle -->
-            <!-- Link 1 outer shape -->
-            <path d="M22 45 L22 60 C22 68 28 72 36 68 L50 60 C58 56 58 46 50 42 L36 34 C28 30 22 34 22 42 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
-            <!-- Link 1 inner hole -->
-            <path d="M30 48 L30 55 C30 58 33 60 37 58 L43 54 C47 52 47 48 43 46 L37 42 C33 40 30 42 30 45 Z" stroke="#1E293B" stroke-width="1" fill="#F8FAFC"/>
+            <!-- Shadow on floor -->
+            <ellipse cx="45" cy="82" rx="18" ry="8" fill="#1E293B" opacity="0.06"/>
+            <!-- Chain link 1 (back/left) - 3D -->
+            <path d="M18 50 L18 65 C18 73 24 77 32 73 L46 65 C54 61 54 51 46 47 L32 39 C24 35 18 39 18 47 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
+            <path d="M26 53 L26 60 C26 63 29 65 33 63 L39 59 C43 57 43 53 39 51 L33 47 C29 45 26 47 26 50 Z" stroke="#1E293B" stroke-width="1" fill="#F8FAFC"/>
             <!-- Link 1 thickness -->
-            <path d="M22 60 L22 65 C22 73 28 77 36 73 L50 65" stroke="#1E293B" stroke-width="1" fill="none" opacity="0.4"/>
-            <!-- Chain link 2 (front/right) - 3D rounded rectangle -->
-            <!-- Link 2 outer shape -->
-            <path d="M70 50 L70 65 C70 73 76 77 84 73 L98 65 C106 61 106 51 98 47 L84 39 C76 35 70 39 70 47 Z" stroke="#6366F1" stroke-width="2" fill="#FFFFFF"/>
-            <!-- Link 2 inner hole -->
-            <path d="M78 53 L78 60 C78 63 81 65 85 63 L91 59 C95 57 95 53 91 51 L85 47 C81 45 78 47 78 50 Z" stroke="#6366F1" stroke-width="1" fill="#EEF2FF"/>
+            <path d="M18 65 L18 70 C18 78 24 82 32 78 L46 70" stroke="#1E293B" stroke-width="1" fill="none" opacity="0.3"/>
+            <!-- Chain link 2 (front) - 3D gold accent -->
+            <path d="M42 55 L42 70 C42 78 48 82 56 78 L70 70 C78 66 78 56 70 52 L56 44 C48 40 42 44 42 52 Z" stroke="#C8A96B" stroke-width="2" fill="#FFFFFF"/>
+            <path d="M50 58 L50 65 C50 68 53 70 57 68 L63 64 C67 62 67 58 63 56 L57 52 C53 50 50 52 50 55 Z" stroke="#C8A96B" stroke-width="1" fill="#FDF8F0"/>
             <!-- Link 2 thickness -->
-            <path d="M70 65 L70 70 C70 78 76 82 84 78 L98 70" stroke="#6366F1" stroke-width="1" fill="none" opacity="0.4"/>
-            <!-- Interlock connection area -->
-            <path d="M50 52 L70 52" stroke="#1E293B" stroke-width="1" stroke-dasharray="2 2" opacity="0.3"/>
-            <!-- Connection glow -->
-            <circle cx="60" cy="52" r="3" fill="#6366F1" opacity="0.3"/>
+            <path d="M42 70 L42 75 C42 83 48 87 56 83 L70 75" stroke="#C8A96B" stroke-width="1" fill="none" opacity="0.3"/>
+            <!-- Broadcast waves emanating from link -->
+            <path d="M75 45 Q85 40 90 48" stroke="#C8A96B" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8"/>
+            <path d="M80 38 Q95 30 102 42" stroke="#C8A96B" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M85 30 Q105 20 115 35" stroke="#C8A96B" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.4"/>
+            <!-- Signal dots -->
+            <circle cx="92" cy="50" r="2" fill="#C8A96B" opacity="0.7"/>
+            <circle cx="104" cy="44" r="1.5" fill="#C8A96B" opacity="0.5"/>
+            <circle cx="112" cy="38" r="1" fill="#C8A96B" opacity="0.3"/>
+            <!-- Upward waves too -->
+            <path d="M72 35 Q78 25 88 28" stroke="#C8A96B" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+            <path d="M70 25 Q80 12 95 18" stroke="#C8A96B" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.3"/>
           </svg>
         </div>
         <span class="step-label">Step 4</span>
@@ -656,27 +686,31 @@
             <!-- Floor grid -->
             <path d="M60 105 L20 85 L60 65 L100 85 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
             <path d="M40 75 L60 85 M80 75 L60 85 M60 65 L60 85" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
-            <!-- Shadow on floor -->
-            <ellipse cx="60" cy="82" rx="18" ry="8" fill="#1E293B" opacity="0.08"/>
-            <!-- Eye outer shape - 3D lens form -->
-            <!-- Back surface -->
-            <path d="M20 42 C20 30 38 15 60 15 C82 15 100 30 100 42 C100 54 82 65 60 65 C38 65 20 54 20 42 Z" stroke="#1E293B" stroke-width="1" fill="#F1F5F9" opacity="0.5"/>
-            <!-- Top lid curve -->
-            <path d="M20 42 C20 28 38 18 60 18 C82 18 100 28 100 42" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Bottom lid curve -->
-            <path d="M20 42 C20 56 38 66 60 66 C82 66 100 56 100 42" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Eye white (sclera) 3D -->
-            <ellipse cx="60" cy="42" rx="28" ry="18" stroke="#1E293B" stroke-width="1.5" fill="#FFFFFF"/>
-            <!-- Iris 3D ring -->
-            <ellipse cx="60" cy="42" rx="14" ry="12" stroke="#6366F1" stroke-width="2" fill="#EEF2FF"/>
-            <!-- Pupil -->
-            <ellipse cx="60" cy="42" rx="6" ry="5" fill="#1E293B"/>
-            <!-- Highlight -->
-            <ellipse cx="56" cy="38" rx="3" ry="2" fill="#FFFFFF"/>
-            <!-- Iris detail rings -->
-            <ellipse cx="60" cy="42" rx="10" ry="8" stroke="#6366F1" stroke-width="0.5" fill="none" opacity="0.4"/>
-            <!-- Connection line to floor -->
-            <path d="M60 66 L60 75" stroke="#6366F1" stroke-width="1" stroke-dasharray="2 2" opacity="0.3"/>
+            <!-- Shadow through doorway -->
+            <path d="M45 78 L60 85 L75 78 L60 72 Z" fill="#1E293B" opacity="0.08"/>
+            <!-- Gallery Archway - back wall visible through opening -->
+            <path d="M42 95 L42 45 Q42 25 60 20 Q78 25 78 45 L78 95" stroke="#1E293B" stroke-width="1" fill="#F8FAFC" opacity="0.4"/>
+            <!-- Archway - left pillar back face -->
+            <path d="M25 95 L25 35 L42 28 L42 88 Z" stroke="#1E293B" stroke-width="1" fill="#E2E8F0" opacity="0.6"/>
+            <!-- Archway - right pillar back face -->
+            <path d="M78 88 L78 28 L95 35 L95 95 Z" stroke="#1E293B" stroke-width="1" fill="#E2E8F0" opacity="0.6"/>
+            <!-- Archway - left pillar front face -->
+            <path d="M25 95 L42 88 L42 28 L25 35 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
+            <!-- Archway - right pillar front face -->
+            <path d="M78 28 L95 35 L95 95 L78 88 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
+            <!-- Arch top curve - 3D -->
+            <path d="M25 35 Q25 12 60 8 Q95 12 95 35" stroke="#1E293B" stroke-width="2" fill="#FAFAFA"/>
+            <!-- Inner arch curve -->
+            <path d="M42 28 Q42 18 60 15 Q78 18 78 28" stroke="#1E293B" stroke-width="1.5" fill="#F1F5F9"/>
+            <!-- Keystone accent -->
+            <path d="M55 10 L60 6 L65 10 L65 16 L60 18 L55 16 Z" stroke="#C8A96B" stroke-width="1.5" fill="#FDF8F0"/>
+            <!-- Pillar base details -->
+            <path d="M25 90 L42 83 L42 88 L25 95 Z" stroke="#1E293B" stroke-width="1" fill="#F1F5F9"/>
+            <path d="M78 83 L95 90 L95 95 L78 88 Z" stroke="#1E293B" stroke-width="1" fill="#F1F5F9"/>
+            <!-- Gallery interior hint - small frame on back wall -->
+            <rect x="52" y="40" width="16" height="12" rx="1" stroke="#C8A96B" stroke-width="1" fill="#FDF8F0" opacity="0.6"/>
+            <!-- Welcome light glow from inside -->
+            <ellipse cx="60" cy="70" rx="12" ry="6" fill="#C8A96B" opacity="0.1"/>
           </svg>
         </div>
         <span class="step-label">Step 1</span>
@@ -691,27 +725,41 @@
             <!-- Floor grid -->
             <path d="M60 105 L20 85 L60 65 L100 85 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
             <path d="M40 75 L60 85 M80 75 L60 85" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
-            <!-- Canvas/Artwork - back face -->
-            <path d="M20 35 L20 70 L50 85 L50 50 Z" stroke="#1E293B" stroke-width="1" fill="#F1F5F9" opacity="0.5"/>
+            <!-- Easel shadow -->
+            <ellipse cx="50" cy="90" rx="15" ry="6" fill="#1E293B" opacity="0.06"/>
+            <!-- Easel back legs -->
+            <path d="M35 95 L50 45" stroke="#8B4513" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M65 95 L50 45" stroke="#8B4513" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Easel front leg -->
+            <path d="M50 95 L50 55" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/>
+            <!-- Easel cross bar -->
+            <path d="M38 75 L62 75" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+            <!-- Canvas ledge -->
+            <path d="M32 68 L68 68 L68 72 L32 72 Z" stroke="#1E293B" stroke-width="1" fill="#DEB887"/>
+            <!-- Canvas on easel - back depth -->
+            <path d="M28 25 L28 68 L50 75 L50 32 Z" stroke="#1E293B" stroke-width="1" fill="#F5ECD8" opacity="0.5"/>
             <!-- Canvas - top edge -->
-            <path d="M20 35 L50 22 L80 35 L50 50 Z" stroke="#1E293B" stroke-width="2" fill="#FAFAFA"/>
+            <path d="M28 25 L50 18 L72 25 L50 32 Z" stroke="#1E293B" stroke-width="2" fill="#FDFBF7"/>
             <!-- Canvas - front face -->
-            <path d="M50 50 L80 35 L80 70 L50 85 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
-            <!-- Canvas inner area (artwork preview) -->
-            <path d="M54 52 L74 40 L74 62 L54 74 Z" stroke="#CBD5E1" stroke-width="0.75" fill="#F8FAFC"/>
-            <!-- Abstract art inside -->
-            <circle cx="62" cy="50" r="4" stroke="#6366F1" stroke-width="0.75" fill="#EEF2FF" opacity="0.6"/>
-            <path d="M56 65 L62 58 L68 62 L74 55" stroke="#6366F1" stroke-width="0.75" fill="none" opacity="0.5"/>
+            <path d="M50 32 L72 25 L72 68 L50 75 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
+            <!-- Gold frame border -->
+            <path d="M32 28 L50 22 L68 28 L50 35 Z" stroke="#C8A96B" stroke-width="2" fill="none"/>
+            <path d="M50 35 L68 28 L68 65 L50 72 Z" stroke="#C8A96B" stroke-width="2" fill="none"/>
+            <!-- Canvas artwork area -->
+            <path d="M52 36 L66 30 L66 62 L52 68 Z" stroke="#CBD5E1" stroke-width="0.5" fill="#FAFAFA"/>
+            <!-- Art inside canvas -->
+            <circle cx="58" cy="42" r="4" fill="#E2E8F0" opacity="0.8"/>
+            <path d="M54 55 L58 48 L62 52 L66 46" stroke="#CBD5E1" stroke-width="1" fill="none" opacity="0.6"/>
             <!-- Magnifying glass - handle -->
-            <path d="M85 78 L100 93" stroke="#1E293B" stroke-width="3" stroke-linecap="round"/>
-            <path d="M86 79 L98 91" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
-            <!-- Magnifying glass - ring (3D) -->
-            <circle cx="78" cy="68" r="14" stroke="#6366F1" stroke-width="2.5" fill="#FFFFFF" fill-opacity="0.9"/>
-            <circle cx="78" cy="68" r="11" stroke="#6366F1" stroke-width="1" fill="none" opacity="0.3"/>
+            <path d="M88 82 L105 99" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M89 83 L103 97" stroke="#DEB887" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Magnifying glass - rim (gold accent) -->
+            <circle cx="80" cy="70" r="16" stroke="#C8A96B" stroke-width="2.5" fill="#FFFFFF" fill-opacity="0.85"/>
+            <circle cx="80" cy="70" r="12" stroke="#C8A96B" stroke-width="1" fill="none" opacity="0.4"/>
             <!-- Glass reflection -->
-            <path d="M72 62 C74 60 78 60 80 62" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
-            <!-- Magnified content hint -->
-            <circle cx="78" cy="70" r="3" stroke="#6366F1" stroke-width="0.5" fill="#EEF2FF" opacity="0.6"/>
+            <path d="M72 64 C75 61 80 61 83 64" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+            <!-- Magnified detail hint -->
+            <path d="M76 72 L80 68 L84 71" stroke="#C8A96B" stroke-width="1" fill="none" opacity="0.5"/>
           </svg>
         </div>
         <span class="step-label">Step 2</span>
@@ -725,29 +773,37 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 108 L20 88 L60 68 L100 88 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
-            <path d="M40 78 L60 88 M80 78 L60 88 M60 68 L60 88" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
-            <!-- AR light beam hitting floor -->
-            <path d="M52 60 L40 82 L80 82 L68 60 Z" fill="#6366F1" fill-opacity="0.08"/>
-            <path d="M48 65 L42 80 M72 65 L78 80" stroke="#6366F1" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.3"/>
-            <!-- Phone body - back face -->
-            <path d="M40 15 L40 65 L60 75 L60 25 Z" stroke="#1E293B" stroke-width="1" fill="#E2E8F0"/>
-            <!-- Phone body - top face -->
-            <path d="M40 15 L60 8 L80 15 L60 25 Z" stroke="#1E293B" stroke-width="2" fill="#F1F5F9"/>
-            <!-- Phone body - front face -->
-            <path d="M60 25 L80 15 L80 65 L60 75 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
-            <!-- Phone screen area -->
-            <path d="M62 28 L77 20 L77 58 L62 66 Z" stroke="#1E293B" stroke-width="0.75" fill="#0F172A"/>
-            <!-- Content on screen (AR preview) -->
-            <path d="M65 35 L72 31 L72 48 L65 52 Z" stroke="#6366F1" stroke-width="0.75" fill="#6366F1" fill-opacity="0.2"/>
-            <!-- AR scanning brackets -->
-            <path d="M30 22 L30 12 L42 6" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M90 22 L90 12 L78 6" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M30 58 L30 68 L42 74" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M90 58 L90 68 L78 74" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- Phone home button/notch -->
-            <ellipse cx="69" cy="70" rx="3" ry="1.5" fill="#CBD5E1"/>
-            <!-- Camera dot -->
-            <circle cx="69" cy="23" r="1.5" fill="#1E293B"/>
+            <path d="M40 78 L60 88 M80 78 L60 88" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
+            <!-- 3D Wall grid (vertical, isometric) -->
+            <path d="M70 15 L70 70 L100 55 L100 0 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.3"/>
+            <!-- Wall grid lines -->
+            <path d="M75 12 L75 67 M80 9 L80 64 M85 6 L85 61 M90 3 L90 58 M95 0 L95 55" stroke="#CBD5E1" stroke-width="0.3" opacity="0.2"/>
+            <path d="M70 25 L100 10 M70 40 L100 25 M70 55 L100 40" stroke="#CBD5E1" stroke-width="0.3" opacity="0.2"/>
+            <!-- Ghostly AR frame projected on wall -->
+            <path d="M75 22 L75 52 L95 42 L95 12 Z" stroke="#C8A96B" stroke-width="2" fill="#C8A96B" fill-opacity="0.08" stroke-dasharray="4 2"/>
+            <!-- Frame glow effect -->
+            <path d="M76 23 L76 51 L94 41 L94 13 Z" stroke="#C8A96B" stroke-width="0.5" fill="none" opacity="0.5"/>
+            <!-- Projected image hint inside frame -->
+            <circle cx="84" cy="25" r="3" fill="#C8A96B" opacity="0.15"/>
+            <path d="M78 38 L82 32 L86 36 L92 28" stroke="#C8A96B" stroke-width="0.75" fill="none" opacity="0.3"/>
+            <!-- Light beam from phone to wall -->
+            <path d="M52 55 L75 35 L95 25 L95 42 L75 52 L52 70 Z" fill="#C8A96B" fill-opacity="0.06"/>
+            <path d="M52 55 L75 35 M52 70 L75 52" stroke="#C8A96B" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.3"/>
+            <!-- Smartphone - back face -->
+            <path d="M20 45 L20 95 L52 110 L52 60 Z" stroke="#1E293B" stroke-width="1" fill="#E2E8F0" opacity="0.6"/>
+            <!-- Smartphone - top face -->
+            <path d="M20 45 L52 32 L84 45 L52 60 Z" stroke="#1E293B" stroke-width="2" fill="#F1F5F9"/>
+            <!-- Smartphone - front face -->
+            <path d="M52 60 L84 45 L84 95 L52 110 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
+            <!-- Phone screen -->
+            <path d="M55 63 L80 50 L80 88 L55 102 Z" stroke="#1E293B" stroke-width="0.75" fill="#0F172A"/>
+            <!-- Screen content showing the artwork -->
+            <path d="M60 68 L75 60 L75 80 L60 88 Z" stroke="#C8A96B" stroke-width="1" fill="#C8A96B" fill-opacity="0.15"/>
+            <!-- Camera lens -->
+            <circle cx="67" cy="56" r="2" fill="#1E293B"/>
+            <circle cx="67" cy="56" r="1" fill="#C8A96B" opacity="0.3"/>
+            <!-- Home indicator -->
+            <path d="M62 100 L72 95" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
         <span class="step-label">Step 3</span>
@@ -760,31 +816,38 @@
         <div class="step-icon-container">
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
-            <path d="M60 108 L20 88 L60 68 L100 88 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
-            <path d="M40 78 L60 88 M80 78 L60 88 M60 68 L60 88" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
+            <path d="M60 105 L20 85 L60 65 L100 85 Z" stroke="#CBD5E1" stroke-width="0.5" fill="none" opacity="0.4"/>
+            <path d="M40 75 L60 85 M80 75 L60 85" stroke="#CBD5E1" stroke-width="0.5" opacity="0.2"/>
             <!-- Shadow on floor -->
-            <ellipse cx="60" cy="85" rx="22" ry="10" fill="#1E293B" opacity="0.06"/>
-            <!-- Envelope - back face (left side depth) -->
-            <path d="M22 35 L22 60 L60 78 L60 53 Z" stroke="#1E293B" stroke-width="1" fill="#F1F5F9" opacity="0.6"/>
-            <!-- Envelope - bottom/depth face -->
-            <path d="M22 60 L60 78 L98 60 L60 42 Z" stroke="#1E293B" stroke-width="1" fill="#E2E8F0"/>
-            <!-- Envelope - right side depth -->
-            <path d="M60 53 L60 78 L98 60 L98 35 Z" stroke="#1E293B" stroke-width="1" fill="#F8FAFC"/>
-            <!-- Envelope - main body top face -->
-            <path d="M22 35 L60 18 L98 35 L60 53 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
-            <!-- Envelope flap (open, lifted) -->
-            <path d="M22 35 L60 25 L98 35 L60 53 Z" stroke="#1E293B" stroke-width="2" fill="#FAFAFA"/>
-            <!-- Flap fold line -->
-            <path d="M28 36 L60 48 L92 36" stroke="#CBD5E1" stroke-width="0.75" fill="none" opacity="0.6"/>
-            <!-- Inner envelope V fold lines -->
-            <path d="M26 38 L60 58 L94 38" stroke="#1E293B" stroke-width="1.5" fill="none" opacity="0.3"/>
-            <!-- Seal/accent circle -->
-            <circle cx="60" cy="43" r="6" fill="#6366F1" fill-opacity="0.15" stroke="#6366F1" stroke-width="1.5"/>
-            <!-- Heart in seal -->
-            <path d="M57 42 C55 40 55 38 57 38 C59 38 60 40 60 41 C60 40 61 38 63 38 C65 38 65 40 63 42 L60 45 Z" fill="#6366F1" opacity="0.8"/>
-            <!-- Confirmation checkmark badge -->
-            <circle cx="88" cy="70" r="10" fill="#6366F1"/>
-            <path d="M84 70 L87 73 L93 66" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <ellipse cx="50" cy="82" rx="20" ry="9" fill="#1E293B" opacity="0.06"/>
+            <!-- Picture Frame - back/left face -->
+            <path d="M15 30 L15 75 L50 92 L50 47 Z" stroke="#1E293B" stroke-width="1" fill="#F5ECD8" opacity="0.5"/>
+            <!-- Picture Frame - top face -->
+            <path d="M15 30 L50 15 L85 30 L50 47 Z" stroke="#1E293B" stroke-width="2" fill="#FDFBF7"/>
+            <!-- Picture Frame - front/right face -->
+            <path d="M50 47 L85 30 L85 75 L50 92 Z" stroke="#1E293B" stroke-width="2" fill="#FFFFFF"/>
+            <!-- Gold frame border -->
+            <path d="M20 33 L50 20 L80 33 L50 48 Z" stroke="#C8A96B" stroke-width="2.5" fill="none"/>
+            <path d="M50 48 L80 33 L80 72 L50 87 Z" stroke="#C8A96B" stroke-width="2.5" fill="none"/>
+            <!-- Canvas inner area -->
+            <path d="M25 37 L50 25 L75 37 L50 50 Z" stroke="#1E293B" stroke-width="0.75" fill="#FAFAFA"/>
+            <path d="M50 50 L75 37 L75 68 L50 82 Z" stroke="#1E293B" stroke-width="0.75" fill="#FFFFFF"/>
+            <!-- Art inside -->
+            <ellipse cx="62" cy="48" rx="5" ry="4" fill="#E2E8F0" opacity="0.7"/>
+            <path d="M55 62 L60 54 L65 58 L72 50" stroke="#CBD5E1" stroke-width="1" fill="none" opacity="0.6"/>
+            <!-- String from frame to tag -->
+            <path d="M80 35 Q90 32 95 38 Q100 44 95 50" stroke="#1E293B" stroke-width="1" fill="none"/>
+            <!-- Price/Shopping Tag - 3D -->
+            <path d="M88 50 L88 75 L105 68 L105 43 Z" stroke="#C8A96B" stroke-width="2" fill="#FDF8F0"/>
+            <!-- Tag hole -->
+            <circle cx="96" cy="48" r="3" stroke="#C8A96B" stroke-width="1.5" fill="#FFFFFF"/>
+            <!-- Tag text lines (price indication) -->
+            <line x1="91" y1="56" x2="102" y2="52" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="91" y1="62" x2="100" y2="59" stroke="#CBD5E1" stroke-width="1" stroke-linecap="round"/>
+            <line x1="91" y1="68" x2="98" y2="66" stroke="#CBD5E1" stroke-width="1" stroke-linecap="round"/>
+            <!-- Handshake hint / connection indicator -->
+            <circle cx="95" cy="90" r="8" fill="#C8A96B" fill-opacity="0.15" stroke="#C8A96B" stroke-width="1.5"/>
+            <path d="M91 90 L94 93 L100 86" stroke="#C8A96B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <span class="step-label">Step 4</span>
@@ -831,7 +894,7 @@
             <circle cx="24" cy="24" r="14" stroke="#1e293b" stroke-width="1.5" fill="none"/>
             <ellipse cx="24" cy="24" rx="14" ry="6" stroke="#1e293b" stroke-width="1" opacity="0.3" fill="none"/>
             <line x1="24" y1="10" x2="24" y2="38" stroke="#1e293b" stroke-width="1" opacity="0.3"/>
-            <circle cx="24" cy="24" r="3" fill="#6366F1" opacity="0.5"/>
+            <circle cx="24" cy="24" r="3" fill="#C8A96B" opacity="0.5"/>
           </svg>
         </div>
         <div>
@@ -843,9 +906,9 @@
       <div class="benefit-card">
         <div class="benefit-icon">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="32" width="6" height="8" stroke="#1e293b" stroke-width="1.5" fill="#6366F1" fill-opacity="0.1"/>
-            <rect x="21" y="24" width="6" height="16" stroke="#1e293b" stroke-width="1.5" fill="#6366F1" fill-opacity="0.1"/>
-            <rect x="32" y="14" width="6" height="26" stroke="#6366F1" stroke-width="1.5" fill="#6366F1" fill-opacity="0.1"/>
+            <rect x="10" y="32" width="6" height="8" stroke="#1e293b" stroke-width="1.5" fill="#C8A96B" fill-opacity="0.1"/>
+            <rect x="21" y="24" width="6" height="16" stroke="#1e293b" stroke-width="1.5" fill="#C8A96B" fill-opacity="0.1"/>
+            <rect x="32" y="14" width="6" height="26" stroke="#C8A96B" stroke-width="1.5" fill="#C8A96B" fill-opacity="0.1"/>
             <line x1="6" y1="42" x2="42" y2="42" stroke="#1e293b" stroke-width="1" opacity="0.3"/>
           </svg>
         </div>
@@ -858,11 +921,11 @@
       <div class="benefit-card">
         <div class="benefit-icon">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14 32 L24 38 L34 32 L24 26 Z" stroke="#1e293b" stroke-width="1.5" fill="#6366F1" fill-opacity="0.08"/>
-            <path d="M14 32 L14 36 L24 42 L24 38 Z" stroke="#1e293b" stroke-width="1.5" fill="#6366F1" fill-opacity="0.04"/>
-            <path d="M24 38 L24 42 L34 36 L34 32 Z" stroke="#1e293b" stroke-width="1.5" fill="#6366F1" fill-opacity="0.1"/>
-            <path d="M19 20 L24 14 L29 20" stroke="#6366F1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <line x1="24" y1="14" x2="24" y2="28" stroke="#6366F1" stroke-width="1.5"/>
+            <path d="M14 32 L24 38 L34 32 L24 26 Z" stroke="#1e293b" stroke-width="1.5" fill="#C8A96B" fill-opacity="0.08"/>
+            <path d="M14 32 L14 36 L24 42 L24 38 Z" stroke="#1e293b" stroke-width="1.5" fill="#C8A96B" fill-opacity="0.04"/>
+            <path d="M24 38 L24 42 L34 36 L34 32 Z" stroke="#1e293b" stroke-width="1.5" fill="#C8A96B" fill-opacity="0.1"/>
+            <path d="M19 20 L24 14 L29 20" stroke="#C8A96B" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="24" y1="14" x2="24" y2="28" stroke="#C8A96B" stroke-width="1.5"/>
           </svg>
         </div>
         <div>
@@ -876,8 +939,8 @@
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="16" y="10" width="16" height="28" rx="3" stroke="#1e293b" stroke-width="1.5" fill="none"/>
             <rect x="19" y="14" width="10" height="18" rx="1" stroke="#1e293b" stroke-width="0.75" opacity="0.3" fill="none"/>
-            <line x1="34" y1="24" x2="42" y2="24" stroke="#6366F1" stroke-width="1.5" stroke-linecap="round"/>
-            <polyline points="38,20 42,24 38,28" stroke="#6366F1" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="34" y1="24" x2="42" y2="24" stroke="#C8A96B" stroke-width="1.5" stroke-linecap="round"/>
+            <polyline points="38,20 42,24 38,28" stroke="#C8A96B" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div>
@@ -889,13 +952,13 @@
       <div class="benefit-card">
         <div class="benefit-icon">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="24" y1="8" x2="24" y2="40" stroke="#6366F1" stroke-width="1.5"/>
-            <line x1="20" y1="12" x2="28" y2="12" stroke="#6366F1" stroke-width="1.5"/>
-            <line x1="20" y1="40" x2="28" y2="40" stroke="#6366F1" stroke-width="1.5"/>
-            <line x1="22" y1="20" x2="26" y2="20" stroke="#6366F1" stroke-width="1" opacity="0.5"/>
-            <line x1="22" y1="26" x2="26" y2="26" stroke="#6366F1" stroke-width="1" opacity="0.5"/>
-            <line x1="22" y1="32" x2="26" y2="32" stroke="#6366F1" stroke-width="1" opacity="0.5"/>
-            <rect x="10" y="16" width="10" height="14" rx="1" stroke="#1e293b" stroke-width="1.5" fill="#6366F1" fill-opacity="0.08"/>
+            <line x1="24" y1="8" x2="24" y2="40" stroke="#C8A96B" stroke-width="1.5"/>
+            <line x1="20" y1="12" x2="28" y2="12" stroke="#C8A96B" stroke-width="1.5"/>
+            <line x1="20" y1="40" x2="28" y2="40" stroke="#C8A96B" stroke-width="1.5"/>
+            <line x1="22" y1="20" x2="26" y2="20" stroke="#C8A96B" stroke-width="1" opacity="0.5"/>
+            <line x1="22" y1="26" x2="26" y2="26" stroke="#C8A96B" stroke-width="1" opacity="0.5"/>
+            <line x1="22" y1="32" x2="26" y2="32" stroke="#C8A96B" stroke-width="1" opacity="0.5"/>
+            <rect x="10" y="16" width="10" height="14" rx="1" stroke="#1e293b" stroke-width="1.5" fill="#C8A96B" fill-opacity="0.08"/>
           </svg>
         </div>
         <div>
@@ -907,10 +970,10 @@
       <div class="benefit-card">
         <div class="benefit-icon">
           <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 32 L24 40 L38 32 L24 24 Z" stroke="#1e293b" stroke-width="1.5" fill="#6366F1" fill-opacity="0.06"/>
+            <path d="M10 32 L24 40 L38 32 L24 24 Z" stroke="#1e293b" stroke-width="1.5" fill="#C8A96B" fill-opacity="0.06"/>
             <path d="M10 32 L10 20 L24 12 L38 20 L38 32" stroke="#1e293b" stroke-width="1.5" fill="none"/>
             <path d="M24 24 L24 12" stroke="#1e293b" stroke-width="0.75" stroke-dasharray="2,2" opacity="0.2"/>
-            <circle cx="24" cy="22" r="3" fill="#6366F1" opacity="0.5"/>
+            <circle cx="24" cy="22" r="3" fill="#C8A96B" opacity="0.5"/>
           </svg>
         </div>
         <div>
