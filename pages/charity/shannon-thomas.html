@@ -135,23 +135,59 @@
       overflow: hidden;
     }
 
-    .charity-hero::before {
-      content: '';
+    .charity-hero-logo-bg {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(128, 60, 180, 0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: heroGlow 4s ease-in-out infinite alternate;
+      width: 550px;
+      height: 550px;
       pointer-events: none;
+      z-index: 0;
     }
 
-    @keyframes heroGlow {
-      0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    .charity-hero-logo-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: hue-rotate(270deg)
+              saturate(1.3)
+              drop-shadow(0 0 20px rgba(180, 100, 255, 0.9))
+              drop-shadow(0 0 40px rgba(140, 70, 200, 0.7))
+              drop-shadow(0 0 80px rgba(120, 60, 180, 0.5))
+              drop-shadow(0 0 120px rgba(100, 50, 150, 0.3))
+              drop-shadow(0 0 200px rgba(80, 40, 120, 0.2));
+      clip-path: inset(23% 0 0 0);
+      mix-blend-mode: lighten;
+      animation: charityLogoGlow 5s ease-in-out infinite;
+    }
+
+    @keyframes charityLogoGlow {
+      0%, 100% {
+        opacity: 0.2;
+        filter: hue-rotate(270deg)
+                saturate(1.2)
+                drop-shadow(0 0 20px rgba(180, 100, 255, 0.8))
+                drop-shadow(0 0 40px rgba(140, 70, 200, 0.6))
+                drop-shadow(0 0 80px rgba(120, 60, 180, 0.4))
+                drop-shadow(0 0 120px rgba(100, 50, 150, 0.2))
+                drop-shadow(0 0 200px rgba(80, 40, 120, 0.1));
+      }
+      50% {
+        opacity: 0.85;
+        filter: hue-rotate(270deg)
+                saturate(1.5)
+                drop-shadow(0 0 30px rgba(200, 120, 255, 1))
+                drop-shadow(0 0 60px rgba(170, 100, 255, 0.9))
+                drop-shadow(0 0 100px rgba(140, 70, 200, 0.7))
+                drop-shadow(0 0 160px rgba(120, 60, 180, 0.5))
+                drop-shadow(0 0 250px rgba(100, 50, 150, 0.3));
+      }
+    }
+
+    .charity-hero-content {
+      position: relative;
+      z-index: 1;
     }
 
     .charity-hero h1 {
@@ -159,7 +195,6 @@
       margin: 0 0 0.5rem;
       font-weight: 700;
       letter-spacing: 0.02em;
-      position: relative;
     }
 
     .charity-hero .subtitle {
@@ -173,13 +208,6 @@
       font-size: 1rem;
       opacity: 0.7;
       margin: 0 0 0.75rem;
-    }
-
-    .charity-hero .auction-date {
-      font-size: 0.95rem;
-      color: #c9a227;
-      margin: 0 0 1.25rem;
-      font-weight: 500;
     }
 
     .charity-hero .hero-ar-note {
@@ -205,35 +233,6 @@
     .charity-hero .btn-auction:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(128, 60, 180, 0.4);
-    }
-
-    /* Charity Info Banner */
-    .charity-info {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: #fff;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .charity-info p {
-      margin: 0.5rem 0;
-      font-size: 0.95rem;
-      opacity: 0.9;
-      line-height: 1.6;
-    }
-
-    .charity-info a {
-      color: #c9a227;
-      text-decoration: underline;
-    }
-
-    .charity-info a:hover {
-      color: #e0b830;
-    }
-
-    .charity-info .dimensions-note {
-      opacity: 0.7;
-      font-size: 0.875rem;
     }
 
     /* Artwork Grid */
@@ -541,6 +540,11 @@
         padding: 5rem 1.5rem 3rem;
       }
 
+      .charity-hero-logo-bg {
+        width: 400px;
+        height: 400px;
+      }
+
       .charity-hero h1 {
         font-size: 2rem;
       }
@@ -564,6 +568,311 @@
         bottom: 65px;
       }
     }
+
+    /* ── Countdown Timer ── */
+    .countdown {
+      display: flex;
+      gap: 1.25rem;
+      justify-content: center;
+      margin: 0 0 1.25rem;
+    }
+
+    .countdown-unit {
+      text-align: center;
+    }
+
+    .countdown-unit .number {
+      display: block;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #c9a227;
+      line-height: 1;
+    }
+
+    .countdown-unit .label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+      margin-top: 0.25rem;
+      display: block;
+    }
+
+    .countdown-ended {
+      color: #c9a227;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin: 0 0 1.25rem;
+    }
+
+    /* ── Share Buttons ── */
+    .share-row {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: transform 0.2s, opacity 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .share-btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    .share-btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .share-btn.copy-link {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .share-btn.facebook {
+      background: #1877F2;
+      color: #fff;
+    }
+
+    .share-btn.twitter {
+      background: #000;
+      color: #fff;
+    }
+
+    .share-btn.copy-link.copied {
+      background: rgba(34, 197, 94, 0.25);
+      color: #22c55e;
+    }
+
+    /* ── Collection Story ── */
+    .collection-story {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem;
+      text-align: center;
+    }
+
+    .collection-story h2 {
+      font-size: 1.75rem;
+      font-weight: 300;
+      color: #1a1a1a;
+      margin-bottom: 1rem;
+    }
+
+    .collection-story p {
+      color: #4b5563;
+      line-height: 1.8;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .collection-story p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Artist Spotlight ── */
+    .artist-spotlight {
+      background: #f9f9f9;
+      padding: 4rem 2rem;
+    }
+
+    .artist-spotlight-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .artist-photo {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #e5e5e5;
+      flex-shrink: 0;
+    }
+
+    .artist-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .artist-photo-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      color: #999;
+      background: linear-gradient(135deg, #e8e8e8 0%, #d4d4d4 100%);
+    }
+
+    .artist-bio h2 {
+      font-size: 1.75rem;
+      font-weight: 300;
+      color: #1a1a1a;
+      margin-bottom: 0.25rem;
+    }
+
+    .artist-bio .artist-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #803cb4;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .artist-bio p {
+      color: #4b5563;
+      line-height: 1.8;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .artist-links {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .artist-links a {
+      color: #803cb4;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .artist-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Son of a Saint Impact ── */
+    .cause-section {
+      background: #0f0f13;
+      color: #fff;
+      padding: 4rem 2rem;
+    }
+
+    .cause-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .cause-inner h2 {
+      font-size: 1.75rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+
+    .cause-inner .cause-tagline {
+      color: #c9a227;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .cause-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .cause-stat .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #c9a227;
+      line-height: 1;
+    }
+
+    .cause-stat .stat-desc {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+      margin-top: 0.5rem;
+    }
+
+    .cause-text {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.8;
+      font-size: 0.95rem;
+      max-width: 650px;
+      margin: 0 auto 2rem;
+    }
+
+    .cause-link {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border: 1px solid rgba(201, 162, 39, 0.4);
+      color: #c9a227;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .cause-link:hover {
+      background: rgba(201, 162, 39, 0.1);
+      border-color: #c9a227;
+    }
+
+    /* ── Responsive additions ── */
+    @media (max-width: 768px) {
+      .artist-spotlight-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .artist-photo {
+        margin: 0 auto;
+        width: 160px;
+        height: 160px;
+      }
+
+      .artist-links {
+        justify-content: center;
+      }
+
+      .cause-stats {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .countdown .number {
+        font-size: 1.4rem;
+      }
+
+      .share-row {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .charity-hero-logo-bg img {
+        animation: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -579,18 +888,38 @@
 
   <!-- Hero Section -->
   <section class="charity-hero">
+    <div class="charity-hero-logo-bg">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+    </div>
+    <div class="charity-hero-content">
     <h1>Queen Freret XIV</h1>
     <p class="subtitle">A Collection by Shannon E Thomas</p>
     <p class="charity-line">8 Original Paintings Benefiting Son of a Saint</p>
-    <p class="auction-date">Auction ends February 17, 2026</p>
+    <div id="auctionCountdown" class="countdown" aria-label="Auction countdown"></div>
     <p class="hero-ar-note">View each painting in augmented reality — see it on your wall, at true scale, directly from your phone. No app required.</p>
     <a href="https://www.32auctions.com/organizations/135580/auctions/194605" target="_blank" rel="noopener" class="btn-auction" onclick="trackEvent('bid_click', 'auction_main')">View Full Auction</a>
+    <div class="share-row">
+      <button class="share-btn copy-link" onclick="copyGalleryLink(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Copy Link
+      </button>
+      <a class="share-btn facebook" href="https://www.facebook.com/sharer/sharer.php?u=https://hivemind-ar.vercel.app/charity/shannon-thomas/" target="_blank" rel="noopener" onclick="trackEvent('share', 'facebook')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <a class="share-btn twitter" href="https://twitter.com/intent/tweet?text=Queen%20Freret%20XIV%20%E2%80%94%208%20original%20paintings%20by%20Shannon%20E%20Thomas%20benefiting%20Son%20of%20a%20Saint.%20View%20in%20AR%20and%20place%20your%20bid.&url=https://hivemind-ar.vercel.app/charity/shannon-thomas/" target="_blank" rel="noopener" onclick="trackEvent('share', 'twitter')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Share
+      </a>
+    </div>
+    </div>
   </section>
 
-  <!-- Charity Info Banner -->
-  <section class="charity-info">
-    <p>All proceeds from these paintings benefit <a href="https://sonofasaint.org" target="_blank" rel="noopener">Son of a Saint</a>, a New Orleans nonprofit mentoring fatherless boys.</p>
-    <p class="dimensions-note">Each painting: 28" x 38" | Hand-painted on canvas</p>
+  <!-- Collection Story -->
+  <section class="collection-story">
+    <h2>About the Collection</h2>
+    <p>Queen Freret XIV is a series of eight original paintings by New Orleans artist Shannon E Thomas, created to celebrate the spirit of Freret Street and its culture of creativity, resilience, and community. Each piece carries the name of a character drawn from that world — Clair, Fleur, Koda, Lane, Lilac, Revel, Roux, and Vesper.</p>
+    <p>All eight paintings are hand-painted on canvas at 28" x 38" and are being auctioned to benefit <strong>Son of a Saint</strong>, a nonprofit dedicated to mentoring fatherless boys in New Orleans. Every bid goes directly to that mission.</p>
   </section>
 
   <!-- Artwork Grid -->
@@ -912,10 +1241,53 @@
     </div>
   </div>
 
+  <!-- Artist Spotlight -->
+  <section class="artist-spotlight">
+    <div class="artist-spotlight-inner">
+      <div class="artist-photo">
+        <div class="artist-photo-placeholder">ST</div>
+      </div>
+      <div class="artist-bio">
+        <h2>Shannon E Thomas</h2>
+        <p class="artist-label">New Orleans Artist</p>
+        <p>Shannon E Thomas is a New Orleans-based visual artist whose work draws on the city's deep well of culture, music, and street life. Her paintings blend bold color with intimate detail, capturing characters and moments that feel both mythic and grounded.</p>
+        <p>The Queen Freret XIV collection is her latest body of work — eight paintings created specifically for this charity auction, each one a tribute to the creative spirit of the Freret Street corridor.</p>
+        <div class="artist-links">
+          <!-- Replace # with real links when available -->
+          <a href="https://www.32auctions.com/organizations/135580/auctions/194605" target="_blank" rel="noopener">View Auction Profile</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Son of a Saint Impact -->
+  <section class="cause-section">
+    <div class="cause-inner">
+      <h2>Son of a Saint</h2>
+      <p class="cause-tagline">Mentoring fatherless boys in New Orleans since 2011</p>
+      <div class="cause-stats">
+        <div class="cause-stat">
+          <div class="stat-number">700+</div>
+          <div class="stat-desc">Boys served annually</div>
+        </div>
+        <div class="cause-stat">
+          <div class="stat-number">14</div>
+          <div class="stat-desc">Years of impact</div>
+        </div>
+        <div class="cause-stat">
+          <div class="stat-number">100%</div>
+          <div class="stat-desc">Of auction proceeds donated</div>
+        </div>
+      </div>
+      <p class="cause-text">Founded by Bivian "Sonny" Lee III in honor of his late father — a former New Orleans Saints defensive back — Son of a Saint provides mentorship, educational support, and life-skills development to young men growing up without fathers. Every bid on these paintings goes directly to that work.</p>
+      <a href="https://sonofasaint.org" target="_blank" rel="noopener" class="cause-link" onclick="trackEvent('bid_click', 'sonofasaint')">Learn More at sonofasaint.org</a>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="charity-cta">
-    <h2>Support Son of a Saint</h2>
-    <p>Every bid helps mentor fatherless boys in New Orleans.</p>
+    <h2>Place Your Bid</h2>
+    <p>Support a great cause and own an original painting by Shannon E Thomas.</p>
     <div class="cta-buttons">
       <a href="https://www.32auctions.com/organizations/135580/auctions/194605" target="_blank" rel="noopener" class="btn-primary" onclick="trackEvent('bid_click', 'cta_auction')">View Full Auction</a>
       <a href="https://sonofasaint.org" target="_blank" rel="noopener" class="btn-outline">Learn About Son of a Saint</a>
@@ -1427,6 +1799,57 @@
         }
       });
     });
+
+    // ==========================================
+    // Countdown Timer
+    // ==========================================
+
+    function updateCountdown() {
+      const auctionEnd = new Date('2026-02-17T23:59:59-06:00');
+      const now = new Date();
+      const diff = auctionEnd - now;
+      const container = document.getElementById('auctionCountdown');
+
+      if (diff <= 0) {
+        container.innerHTML = '<p class="countdown-ended">Auction has ended</p>';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      container.innerHTML = `
+        <div class="countdown-unit"><span class="number">${days}</span><span class="label">Days</span></div>
+        <div class="countdown-unit"><span class="number">${hours}</span><span class="label">Hours</span></div>
+        <div class="countdown-unit"><span class="number">${minutes}</span><span class="label">Min</span></div>
+        <div class="countdown-unit"><span class="number">${seconds}</span><span class="label">Sec</span></div>
+      `;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ==========================================
+    // Share / Copy Link
+    // ==========================================
+
+    window.copyGalleryLink = function(btn) {
+      const url = 'https://hivemind-ar.vercel.app/charity/shannon-thomas/';
+      navigator.clipboard.writeText(url).then(() => {
+        btn.classList.add('copied');
+        const original = btn.innerHTML;
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+        trackEvent('share', 'copy_link');
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = original;
+        }, 2000);
+      }).catch(() => {
+        prompt('Copy this link:', url);
+      });
+    };
 
     // Initialize
     setupArButtons();
