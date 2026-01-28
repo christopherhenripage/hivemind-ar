@@ -519,15 +519,14 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#E2E8F0" stroke-width="1" fill="none"/>
-            <!-- Thin 3D Clipboard - front face outline -->
-            <path d="M35 20 L35 75 L60 88 L85 75 L85 20 L60 8 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Clipboard depth edge -->
-            <path d="M35 75 L35 78 L60 91 L85 78 L85 75" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <path d="M60 88 L60 91" stroke="#4A5568" stroke-width="1"/>
+            <!-- Clipboard - front face (flat board) -->
+            <path d="M32 15 L32 72 L60 88 L88 72 L88 15 L60 2 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <!-- Clipboard - side depth -->
+            <path d="M60 88 L60 92 L88 76 L88 72" stroke="#4A5568" stroke-width="1" fill="none"/>
             <!-- Clip at top -->
-            <path d="M48 12 L60 6 L72 12 L72 18 L60 24 L48 18 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <rect x="48" y="6" width="24" height="10" rx="2" stroke="#1E293B" stroke-width="2" fill="none"/>
             <!-- Gold Checkmark -->
-            <path d="M42 52 L54 66 L78 38" stroke="#C8A96B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M40 50 L54 68 L80 36" stroke="#C8A96B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <span class="step-label">Step 1</span>
@@ -541,16 +540,13 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#E2E8F0" stroke-width="1" fill="none"/>
-            <!-- 3D Picture Frame - outer outline -->
-            <path d="M30 25 L30 70 L60 88 L90 70 L90 25 L60 10 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Frame depth edge -->
-            <path d="M30 70 L30 73 L60 91 L90 73 L90 70" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <path d="M60 88 L60 91" stroke="#4A5568" stroke-width="1"/>
-            <!-- Inner frame (hollow center) -->
-            <path d="M38 30 L38 62 L60 76 L82 62 L82 30 L60 18 Z" stroke="#1E293B" stroke-width="1" fill="none"/>
+            <!-- Picture Frame - front face (thin rectangle) -->
+            <path d="M28 18 L28 68 L60 86 L92 68 L92 18 L60 4 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <!-- Frame - side depth -->
+            <path d="M60 86 L60 90 L92 72 L92 68" stroke="#4A5568" stroke-width="1" fill="none"/>
             <!-- Gold Up Arrow -->
-            <path d="M60 70 L60 30" stroke="#C8A96B" stroke-width="3" stroke-linecap="round"/>
-            <path d="M48 42 L60 26 L72 42" stroke="#C8A96B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M60 72 L60 28" stroke="#C8A96B" stroke-width="4" stroke-linecap="round"/>
+            <path d="M44 44 L60 24 L76 44" stroke="#C8A96B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <span class="step-label">Step 2</span>
@@ -564,19 +560,14 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#E2E8F0" stroke-width="1" fill="none"/>
-            <!-- Flat 3D Wall tile - outline -->
-            <path d="M58 15 L58 65 L85 82 L110 65 L110 15 L85 0 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Wall depth edge -->
-            <path d="M58 65 L58 68 L85 85 L110 68 L110 65" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <path d="M85 82 L85 85" stroke="#4A5568" stroke-width="1"/>
-            <!-- 3D Paintbrush - handle (cylinder) -->
-            <path d="M10 92 L38 58" stroke="#1E293B" stroke-width="5" stroke-linecap="round"/>
-            <!-- Brush handle depth -->
-            <path d="M12 90 L40 56" stroke="#4A5568" stroke-width="2" stroke-linecap="round"/>
-            <!-- Ferrule -->
-            <ellipse cx="42" cy="54" rx="4" ry="6" transform="rotate(-50 42 54)" stroke="#1E293B" stroke-width="1.5" fill="none"/>
-            <!-- Gold bristle tip touching wall -->
-            <path d="M46 50 L68 26" stroke="#C8A96B" stroke-width="6" stroke-linecap="round"/>
+            <!-- Paintbrush - handle -->
+            <path d="M18 88 L62 44" stroke="#1E293B" stroke-width="6" stroke-linecap="round"/>
+            <!-- Handle - side depth -->
+            <path d="M22 86 L66 42" stroke="#4A5568" stroke-width="2" stroke-linecap="round"/>
+            <!-- Ferrule (metal band) -->
+            <ellipse cx="68" cy="38" rx="6" ry="8" transform="rotate(-45 68 38)" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <!-- Gold bristle tip -->
+            <path d="M74 32 L100 6" stroke="#C8A96B" stroke-width="8" stroke-linecap="round"/>
           </svg>
         </div>
         <span class="step-label">Step 3</span>
@@ -590,20 +581,14 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#E2E8F0" stroke-width="1" fill="none"/>
-            <!-- 3D Paper Plane - outline -->
-            <path d="M12 52 L60 22 L108 52 L60 70 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Wing fold line -->
-            <path d="M60 22 L60 70" stroke="#1E293B" stroke-width="1"/>
-            <!-- Plane depth/tail -->
-            <path d="M60 70 L60 88 L80 74" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <path d="M60 70 L60 72 L80 58" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <!-- Gold motion/signal lines -->
-            <path d="M6 46 L1 46" stroke="#C8A96B" stroke-width="2" stroke-linecap="round"/>
-            <path d="M8 54 L1 54" stroke="#C8A96B" stroke-width="2" stroke-linecap="round"/>
-            <path d="M6 62 L3 62" stroke="#C8A96B" stroke-width="2" stroke-linecap="round"/>
-            <!-- Gold link arcs on wing -->
-            <path d="M72 38 Q80 32 88 38" stroke="#C8A96B" stroke-width="2" stroke-linecap="round" fill="none"/>
-            <path d="M76 46 Q84 40 92 46" stroke="#C8A96B" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <!-- Paper Plane - front face -->
+            <path d="M8 55 L60 20 L112 55 L60 75 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <!-- Plane - side depth (tail) -->
+            <path d="M60 75 L60 85 L85 68" stroke="#4A5568" stroke-width="1" fill="none"/>
+            <!-- Gold signal/motion lines trailing behind -->
+            <path d="M4 48 L18 48" stroke="#C8A96B" stroke-width="3" stroke-linecap="round"/>
+            <path d="M2 58 L14 58" stroke="#C8A96B" stroke-width="3" stroke-linecap="round"/>
+            <path d="M6 68 L16 68" stroke="#C8A96B" stroke-width="3" stroke-linecap="round"/>
           </svg>
         </div>
         <span class="step-label">Step 4</span>
@@ -629,20 +614,13 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#E2E8F0" stroke-width="1" fill="none"/>
-            <!-- 3D Archway - left pillar outline -->
-            <path d="M25 92 L25 32 L40 25 L40 85 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- 3D Archway - right pillar outline -->
-            <path d="M80 25 L95 32 L95 92 L80 85 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Arch curve -->
-            <path d="M25 32 Q25 8 60 4 Q95 8 95 32" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Inner arch opening -->
-            <path d="M40 85 L40 32 Q40 16 60 12 Q80 16 80 32 L80 85" stroke="#1E293B" stroke-width="1" fill="none"/>
-            <!-- Pillar depth edges -->
-            <path d="M25 92 L25 95 L40 88 L40 85" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <path d="M80 85 L80 88 L95 95 L95 92" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <!-- Gold Location Pin -->
-            <path d="M60 32 C52 32 46 38 46 48 C46 60 60 75 60 75 C60 75 74 60 74 48 C74 38 68 32 60 32 Z" stroke="#C8A96B" stroke-width="2" fill="none"/>
-            <circle cx="60" cy="46" r="5" stroke="#C8A96B" stroke-width="2" fill="none"/>
+            <!-- Archway - front face (simple portal shape) -->
+            <path d="M20 90 L20 30 Q20 5 60 5 Q100 5 100 30 L100 90" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <!-- Archway - side depth -->
+            <path d="M100 90 L105 87 L105 27 Q105 10 65 8" stroke="#4A5568" stroke-width="1" fill="none"/>
+            <!-- Gold Location Pin in center -->
+            <path d="M60 35 C50 35 44 43 44 53 C44 68 60 82 60 82 C60 82 76 68 76 53 C76 43 70 35 60 35 Z" stroke="#C8A96B" stroke-width="3" fill="none"/>
+            <circle cx="60" cy="52" r="6" stroke="#C8A96B" stroke-width="3" fill="none"/>
           </svg>
         </div>
         <span class="step-label">Step 1</span>
@@ -656,22 +634,17 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#E2E8F0" stroke-width="1" fill="none"/>
-            <!-- 3D Easel legs - outline -->
-            <path d="M32 95 L48 50" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
-            <path d="M68 95 L52 50" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
-            <path d="M50 95 L50 55" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
-            <!-- Canvas on easel - outline -->
-            <path d="M22 18 L22 58 L50 74 L78 58 L78 18 L50 5 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Canvas depth edge -->
-            <path d="M22 58 L22 61 L50 77 L78 61 L78 58" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <path d="M50 74 L50 77" stroke="#4A5568" stroke-width="1"/>
-            <!-- Canvas inner border -->
-            <path d="M28 22 L28 52 L50 66 L72 52 L72 22 L50 10 Z" stroke="#1E293B" stroke-width="1" fill="none"/>
-            <!-- Gold Magnifying Glass - outline -->
-            <circle cx="92" cy="50" r="14" stroke="#C8A96B" stroke-width="2.5" fill="none"/>
-            <path d="M102 60 L114 72" stroke="#C8A96B" stroke-width="3" stroke-linecap="round"/>
-            <!-- Focal point inside glass -->
-            <circle cx="92" cy="50" r="4" stroke="#C8A96B" stroke-width="2" fill="none"/>
+            <!-- Easel - 3 thin legs -->
+            <path d="M25 92 L45 52" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
+            <path d="M55 92 L45 58" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
+            <path d="M45 92 L45 52" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
+            <!-- Canvas - front face (simple rectangle) -->
+            <path d="M20 10 L20 55 L45 70 L70 55 L70 10 L45 0 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <!-- Canvas - side depth -->
+            <path d="M45 70 L45 74 L70 59 L70 55" stroke="#4A5568" stroke-width="1" fill="none"/>
+            <!-- Gold Magnifying Glass -->
+            <circle cx="95" cy="45" r="16" stroke="#C8A96B" stroke-width="3" fill="none"/>
+            <path d="M106 56 L118 68" stroke="#C8A96B" stroke-width="4" stroke-linecap="round"/>
           </svg>
         </div>
         <span class="step-label">Step 2</span>
@@ -685,21 +658,14 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#E2E8F0" stroke-width="1" fill="none"/>
-            <!-- Wall section - outline -->
-            <path d="M68 10 L68 55 L100 40 L100 0 Z" stroke="#1E293B" stroke-width="1" fill="none"/>
-            <!-- Gold projected frame on wall -->
-            <path d="M72 16 L72 48 L96 34 L96 6 Z" stroke="#C8A96B" stroke-width="2.5" fill="none"/>
-            <!-- 3D Smartphone - outline -->
-            <path d="M15 40 L15 90 L50 105 L85 90 L85 40 L50 25 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Smartphone depth edge -->
-            <path d="M15 90 L15 93 L50 108 L85 93 L85 90" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <path d="M50 105 L50 108" stroke="#4A5568" stroke-width="1"/>
-            <!-- Phone screen border -->
-            <path d="M22 45 L22 82 L50 95 L78 82 L78 45 L50 32 Z" stroke="#1E293B" stroke-width="1" fill="none"/>
-            <!-- Gold projection beam (transparent) -->
-            <path d="M65 48 L72 16 L96 6 L96 34 L72 48 L65 80 Z" stroke="#C8A96B" stroke-width="1" stroke-dasharray="4 2" fill="none"/>
-            <!-- Gold frame on screen -->
-            <path d="M36 55 L36 75 L50 84 L64 75 L64 55 L50 46 Z" stroke="#C8A96B" stroke-width="2" fill="none"/>
+            <!-- Smartphone - front face (thin slab) -->
+            <path d="M12 35 L12 88 L45 105 L78 88 L78 35 L45 20 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <!-- Smartphone - side depth -->
+            <path d="M45 105 L45 108 L78 91 L78 88" stroke="#4A5568" stroke-width="1" fill="none"/>
+            <!-- Gold projection beam from phone to wall -->
+            <path d="M60 45 L95 15 L115 25 L115 55 L95 45 L60 75" stroke="#C8A96B" stroke-width="2" fill="none" opacity="0.6"/>
+            <!-- Gold frame projected on wall -->
+            <path d="M88 18 L88 48 L112 35 L112 12 Z" stroke="#C8A96B" stroke-width="3" fill="none"/>
           </svg>
         </div>
         <span class="step-label">Step 3</span>
@@ -713,18 +679,13 @@
           <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Floor grid -->
             <path d="M60 100 L20 80 L60 60 L100 80 Z" stroke="#E2E8F0" stroke-width="1" fill="none"/>
-            <!-- 3D Envelope - outline -->
-            <path d="M18 32 L18 70 L60 90 L102 70 L102 32 L60 15 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
-            <!-- Envelope depth edge -->
-            <path d="M18 70 L18 73 L60 93 L102 73 L102 70" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <path d="M60 90 L60 93" stroke="#4A5568" stroke-width="1"/>
-            <!-- Envelope flap fold -->
-            <path d="M18 32 L60 52 L102 32" stroke="#1E293B" stroke-width="1" fill="none"/>
-            <!-- Inner V-line detail -->
-            <path d="M28 38 L60 58 L92 38" stroke="#4A5568" stroke-width="1" fill="none"/>
-            <!-- Gold Check Seal - outline -->
-            <circle cx="60" cy="40" r="12" stroke="#C8A96B" stroke-width="2.5" fill="none"/>
-            <path d="M52 40 L57 46 L70 32" stroke="#C8A96B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <!-- Envelope - front face (thin slab) -->
+            <path d="M15 28 L15 68 L60 90 L105 68 L105 28 L60 10 Z" stroke="#1E293B" stroke-width="2" fill="none"/>
+            <!-- Envelope - side depth -->
+            <path d="M60 90 L60 94 L105 72 L105 68" stroke="#4A5568" stroke-width="1" fill="none"/>
+            <!-- Gold Check Seal -->
+            <circle cx="60" cy="48" r="16" stroke="#C8A96B" stroke-width="3" fill="none"/>
+            <path d="M50 48 L56 56 L72 38" stroke="#C8A96B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <span class="step-label">Step 4</span>
