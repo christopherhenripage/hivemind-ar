@@ -13,10 +13,21 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// Allowed origins for CORS - restrict to production domain
+const ALLOWED_ORIGINS = [
+  "https://hivemind-ar.vercel.app",
+  "http://localhost:5173", // Local development
+  "http://localhost:3000"  // Alternative local dev port
+];
+
+function getCorsHeaders(origin: string | null) {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+}
 
 // Subscription plan details
 const PLANS = {
@@ -44,6 +55,9 @@ const PLANS = {
 };
 
 serve(async (req) => {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -74,6 +88,21 @@ serve(async (req) => {
 
     if (!planId || !PLANS[planId as keyof typeof PLANS]) {
       throw new Error("Invalid plan ID");
+    }
+
+    // Validate URLs if provided - must be valid and from allowed origins
+    const validateUrl = (url: string | undefined): boolean => {
+      if (!url) return true; // Optional, will use defaults
+      try {
+        const parsed = new URL(url);
+        return ALLOWED_ORIGINS.some(origin => url.startsWith(origin));
+      } catch {
+        return false;
+      }
+    };
+
+    if (!validateUrl(successUrl) || !validateUrl(cancelUrl)) {
+      throw new Error("Invalid redirect URL");
     }
 
     const plan = PLANS[planId as keyof typeof PLANS];
@@ -138,8 +167,7 @@ serve(async (req) => {
     });
 
     if (!paymentIntentResponse.ok) {
-      const errorData = await paymentIntentResponse.json();
-      console.error("Airwallex error:", errorData);
+      // Don't log full error details which may contain sensitive info
       throw new Error("Failed to create payment intent");
     }
 
@@ -174,11 +202,21 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Checkout error:", error);
+    // Map internal errors to safe client-facing messages
+    const safeErrors: Record<string, { message: string; status: number }> = {
+      "No authorization header": { message: "Authorization required", status: 401 },
+      "Unauthorized": { message: "Unauthorized", status: 401 },
+      "Invalid plan ID": { message: "Invalid plan ID", status: 400 },
+      "Invalid redirect URL": { message: "Invalid redirect URL", status: 400 },
+      "Airwallex credentials not configured": { message: "Payment system unavailable", status: 503 }
+    };
+
+    const safeError = safeErrors[error.message] || { message: "Checkout failed", status: 500 };
+
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: safeError.message }),
       {
-        status: error.message === "Unauthorized" ? 401 : 500,
+        status: safeError.status,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );

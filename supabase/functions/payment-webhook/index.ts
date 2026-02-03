@@ -15,23 +15,87 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-timestamp, x-signature",
-};
+// Allowed origins for CORS - webhooks come from Airwallex servers
+const ALLOWED_ORIGINS = [
+  "https://hivemind-ar.vercel.app",
+  "http://localhost:5173"
+];
 
-// Verify webhook signature from Airwallex
-function verifyWebhookSignature(payload: string, signature: string, secret: string): boolean {
-  // TODO: Implement Airwallex signature verification
-  // See: https://www.airwallex.com/docs/api#/Webhooks/Signature_Verification
-  // This typically involves HMAC-SHA256 verification
+function getCorsHeaders(origin: string | null) {
+  // For webhooks, we accept requests without origin (server-to-server)
+  // but restrict browser-based requests to allowed origins
+  const allowedOrigin = !origin || ALLOWED_ORIGINS.includes(origin)
+    ? (origin || ALLOWED_ORIGINS[0])
+    : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-timestamp, x-signature",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+}
 
-  // Placeholder - implement actual verification
-  console.log("Webhook signature verification - implement with actual Airwallex logic");
-  return true;
+// Verify webhook signature from Airwallex using HMAC-SHA256
+// See: https://www.airwallex.com/docs/api#/Webhooks/Signature_Verification
+async function verifyWebhookSignature(
+  payload: string,
+  timestamp: string,
+  signature: string,
+  secret: string
+): Promise<boolean> {
+  if (!signature || !timestamp || !secret) {
+    return false;
+  }
+
+  // Check timestamp is within 5 minutes to prevent replay attacks
+  const timestampMs = parseInt(timestamp, 10) * 1000;
+  const now = Date.now();
+  const fiveMinutes = 5 * 60 * 1000;
+
+  if (isNaN(timestampMs) || Math.abs(now - timestampMs) > fiveMinutes) {
+    return false;
+  }
+
+  // Airwallex signature format: timestamp.payload
+  const signedPayload = `${timestamp}.${payload}`;
+
+  // Compute HMAC-SHA256
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+
+  const signatureBytes = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    encoder.encode(signedPayload)
+  );
+
+  // Convert to hex string
+  const computedSignature = Array.from(new Uint8Array(signatureBytes))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  // Constant-time comparison to prevent timing attacks
+  if (computedSignature.length !== signature.length) {
+    return false;
+  }
+
+  let result = 0;
+  for (let i = 0; i < computedSignature.length; i++) {
+    result |= computedSignature.charCodeAt(i) ^ signature.charCodeAt(i);
+  }
+
+  return result === 0;
 }
 
 serve(async (req) => {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -51,7 +115,8 @@ serve(async (req) => {
     const body = await req.text();
 
     // Verify signature
-    if (!verifyWebhookSignature(body, signature, webhookSecret)) {
+    const isValid = await verifyWebhookSignature(body, timestamp, signature, webhookSecret);
+    if (!isValid) {
       return new Response(
         JSON.stringify({ error: "Invalid signature" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -92,7 +157,7 @@ serve(async (req) => {
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.name}`);
+        // Unhandled event type - silently acknowledge
     }
 
     return new Response(
@@ -101,93 +166,325 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Webhook error:", error);
+    // Log generic error without sensitive details
+    console.error("Webhook processing failed");
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "Webhook processing failed" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
 
-// Handler functions - implement business logic here
+// Plan configuration - matches create-checkout
+const PLAN_ARTWORK_LIMITS: Record<string, number> = {
+  free: 3,
+  artist: 15,
+  established: 50,
+  professional: -1 // unlimited
+};
+
+// Handler functions
 
 async function handlePaymentSuccess(supabase: any, data: any) {
-  console.log("Payment succeeded:", data.id);
+  // 1. Get the payment record to find user and plan
+  const { data: payment, error: fetchError } = await supabase
+    .from("payments")
+    .select("user_id, plan_id")
+    .eq("airwallex_payment_id", data.id)
+    .single();
 
-  // TODO: Implement payment success logic
-  // - Update payment record in database
-  // - Activate subscription if applicable
-  // - Send confirmation email
-  // - Update user's subscription status
+  if (fetchError || !payment) {
+    throw new Error("Payment record not found");
+  }
 
-  const { error } = await supabase
+  // 2. Update payment status
+  const { error: updateError } = await supabase
     .from("payments")
     .update({
       status: "completed",
-      completed_at: new Date().toISOString()
+      completed_at: new Date().toISOString(),
+      metadata: { airwallex_response: { status: data.status } }
     })
     .eq("airwallex_payment_id", data.id);
 
-  if (error) {
-    console.error("Error updating payment:", error);
-    throw error;
+  if (updateError) {
+    throw updateError;
   }
+
+  // 3. Activate or update the user's subscription
+  const now = new Date();
+  const periodEnd = new Date(now);
+  periodEnd.setMonth(periodEnd.getMonth() + 1);
+
+  const { data: existingSub } = await supabase
+    .from("subscriptions")
+    .select("id")
+    .eq("user_id", payment.user_id)
+    .single();
+
+  if (existingSub) {
+    // Update existing subscription
+    await supabase
+      .from("subscriptions")
+      .update({
+        plan_id: payment.plan_id,
+        status: "active",
+        current_period_start: now.toISOString(),
+        current_period_end: periodEnd.toISOString(),
+        cancelled_at: null,
+        cancel_at_period_end: false
+      })
+      .eq("user_id", payment.user_id);
+  } else {
+    // Create new subscription
+    await supabase
+      .from("subscriptions")
+      .insert({
+        user_id: payment.user_id,
+        plan_id: payment.plan_id,
+        status: "active",
+        current_period_start: now.toISOString(),
+        current_period_end: periodEnd.toISOString()
+      });
+  }
+
+  // 4. Update user's artwork limit in profile
+  const artworkLimit = PLAN_ARTWORK_LIMITS[payment.plan_id] ?? 3;
+  await supabase
+    .from("profiles")
+    .update({ artwork_limit: artworkLimit })
+    .eq("id", payment.user_id);
+
+  // 5. Record in payment history
+  await supabase
+    .from("payment_history")
+    .insert({
+      user_id: payment.user_id,
+      amount: data.amount ? Math.round(data.amount * 100) : null,
+      currency: data.currency || "USD",
+      status: "completed",
+      payment_type: "subscription",
+      metadata: { airwallex_payment_id: data.id, plan_id: payment.plan_id }
+    });
 }
 
 async function handlePaymentFailed(supabase: any, data: any) {
-  console.log("Payment failed:", data.id);
-
-  // TODO: Implement payment failure logic
-  // - Update payment record
-  // - Notify user
-  // - Log failure reason
-
+  // Update payment status with failure reason
   const { error } = await supabase
     .from("payments")
     .update({
       status: "failed",
-      failure_reason: data.failure_reason || "Unknown error"
+      failure_reason: data.failure_reason || data.last_payment_attempt?.failure_reason || "Payment declined"
     })
     .eq("airwallex_payment_id", data.id);
 
   if (error) {
-    console.error("Error updating failed payment:", error);
     throw error;
+  }
+
+  // Get payment details for history
+  const { data: payment } = await supabase
+    .from("payments")
+    .select("user_id, amount, currency, plan_id")
+    .eq("airwallex_payment_id", data.id)
+    .single();
+
+  if (payment) {
+    await supabase
+      .from("payment_history")
+      .insert({
+        user_id: payment.user_id,
+        amount: payment.amount,
+        currency: payment.currency,
+        status: "failed",
+        payment_type: "subscription",
+        metadata: {
+          airwallex_payment_id: data.id,
+          plan_id: payment.plan_id,
+          failure_reason: data.failure_reason
+        }
+      });
   }
 }
 
 async function handleSubscriptionCreated(supabase: any, data: any) {
-  console.log("Subscription created:", data.id);
+  // Extract user ID from metadata
+  const userId = data.metadata?.userId;
+  if (!userId) {
+    throw new Error("No user ID in subscription metadata");
+  }
 
-  // TODO: Implement subscription creation logic
-  // - Create subscription record
-  // - Update user profile with subscription tier
-  // - Set artwork limits based on plan
+  const planId = data.metadata?.planId || "artist";
+  const now = new Date();
+  const periodEnd = new Date(data.current_period_end || now.setMonth(now.getMonth() + 1));
+
+  // Create or update subscription record
+  await supabase
+    .from("subscriptions")
+    .upsert({
+      user_id: userId,
+      plan_id: planId,
+      status: "active",
+      airwallex_subscription_id: data.id,
+      current_period_start: data.current_period_start || new Date().toISOString(),
+      current_period_end: periodEnd.toISOString()
+    }, {
+      onConflict: "user_id"
+    });
+
+  // Update artwork limit
+  const artworkLimit = PLAN_ARTWORK_LIMITS[planId] ?? 3;
+  await supabase
+    .from("profiles")
+    .update({ artwork_limit: artworkLimit })
+    .eq("id", userId);
 }
 
 async function handleSubscriptionUpdated(supabase: any, data: any) {
-  console.log("Subscription updated:", data.id);
+  // Find subscription by Airwallex ID or user metadata
+  const airwallexSubId = data.id;
+  const userId = data.metadata?.userId;
 
-  // TODO: Implement subscription update logic
-  // - Update subscription record
-  // - Handle plan changes (upgrade/downgrade)
-  // - Adjust artwork limits
+  const query = supabase.from("subscriptions");
+
+  if (airwallexSubId) {
+    // Try to find by Airwallex subscription ID first
+    const { data: sub } = await query
+      .select("user_id, plan_id")
+      .eq("airwallex_subscription_id", airwallexSubId)
+      .single();
+
+    if (sub) {
+      const newPlanId = data.metadata?.planId || sub.plan_id;
+
+      await supabase
+        .from("subscriptions")
+        .update({
+          plan_id: newPlanId,
+          status: data.status === "cancelled" ? "cancelled" : "active",
+          current_period_end: data.current_period_end || undefined
+        })
+        .eq("airwallex_subscription_id", airwallexSubId);
+
+      // Update artwork limit if plan changed
+      if (newPlanId !== sub.plan_id) {
+        const artworkLimit = PLAN_ARTWORK_LIMITS[newPlanId] ?? 3;
+        await supabase
+          .from("profiles")
+          .update({ artwork_limit: artworkLimit })
+          .eq("id", sub.user_id);
+      }
+    }
+  } else if (userId) {
+    // Fall back to user ID from metadata
+    const newPlanId = data.metadata?.planId;
+    if (newPlanId) {
+      await supabase
+        .from("subscriptions")
+        .update({
+          plan_id: newPlanId,
+          current_period_end: data.current_period_end || undefined
+        })
+        .eq("user_id", userId);
+
+      const artworkLimit = PLAN_ARTWORK_LIMITS[newPlanId] ?? 3;
+      await supabase
+        .from("profiles")
+        .update({ artwork_limit: artworkLimit })
+        .eq("id", userId);
+    }
+  }
 }
 
 async function handleSubscriptionCancelled(supabase: any, data: any) {
-  console.log("Subscription cancelled:", data.id);
+  const airwallexSubId = data.id;
+  const userId = data.metadata?.userId;
 
-  // TODO: Implement subscription cancellation logic
-  // - Update subscription status
-  // - Downgrade user to free tier
-  // - Retain data but limit access
+  // Find and update the subscription
+  let targetUserId = userId;
+
+  if (airwallexSubId) {
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("user_id")
+      .eq("airwallex_subscription_id", airwallexSubId)
+      .single();
+
+    if (sub) {
+      targetUserId = sub.user_id;
+    }
+  }
+
+  if (!targetUserId) {
+    throw new Error("Cannot identify user for cancelled subscription");
+  }
+
+  // Mark subscription as cancelled but don't immediately downgrade
+  // The user keeps access until current_period_end
+  await supabase
+    .from("subscriptions")
+    .update({
+      status: "cancelled",
+      cancelled_at: new Date().toISOString(),
+      cancel_at_period_end: true
+    })
+    .eq("user_id", targetUserId);
+
+  // Note: A scheduled job should check for expired subscriptions
+  // and downgrade users to free tier when current_period_end passes
 }
 
 async function handleRefundSuccess(supabase: any, data: any) {
-  console.log("Refund processed:", data.id);
+  // Find the original payment
+  const originalPaymentId = data.payment_intent_id || data.metadata?.original_payment_id;
 
-  // TODO: Implement refund logic
-  // - Update payment record
-  // - Adjust subscription if needed
-  // - Notify user
+  if (originalPaymentId) {
+    // Update original payment status
+    const { data: payment } = await supabase
+      .from("payments")
+      .select("user_id, amount, currency, plan_id")
+      .eq("airwallex_payment_id", originalPaymentId)
+      .single();
+
+    if (payment) {
+      await supabase
+        .from("payments")
+        .update({
+          status: "refunded",
+          refunded_at: new Date().toISOString()
+        })
+        .eq("airwallex_payment_id", originalPaymentId);
+
+      // Record refund in payment history
+      await supabase
+        .from("payment_history")
+        .insert({
+          user_id: payment.user_id,
+          amount: data.amount ? Math.round(data.amount * 100) : payment.amount,
+          currency: payment.currency,
+          status: "completed",
+          payment_type: "refund",
+          metadata: {
+            refund_id: data.id,
+            original_payment_id: originalPaymentId
+          }
+        });
+
+      // Cancel subscription and downgrade to free
+      await supabase
+        .from("subscriptions")
+        .update({
+          status: "cancelled",
+          plan_id: "free",
+          cancelled_at: new Date().toISOString()
+        })
+        .eq("user_id", payment.user_id);
+
+      // Reset artwork limit to free tier
+      await supabase
+        .from("profiles")
+        .update({ artwork_limit: PLAN_ARTWORK_LIMITS.free })
+        .eq("id", payment.user_id);
+    }
+  }
 }

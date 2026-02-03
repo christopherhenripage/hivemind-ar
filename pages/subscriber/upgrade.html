@@ -502,7 +502,7 @@
           <!-- Billing Info -->
           <div class="billing-info">
             <h3>Billing Information</h3>
-            <p>All plans are billed monthly via PayPal. You can cancel anytime.</p>
+            <p>All plans are billed monthly. Payments are processed securely via Airwallex. You can cancel anytime.</p>
             <p>When you upgrade, you'll be charged the new rate immediately and your artwork limit increases instantly.</p>
             <p>When you downgrade, the change takes effect at the end of your current billing period.</p>
           </div>
@@ -546,7 +546,7 @@
     <div class="modal-content">
       <h2>Upgrade to <span id="modalPlanName">Pro</span></h2>
       <p>You're about to upgrade to the <strong id="modalPlanNameConfirm">Pro</strong> plan for <strong id="modalPlanPrice">$19.99/month</strong>.</p>
-      <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--hm-text-muted);">You'll be redirected to PayPal to complete your subscription. Your artwork limit will increase immediately after payment.</p>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--hm-text-muted);">Complete your payment securely below. Your artwork limit will increase immediately after payment.</p>
 
       <div id="paypalButtonContainer" class="paypal-button-container" style="margin-top: 1.5rem;">
         <!-- PayPal buttons will be rendered here -->
@@ -558,8 +558,8 @@
     </div>
   </div>
 
-  <!-- PayPal SDK - Replace YOUR_CLIENT_ID with actual client ID -->
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+  <!-- Airwallex Web SDK -->
+  <script src="https://checkout.airwallex.com/assets/elements.bundle.min.js"></script>
 
   <script type="module">
     import { supabase } from '/src/supabase.js';
@@ -569,13 +569,8 @@
     let plans = [];
     let selectedPlan = null;
 
-    // PayPal Plan IDs - These need to be created in PayPal Dashboard
-    // Map our plan slugs to PayPal subscription plan IDs
-    const PAYPAL_PLAN_IDS = {
-      'artist': 'P-XXXXXXXXXXXXXXXXXXXXXX',       // $12/month - Replace with actual PayPal Plan ID
-      'established': 'P-XXXXXXXXXXXXXXXXXXXXXX',   // $19/month - Replace with actual PayPal Plan ID
-      'professional': 'P-XXXXXXXXXXXXXXXXXXXXXX'  // $29/month - Replace with actual PayPal Plan ID
-    };
+    // Supabase Edge Function URL for checkout
+    const CHECKOUT_FUNCTION_URL = 'https://jxzkqccqpodvgtvgwuzq.supabase.co/functions/v1/create-checkout';
 
     // Check authentication
     async function checkAuth() {
@@ -902,7 +897,7 @@
     }
 
     // Handle upgrade button click
-    window.handleUpgrade = function(planSlug) {
+    window.handleUpgrade = async function(planSlug) {
       selectedPlan = plans.find(p => p.slug === planSlug);
       if (!selectedPlan) return;
 
@@ -911,8 +906,8 @@
       document.getElementById('modalPlanPrice').textContent = `$${selectedPlan.price_monthly}/month`;
       document.getElementById('upgradeModal').classList.add('active');
 
-      // Initialize PayPal button
-      initPayPalButton(planSlug);
+      // Initialize Airwallex checkout
+      await initAirwallexCheckout(planSlug);
     };
 
     // Handle downgrade
@@ -952,70 +947,114 @@
       }
     };
 
-    // Initialize PayPal subscription button
-    function initPayPalButton(planSlug) {
+    // Initialize Airwallex checkout
+    async function initAirwallexCheckout(planSlug) {
       const container = document.getElementById('paypalButtonContainer');
-      container.innerHTML = ''; // Clear any existing button
+      container.innerHTML = '<p style="color: var(--hm-text-muted); font-size: 0.9rem; text-align: center;">Preparing secure checkout...</p>';
 
-      const planId = PAYPAL_PLAN_IDS[planSlug];
+      try {
+        // Get the user's session token for authorization
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          container.innerHTML = '<p style="color: #dc3545; font-size: 0.9rem; text-align: center;">Please log in to continue.</p>';
+          return;
+        }
 
-      if (!planId || planId.includes('XXXX')) {
-        container.innerHTML = '<p style="color: var(--hm-text-muted); font-size: 0.9rem; text-align: center;">PayPal integration is being configured. Please contact support to upgrade.</p>';
-        return;
-      }
+        // Call our Edge Function to create a checkout session
+        const response = await fetch(CHECKOUT_FUNCTION_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({
+            planId: planSlug,
+            successUrl: `${window.location.origin}/pages/subscriber/dashboard.html?payment=success&plan=${planSlug}`,
+            cancelUrl: `${window.location.origin}/pages/subscriber/upgrade.html?payment=cancelled`
+          })
+        });
 
-      // Check if PayPal SDK loaded
-      if (typeof paypal === 'undefined') {
-        container.innerHTML = '<p style="color: #dc3545; font-size: 0.9rem; text-align: center;">Payment system unavailable. Please try again later.</p>';
-        return;
-      }
+        const data = await response.json();
 
-      paypal.Buttons({
-        style: {
-          shape: 'rect',
-          color: 'gold',
-          layout: 'vertical',
-          label: 'subscribe'
-        },
-        createSubscription: function(data, actions) {
-          return actions.subscription.create({
-            plan_id: planId
-          });
-        },
-        onApprove: async function(data, actions) {
-          console.log('Subscription approved:', data.subscriptionID);
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create checkout session');
+        }
 
-          // Update subscription in database
+        // Initialize Airwallex Drop-in component
+        const { clientSecret, paymentIntentId, env } = data;
+
+        // Render the checkout button
+        container.innerHTML = `
+          <button id="airwallexPayButton" class="btn btn-upgrade" style="width: 100%; padding: 1rem; font-size: 1rem;">
+            Pay $${selectedPlan.price_monthly} with Card
+          </button>
+          <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--hm-text-muted); text-align: center;">
+            Secure payment powered by Airwallex
+          </p>
+        `;
+
+        // Initialize Airwallex and mount Drop-in on button click
+        document.getElementById('airwallexPayButton').addEventListener('click', async () => {
           try {
-            const targetPlan = plans.find(p => p.slug === planSlug);
+            container.innerHTML = '<p style="color: var(--hm-text-muted); font-size: 0.9rem; text-align: center;">Loading payment form...</p>';
 
-            const { error } = await supabase
-              .from('subscriptions')
-              .update({
-                plan_id: targetPlan.id,
-                status: 'active',
-                paypal_subscription_id: data.subscriptionID,
-                current_period_start: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-              })
-              .eq('user_id', currentUser.id);
+            // Initialize Airwallex
+            await Airwallex.init({
+              env: env === 'prod' ? 'prod' : 'demo',
+              origin: window.location.origin
+            });
 
-            if (error) throw error;
+            // Create and mount the Drop-in element
+            const dropIn = Airwallex.createElement('dropIn', {
+              intent_id: paymentIntentId,
+              client_secret: clientSecret,
+              currency: 'USD',
+              countryCode: 'US',
+              autoCapture: true,
+              style: {
+                variant: 'outlined'
+              }
+            });
 
-            alert('Subscription successful! Your plan has been upgraded.');
-            closeModal();
-            window.location.reload();
+            // Clear container and mount
+            container.innerHTML = '<div id="airwallex-dropin"></div>';
+            dropIn.mount('airwallex-dropin');
+
+            // Handle success
+            dropIn.on('success', () => {
+              container.innerHTML = '<p style="color: #28a745; font-size: 1rem; text-align: center; font-weight: 600;">Payment successful! Redirecting...</p>';
+              setTimeout(() => {
+                window.location.href = `/pages/subscriber/dashboard.html?payment=success&plan=${planSlug}`;
+              }, 1500);
+            });
+
+            // Handle error
+            dropIn.on('error', (event) => {
+              container.innerHTML = `
+                <p style="color: #dc3545; font-size: 0.9rem; text-align: center;">Payment failed. Please try again.</p>
+                <button class="btn btn-upgrade" style="width: 100%; margin-top: 1rem;" onclick="initAirwallexCheckout('${planSlug}')">Try Again</button>
+              `;
+            });
+
+            // Handle cancel/close
+            dropIn.on('cancel', () => {
+              initAirwallexCheckout(planSlug); // Reset to button state
+            });
 
           } catch (err) {
-            console.error('Failed to update subscription:', err);
-            alert('Payment received but failed to update your account. Please contact support with subscription ID: ' + data.subscriptionID);
+            container.innerHTML = `
+              <p style="color: #dc3545; font-size: 0.9rem; text-align: center;">Failed to load payment form. Please try again.</p>
+              <button class="btn btn-light" style="width: 100%; margin-top: 1rem;" onclick="initAirwallexCheckout('${planSlug}')">Retry</button>
+            `;
           }
-        },
-        onError: function(err) {
-          console.error('PayPal error:', err);
-          alert('Payment failed. Please try again or contact support.');
-        }
-      }).render('#paypalButtonContainer');
+        });
+
+      } catch (err) {
+        container.innerHTML = `
+          <p style="color: #dc3545; font-size: 0.9rem; text-align: center;">${err.message || 'Failed to initialize checkout. Please try again.'}</p>
+          <button class="btn btn-light" style="width: 100%; margin-top: 1rem;" onclick="closeModal()">Close</button>
+        `;
+      }
     }
 
     // Close modal
@@ -1048,8 +1087,45 @@
       document.getElementById('mobileOverlay').classList.remove('active');
     };
 
+    // Check for payment cancelled in URL
+    function checkPaymentStatus() {
+      const params = new URLSearchParams(window.location.search);
+      const paymentStatus = params.get('payment');
+
+      if (paymentStatus === 'cancelled') {
+        // Show cancelled notification
+        const banner = document.createElement('div');
+        banner.style.cssText = `
+          background: #fff3cd;
+          border: 1px solid #ffc107;
+          color: #856404;
+          padding: 1rem;
+          border-radius: 8px;
+          margin-bottom: 1rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        `;
+        banner.innerHTML = `
+          <span>Payment was cancelled. You can try again when you're ready.</span>
+          <button onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; opacity: 0.7;">&times;</button>
+        `;
+
+        const container = document.querySelector('.plans-container');
+        if (container) {
+          container.insertBefore(banner, container.firstChild);
+        }
+
+        // Clean URL
+        const url = new URL(window.location);
+        url.searchParams.delete('payment');
+        window.history.replaceState({}, '', url);
+      }
+    }
+
     // Initialize
     async function init() {
+      checkPaymentStatus();
       currentUser = await checkAuth();
       if (!currentUser) return;
 
