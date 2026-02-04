@@ -562,7 +562,7 @@
   <script src="https://checkout.airwallex.com/assets/elements.bundle.min.js"></script>
 
   <script type="module">
-    import { supabase } from '/src/supabase.js';
+    import { supabase, supabaseAnonKey } from '/src/supabase.js';
 
     let currentUser = null;
     let currentSubscription = null;
@@ -965,7 +965,8 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`
+            'Authorization': `Bearer ${session.access_token}`,
+            'apikey': supabaseAnonKey
           },
           body: JSON.stringify({
             planId: planSlug,

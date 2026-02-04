@@ -111,4 +111,4 @@ export function getInitError() {
   return initError;
 }
 
-export { supabase };
+export { supabase, supabaseAnonKey };
