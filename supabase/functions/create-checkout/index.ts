@@ -131,7 +131,9 @@ serve(async (req) => {
     });
 
     if (!authResponse.ok) {
-      throw new Error("Failed to authenticate with Airwallex");
+      const authError = await authResponse.text();
+      console.error("Airwallex auth failed:", authResponse.status, authError);
+      throw new Error(`Airwallex auth failed: ${authResponse.status}`);
     }
 
     const { token } = await authResponse.json();
@@ -167,8 +169,9 @@ serve(async (req) => {
     });
 
     if (!paymentIntentResponse.ok) {
-      // Don't log full error details which may contain sensitive info
-      throw new Error("Failed to create payment intent");
+      const intentError = await paymentIntentResponse.text();
+      console.error("Payment intent failed:", paymentIntentResponse.status, intentError);
+      throw new Error(`Payment intent failed: ${paymentIntentResponse.status}`);
     }
 
     const paymentIntent = await paymentIntentResponse.json();
@@ -211,7 +214,7 @@ serve(async (req) => {
       "Airwallex credentials not configured": { message: "Payment system unavailable", status: 503 }
     };
 
-    const safeError = safeErrors[error.message] || { message: "Checkout failed", status: 500 };
+    const safeError = safeErrors[error.message] || { message: error.message, status: 500 }; // Temporarily show actual error
 
     return new Response(
       JSON.stringify({ error: safeError.message }),

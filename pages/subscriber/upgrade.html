@@ -977,7 +977,7 @@
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || 'Failed to create checkout session');
+          throw new Error(data.error || data.message || `Server error: ${response.status}`);
         }
 
         // Initialize Airwallex Drop-in component
