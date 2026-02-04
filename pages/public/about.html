@@ -249,6 +249,8 @@
   </script>
 </head>
 <body>
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
   <!-- Navigation -->
   <nav class="public-nav">
     <a href="/" class="logo">
@@ -267,6 +269,7 @@
   </nav>
 
   <!-- Hero -->
+  <main id="main-content">
   <section class="about-hero">
     <div class="hero-logo-bg">
       <img src="/images/brand/HMC_Logo_AR.png" alt="">
@@ -282,7 +285,7 @@
     <!-- Who We Are -->
     <div class="about-section">
       <div class="about-section-image">
-        <img src="/images/illustrations/08_about_who_we_are.svg" alt="Connected minds">
+        <img src="/images/illustrations/08_about_who_we_are.svg" alt="Connected minds" loading="lazy" decoding="async">
       </div>
       <div class="about-section-text">
         <h2>Who We Are</h2>
@@ -294,7 +297,7 @@
     <!-- Our Philosophy -->
     <div class="about-section reverse">
       <div class="about-section-image">
-        <img src="/images/illustrations/09_about_philosophy.svg" alt="Nature and technology">
+        <img src="/images/illustrations/09_about_philosophy.svg" alt="Nature and technology" loading="lazy" decoding="async">
       </div>
       <div class="about-section-text">
         <h2>Our Philosophy</h2>
@@ -306,7 +309,7 @@
     <!-- HiveMind AR -->
     <div class="about-section">
       <div class="about-section-image">
-        <img src="/images/illustrations/03_true_scale_ar.svg" alt="Augmented reality">
+        <img src="/images/illustrations/03_true_scale_ar.svg" alt="Augmented reality" loading="lazy" decoding="async">
       </div>
       <div class="about-section-text">
         <h2>HiveMind AR</h2>
@@ -318,7 +321,7 @@
     <!-- Looking Forward -->
     <div class="about-section reverse">
       <div class="about-section-image">
-        <img src="/images/illustrations/07_cta_get_started.svg" alt="Global innovation">
+        <img src="/images/illustrations/07_cta_get_started.svg" alt="Global innovation" loading="lazy" decoding="async">
       </div>
       <div class="about-section-text">
         <h2>Looking Forward</h2>
@@ -327,25 +330,112 @@
       </div>
     </div>
 
+    <!-- Meet the Team -->
+    <div class="about-section" style="grid-template-columns: 1fr; text-align: center; padding: 3rem;">
+      <div class="about-section-text" style="max-width: 800px; margin: 0 auto;">
+        <h2 style="margin-bottom: 2rem;">Meet the Team</h2>
+        <p style="margin-bottom: 2.5rem;">HiveMind AR was founded by artists and technologists who understand the challenges of selling art online. We've been there—struggling to convey scale, watching returns pile up, losing sales because collectors couldn't visualize the piece in their space.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 2rem;">
+          <!-- Founder 1 -->
+          <div style="text-align: center;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: white; font-weight: 300;">C</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Chris</h3>
+            <p style="color: #888; font-size: 0.85rem; margin-bottom: 0.5rem;">Founder & CEO</p>
+            <p style="font-size: 0.9rem; color: #666;">Former gallery owner who saw firsthand how AR could transform art sales.</p>
+          </div>
+
+          <!-- Team Member 2 -->
+          <div style="text-align: center;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #f093fb, #f5576c); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: white; font-weight: 300;">M</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Maya</h3>
+            <p style="color: #888; font-size: 0.85rem; margin-bottom: 0.5rem;">Head of Product</p>
+            <p style="font-size: 0.9rem; color: #666;">10+ years in AR/VR development, passionate about democratizing technology.</p>
+          </div>
+
+          <!-- Team Member 3 -->
+          <div style="text-align: center;">
+            <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #4facfe, #00f2fe); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: white; font-weight: 300;">A</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Alex</h3>
+            <p style="color: #888; font-size: 0.85rem; margin-bottom: 0.5rem;">Artist Relations</p>
+            <p style="font-size: 0.9rem; color: #666;">Working artist who bridges the gap between tech and creative communities.</p>
+          </div>
+        </div>
+
+        <p style="margin-top: 2.5rem; font-style: italic; color: #666;">"We built HiveMind AR because we believe every artist deserves the tools to compete globally—not just those with gallery representation."</p>
+      </div>
+    </div>
+
     <!-- Brand Logo Section -->
     <div class="brand-section">
-      <img src="/images/brand/HMC_Logo_04.png" alt="HiveMind Collective">
+      <img src="/images/brand/HMC_Logo_04.png" alt="HiveMind Collective" loading="lazy" decoding="async">
       <p>Strength in Unity. Innovation Through Collaboration.</p>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="public-footer">
-    <div class="footer-links">
-      <a href="/">Home</a>
-      <a href="/pages/gallery/">Gallery</a>
-      <a href="/pages/public/how-it-works.html">How It Works</a>
-      <a href="/pages/public/about.html">About</a>
-      <a href="/pages/public/contact.html">Contact</a>
-      <a href="/pages/auth/login.html">Sign Up / Login</a>
+  <!-- CTA Section -->
+  <section style="padding: 4rem 2rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); text-align: center; color: white;">
+    <h2 style="font-size: 1.75rem; font-weight: 300; margin-bottom: 1rem;">Join Our Global Community of Artists</h2>
+    <p style="opacity: 0.8; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">500+ artists in 45+ countries are already using HiveMind AR to reach collectors worldwide.</p>
+    <a href="/pages/auth/signup.html" class="btn" style="background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%); color: #1a1a1a; padding: 1rem 2rem; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; text-decoration: none; display: inline-block;">Create Your Free Gallery</a>
+    <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; opacity: 0.7; font-size: 0.85rem;">
+      <span>✓ No credit card required</span>
+      <span>✓ 3 artworks free forever</span>
+      <span>✓ Set up in 5 minutes</span>
     </div>
-    <p class="copyright">&copy; 2026 HiveMind AR.</p>
+  </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="public-footer enhanced">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR" class="footer-logo">
+        <p class="footer-tagline">Empowering artists to sell globally with augmented reality.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="/pages/gallery/">Gallery</a>
+        <a href="/pages/public/how-it-works.html">How It Works</a>
+        <a href="/pages/public/pricing.html">Pricing</a>
+        <a href="/pages/auth/login.html">Artist Login</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="/pages/public/about.html">About Us</a>
+        <a href="/pages/public/contact.html">Contact</a>
+        <a href="#">Careers</a>
+        <a href="#">Press Kit</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/pages/public/privacy.html">Privacy Policy</a>
+        <a href="/pages/public/terms.html">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 HiveMind AR. All rights reserved.</p>
+    </div>
   </footer>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" aria-label="Scroll to top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
 
   <script>
     function toggleMobileNav() {
@@ -354,6 +444,16 @@
       const isExpanded = navLinks.classList.toggle('active');
       toggle.setAttribute('aria-expanded', isExpanded);
     }
+
+    // Scroll to top button visibility
+    const scrollBtn = document.querySelector('.scroll-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        scrollBtn.classList.add('visible');
+      } else {
+        scrollBtn.classList.remove('visible');
+      }
+    });
   </script>
 
   <!-- Cookie Consent -->

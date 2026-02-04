@@ -44,6 +44,12 @@
     <priority>0.3</priority>
   </url>
 
+  <url>
+    <loc>https://hivemindar.com/pages/public/terms.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
   <!-- Gallery -->
   <url>
     <loc>https://hivemindar.com/pages/gallery/</loc>

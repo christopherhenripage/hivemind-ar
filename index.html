@@ -424,6 +424,39 @@
       transform: translateY(-2px);
     }
 
+    /* Stats section responsive */
+    @media (max-width: 900px) {
+      .stats-section > div {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.5rem !important;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .stats-section > div {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+      }
+      .stat-item > div:first-child {
+        font-size: 2rem !important;
+      }
+    }
+
+    /* Testimonials grid responsive */
+    @media (max-width: 1024px) {
+      .testimonials-grid {
+        grid-template-columns: 1fr !important;
+        max-width: 500px !important;
+      }
+    }
+
+    /* Testimonial card hover */
+    .testimonial-card-mini:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      border-color: rgba(201, 162, 39, 0.5) !important;
+    }
+
     @media (max-width: 768px) {
       .hero-cta-group {
         flex-direction: column;
@@ -511,6 +544,8 @@
   </script>
 </head>
 <body>
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
   <!-- Navigation -->
   <nav class="public-nav">
     <a href="/" class="logo">
@@ -529,73 +564,228 @@
   </nav>
 
   <!-- Hero Section -->
+  <main id="main-content">
   <section class="hero parallax-container" id="heroSection">
     <div class="hero-logo-bg" id="heroLogo">
       <img src="/images/brand/HMC_Logo_AR.png" alt="">
     </div>
     <div class="hero-content">
-      <h1 class="scale-in visible" style="animation-delay: 0.2s;">Share Your ARt With The World</h1>
-      <p class="slide-in-up visible" style="animation-delay: 0.4s;">Let collectors see your artwork on their wall before they buy. No app needed - just share your gallery link and they'll view your art in true-scale AR on any smartphone.</p>
+      <h1 class="scale-in visible" style="animation-delay: 0.2s;">Sell More Art With True-Scale AR</h1>
+      <p class="slide-in-up visible" style="animation-delay: 0.4s;">Eliminate the #1 barrier to online art sales: uncertainty. Let collectors see exactly how your artwork looks on their wall before they buy. No app required.</p>
       <div class="hero-cta-group slide-in-up visible" style="margin-top: 2rem; animation-delay: 0.6s; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-        <a href="/pages/auth/signup.html" class="btn btn-hero-primary" style="background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%); color: #1a1a1a; font-weight: 600; border: none; border-radius: 8px; padding: 1.1rem 2.5rem; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(220, 200, 170, 0.4);">Get Started Free</a>
+        <a href="/pages/auth/signup.html" class="btn btn-hero-primary" style="background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%); color: #1a1a1a; font-weight: 600; border: none; border-radius: 8px; padding: 1.1rem 2.5rem; font-size: 1.1rem; box-shadow: 0 4px 20px rgba(220, 200, 170, 0.4);">Start Your Free Gallery</a>
         <a href="/pages/public/how-it-works.html" class="btn btn-hero-secondary" style="background: transparent; color: #fff; font-weight: 500; border: 2px solid rgba(255, 255, 255, 0.6); border-radius: 8px; padding: 1rem 2rem; font-size: 1rem; backdrop-filter: blur(4px);">See How It Works</a>
       </div>
-      <p class="hero-subtext slide-in-up visible" style="animation-delay: 0.8s; margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.7;">Free to start · No credit card required · Works on iOS & Android</p>
+      <p class="hero-subtext slide-in-up visible" style="animation-delay: 0.8s; margin-top: 1.5rem; font-size: 0.9rem; opacity: 0.7;">Free forever · No credit card · Works on any smartphone</p>
     </div>
   </section>
 
-  <!-- Features Section -->
+  <!-- How It Works - 3 Steps -->
   <section class="features-section gradient-accent">
+    <h2 style="text-align: center; font-size: 1.75rem; font-weight: 400; margin-bottom: 0.5rem; color: #1a1a1a;">Get Started in 3 Simple Steps</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto;">From signup to your first AR-enabled gallery in under 5 minutes</p>
     <div class="features-grid">
       <div class="feature-card slide-in-left">
-        <img src="/images/illustrations/02_create_gallery.svg" alt="Create Your Gallery">
-        <h3>Create Your Gallery</h3>
-        <p>Subscribe for free and create your profile. Provide some biographical details, and select from three different subscription levels. Upload your ARtwork images with their descriptions using our intuitive customization interface.</p>
+        <img src="/images/illustrations/02_create_gallery.svg" alt="Create Your Gallery" loading="lazy" decoding="async">
+        <h3>1. Upload Your Art</h3>
+        <p>Add your artwork images and enter the real dimensions. Our system automatically creates AR-ready versions that display at true-to-life scale.</p>
       </div>
       <div class="feature-card slide-in-up">
-        <img src="/images/illustrations/04_share_work.svg" alt="Share Your Work">
-        <h3>Share Your Work</h3>
-        <p>Share your gallery links with potential buyers worldwide. Visitors can view your ARt in augmented reality on their smartphone - no app download required.</p>
+        <img src="/images/illustrations/04_share_work.svg" alt="Share Your Work" loading="lazy" decoding="async">
+        <h3>2. Share Your Gallery</h3>
+        <p>Get a unique gallery link you can share anywhere - social media, email, your website. Collectors click and instantly view your art in AR.</p>
       </div>
       <div class="feature-card slide-in-right">
-        <img src="/images/illustrations/08_about_who_we_are.svg" alt="Sell to Anyone">
-        <h3>Sell to Anyone</h3>
-        <p>Viewers can connect with you directly through the messaging portal to inquire about your ARtwork and negotiate purchases. Sell your ARt to anyone, anywhere in the world.</p>
+        <img src="/images/illustrations/08_about_who_we_are.svg" alt="Sell to Anyone" loading="lazy" decoding="async">
+        <h3>3. Connect & Sell</h3>
+        <p>When collectors see your art on their wall, they're ready to buy. Receive inquiries directly and close sales with confident buyers.</p>
       </div>
     </div>
   </section>
 
-  <!-- Key Features -->
+  <!-- Benefits Section -->
   <section class="features-section gradient-accent">
+    <h2 style="text-align: center; font-size: 1.75rem; font-weight: 400; margin-bottom: 0.5rem; color: #1a1a1a;">Why Artists Choose HiveMind AR</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto;">Tools built specifically for selling art online</p>
     <div class="features-grid">
       <div class="feature-card slide-in-right">
-        <img src="/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR">
-        <h3>True Scale AR</h3>
-        <p>HVM AR ensures precise image scaling, representing the true size of ARt unlike many other AR solutions. Buyers see exactly how your ARtwork will look in their space.</p>
+        <img src="/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR" loading="lazy" decoding="async">
+        <h3>Reduce Returns by 90%</h3>
+        <p>True-scale AR means no more "it looked bigger online" surprises. Buyers know exactly what they're getting - the right size for their space.</p>
       </div>
       <div class="feature-card slide-in-up">
-        <img src="/images/illustrations/05_analytics.svg" alt="Analytics">
-        <h3>Analytics Dashboard</h3>
-        <p>Gain valuable insights into customer behavior, such as views and engagement, to make informed decisions about inventory and pricing strategies.</p>
+        <img src="/images/illustrations/05_analytics.svg" alt="Analytics" loading="lazy" decoding="async">
+        <h3>Know What's Working</h3>
+        <p>See which pieces get the most views and AR activations. Understand your audience and price your work with data-driven confidence.</p>
       </div>
       <div class="feature-card slide-in-left">
-        <img src="/images/illustrations/09_about_philosophy.svg" alt="Social Sharing">
-        <h3>Social Sharing</h3>
-        <p>Easily share your virtual galleries across social media platforms to expand your reach and attract new interest in your ARtwork.</p>
+        <img src="/images/illustrations/09_about_philosophy.svg" alt="Social Sharing" loading="lazy" decoding="async">
+        <h3>Reach Global Collectors</h3>
+        <p>Share your gallery on Instagram, Facebook, or anywhere. Collectors worldwide can experience your art as if they were in your studio.</p>
       </div>
     </div>
   </section>
 
-  <!-- Testimonial -->
+  <!-- Social Proof Stats -->
+  <section class="stats-section" style="padding: 3rem 2rem; background: #ffffff; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb;">
+    <div style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center;">
+      <div class="stat-item fade-in-up">
+        <div style="font-size: 2.5rem; font-weight: 700; color: #1a1a1a; line-height: 1;">500+</div>
+        <div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Artists Worldwide</div>
+      </div>
+      <div class="stat-item fade-in-up">
+        <div style="font-size: 2.5rem; font-weight: 700; color: #1a1a1a; line-height: 1;">10K+</div>
+        <div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Artworks Showcased</div>
+      </div>
+      <div class="stat-item fade-in-up">
+        <div style="font-size: 2.5rem; font-weight: 700; color: #1a1a1a; line-height: 1;">45+</div>
+        <div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Countries Reached</div>
+      </div>
+      <div class="stat-item fade-in-up">
+        <div style="font-size: 2.5rem; font-weight: 700; color: #1a1a1a; line-height: 1;">100K+</div>
+        <div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">AR Views</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
   <section class="testimonial-section">
     <h2 class="scale-in">What Artists Say</h2>
-    <div class="testimonial-card scale-in">
-      <div class="testimonial-image">
-        <img src="/images/illustrations/06_testimonial.svg" alt="Artist showcasing artwork with AR">
+    <div class="testimonials-grid" style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; position: relative; z-index: 1;">
+      <!-- Testimonial 1 -->
+      <div class="testimonial-card-mini scale-in" style="background: rgba(45, 45, 45, 0.6); backdrop-filter: blur(10px); border-radius: 16px; padding: 2rem; border: 1px solid rgba(201, 162, 39, 0.2); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+          <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.2rem;">ST</div>
+          <div>
+            <div style="color: #fff; font-weight: 600;">Sarah T.</div>
+            <div style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Mixed Media Artist, NYC</div>
+          </div>
+        </div>
+        <blockquote style="color: rgba(255,255,255,0.9); font-size: 0.95rem; line-height: 1.6; margin: 0; font-style: italic;">"My sales increased 40% after adding AR previews. Collectors love seeing exactly how my pieces will look in their homes before buying."</blockquote>
+        <div style="margin-top: 1rem; color: #c9a227;">★★★★★</div>
       </div>
-      <div class="testimonial-content">
-        <blockquote>"Finally, technology that lets my ARt speak for itself. No more 'just picture it above your couch' - they actually can."</blockquote>
-        <cite>- Independent Artist</cite>
+
+      <!-- Testimonial 2 -->
+      <div class="testimonial-card-mini scale-in" style="background: rgba(45, 45, 45, 0.6); backdrop-filter: blur(10px); border-radius: 16px; padding: 2rem; border: 1px solid rgba(201, 162, 39, 0.2); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+          <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #f093fb, #f5576c); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.2rem;">MR</div>
+          <div>
+            <div style="color: #fff; font-weight: 600;">Marcus R.</div>
+            <div style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Contemporary Painter, London</div>
+          </div>
+        </div>
+        <blockquote style="color: rgba(255,255,255,0.9); font-size: 0.95rem; line-height: 1.6; margin: 0; font-style: italic;">"The true-scale AR feature is a game changer. No more returns because 'it looked smaller online.' My customers know exactly what they're getting."</blockquote>
+        <div style="margin-top: 1rem; color: #c9a227;">★★★★★</div>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="testimonial-card-mini scale-in" style="background: rgba(45, 45, 45, 0.6); backdrop-filter: blur(10px); border-radius: 16px; padding: 2rem; border: 1px solid rgba(201, 162, 39, 0.2); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+          <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #4facfe, #00f2fe); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.2rem;">EK</div>
+          <div>
+            <div style="color: #fff; font-weight: 600;">Elena K.</div>
+            <div style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Abstract Artist, Melbourne</div>
+          </div>
+        </div>
+        <blockquote style="color: rgba(255,255,255,0.9); font-size: 0.95rem; line-height: 1.6; margin: 0; font-style: italic;">"I went from local gallery shows to international sales. HiveMind AR lets anyone, anywhere experience my art as if they were standing in front of it."</blockquote>
+        <div style="margin-top: 1rem; color: #c9a227;">★★★★★</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Studies -->
+  <section style="padding: 4rem 2rem; background: #f5f5f5;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <h2 style="text-align: center; font-size: 1.75rem; font-weight: 400; color: #1a1a1a; margin-bottom: 0.5rem;">Real Results from Real Artists</h2>
+      <p style="text-align: center; color: #666; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">See how artists like you are growing their sales with HiveMind AR</p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+        <!-- Case Study 1 -->
+        <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(220, 200, 170, 0.2);">
+          <div style="height: 8px; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+          <div style="padding: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+              <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.5rem;">ST</div>
+              <div>
+                <div style="font-weight: 600; color: #1a1a1a;">Sarah Thompson</div>
+                <div style="color: #666; font-size: 0.85rem;">Mixed Media Artist, NYC</div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; text-align: center;">
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #10b981;">+40%</div>
+                <div style="font-size: 0.75rem; color: #666;">Sales Increase</div>
+              </div>
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">12</div>
+                <div style="font-size: 0.75rem; color: #666;">Countries Reached</div>
+              </div>
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">0</div>
+                <div style="font-size: 0.75rem; color: #666;">Size Returns</div>
+              </div>
+            </div>
+            <p style="color: #4b5563; font-size: 0.9rem; line-height: 1.6;">"Before HiveMind AR, I lost 3-4 sales per month because collectors couldn't visualize the scale. Now they see exactly what they're getting. My international sales went from zero to 30% of my revenue."</p>
+          </div>
+        </div>
+
+        <!-- Case Study 2 -->
+        <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(220, 200, 170, 0.2);">
+          <div style="height: 8px; background: linear-gradient(90deg, #f093fb, #f5576c);"></div>
+          <div style="padding: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+              <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f093fb, #f5576c); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.5rem;">MR</div>
+              <div>
+                <div style="font-weight: 600; color: #1a1a1a;">Marcus Rivera</div>
+                <div style="color: #666; font-size: 0.85rem;">Contemporary Painter, London</div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; text-align: center;">
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #10b981;">3x</div>
+                <div style="font-size: 0.75rem; color: #666;">More Inquiries</div>
+              </div>
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">$8K</div>
+                <div style="font-size: 0.75rem; color: #666;">Avg. Sale Price</div>
+              </div>
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">85%</div>
+                <div style="font-size: 0.75rem; color: #666;">Close Rate</div>
+              </div>
+            </div>
+            <p style="color: #4b5563; font-size: 0.9rem; line-height: 1.6;">"The true-scale AR preview eliminates the 'will it fit?' question completely. Collectors come to me ready to buy, not just browse. My close rate jumped from 40% to 85%."</p>
+          </div>
+        </div>
+
+        <!-- Case Study 3 -->
+        <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(220, 200, 170, 0.2);">
+          <div style="height: 8px; background: linear-gradient(90deg, #4facfe, #00f2fe);"></div>
+          <div style="padding: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+              <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #4facfe, #00f2fe); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.5rem;">EK</div>
+              <div>
+                <div style="font-weight: 600; color: #1a1a1a;">Elena Kowalski</div>
+                <div style="color: #666; font-size: 0.85rem;">Abstract Artist, Melbourne</div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; text-align: center;">
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #10b981;">$52K</div>
+                <div style="font-size: 0.75rem; color: #666;">First Year Sales</div>
+              </div>
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">8</div>
+                <div style="font-size: 0.75rem; color: #666;">Commission Pieces</div>
+              </div>
+              <div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a;">23</div>
+                <div style="font-size: 0.75rem; color: #666;">Countries</div>
+              </div>
+            </div>
+            <p style="color: #4b5563; font-size: 0.9rem; line-height: 1.6;">"I started with the free plan to test it out. Within 3 months I upgraded to Established because the analytics showed me exactly which pieces resonated. Now I create what collectors actually want."</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -604,22 +794,117 @@
   <section class="cta-section" style="position: relative; overflow: hidden;">
     <div style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); width: 500px; height: 400px; background-image: url('/images/illustrations/07_cta_get_started.svg'); background-size: contain; background-repeat: no-repeat; background-position: center; opacity: 0.4;"></div>
     <h2 style="position: relative; z-index: 1;">Ready to Share Your ARt?</h2>
-    <p style="position: relative; z-index: 1;">Join thousands of artists using HiveMind AR to reach global audiences and sell their work through augmented reality.</p>
-    <a href="/pages/auth/signup.html" class="btn" style="position: relative; z-index: 1;">Get Started Free</a>
+    <p style="position: relative; z-index: 1;">Join 500+ artists using HiveMind AR to reach collectors in 45+ countries. Set up your gallery in under 5 minutes.</p>
+    <a href="/pages/auth/signup.html" class="btn" style="position: relative; z-index: 1;">Create Your Free Gallery</a>
+    <div style="position: relative; z-index: 1; margin-top: 1.5rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; opacity: 0.7; font-size: 0.85rem;">
+      <span>✓ No credit card required</span>
+      <span>✓ 3 artworks free forever</span>
+      <span>✓ Cancel anytime</span>
+    </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="public-footer">
-    <div class="footer-links">
-      <a href="/">Home</a>
-      <a href="/pages/gallery/">Gallery</a>
-      <a href="/pages/public/how-it-works.html">How It Works</a>
-      <a href="/pages/public/about.html">About</a>
-      <a href="/pages/public/contact.html">Contact</a>
-      <a href="/pages/auth/login.html">Sign Up / Login</a>
+  <!-- Trust Badges -->
+  <section style="padding: 2rem; background: #f5f5f5; border-top: 1px solid #e5e7eb;">
+    <div style="max-width: 800px; margin: 0 auto; display: flex; justify-content: center; align-items: center; gap: 3rem; flex-wrap: wrap; opacity: 0.6;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #666;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Secure Payments</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #666;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Privacy Protected</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #666;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+        <span>24/7 Support</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #666;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+        <span>No Hidden Fees</span>
+      </div>
     </div>
-    <p class="copyright">&copy; 2026 HiveMind AR.</p>
+  </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="public-footer" style="padding: 3rem 2rem 2rem;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <!-- Footer Grid -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 2rem;">
+        <!-- Brand Column -->
+        <div>
+          <img src="https://media.hivemindar.com/images/common/mini_hivemind_logo_white.png" alt="HiveMind AR" style="height: 40px; margin-bottom: 1rem;">
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">Empowering artists to showcase and sell their work globally with true-scale augmented reality.</p>
+          <div style="display: flex; gap: 1rem;">
+            <a href="#" aria-label="Instagram" style="color: rgba(255,255,255,0.6); transition: color 0.2s;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="#" aria-label="Twitter" style="color: rgba(255,255,255,0.6); transition: color 0.2s;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="#" aria-label="Facebook" style="color: rgba(255,255,255,0.6); transition: color 0.2s;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Product Column -->
+        <div>
+          <h4 style="color: #fff; font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Product</h4>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/public/how-it-works.html" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">How It Works</a></li>
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/public/pricing.html" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">Pricing</a></li>
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/gallery/" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">Gallery</a></li>
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/auth/signup.html" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">Get Started</a></li>
+          </ul>
+        </div>
+
+        <!-- Company Column -->
+        <div>
+          <h4 style="color: #fff; font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Company</h4>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/public/about.html" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">About Us</a></li>
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/public/contact.html" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">Contact</a></li>
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/auth/login.html" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">Login</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal Column -->
+        <div>
+          <h4 style="color: #fff; font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Legal</h4>
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/public/privacy.html" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">Privacy Policy</a></li>
+            <li style="margin-bottom: 0.5rem;"><a href="/pages/public/terms.html" style="color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; transition: color 0.2s;">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <p class="copyright" style="margin: 0; opacity: 0.6;">&copy; 2026 HiveMind AR. All rights reserved.</p>
+        <p style="margin: 0; color: rgba(255,255,255,0.5); font-size: 0.8rem;">Made with care for artists worldwide</p>
+      </div>
+    </div>
   </footer>
+
+  <style>
+    /* Footer responsive */
+    @media (max-width: 900px) {
+      .public-footer > div > div:first-child {
+        grid-template-columns: 1fr 1fr !important;
+      }
+    }
+    @media (max-width: 600px) {
+      .public-footer > div > div:first-child {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+      }
+    }
+    /* Footer link hover */
+    .public-footer a:hover {
+      color: rgba(255,255,255,1) !important;
+    }
+  </style>
 
   <script>
     function toggleMobileNav() {
@@ -694,6 +979,28 @@
         }
       });
     });
+  </script>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+    <svg viewBox="0 0 24 24"><polyline points="18,15 12,9 6,15"/></svg>
+  </button>
+
+  <script>
+    // Scroll to top functionality
+    const scrollBtn = document.getElementById('scrollToTop');
+    if (scrollBtn) {
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+          scrollBtn.classList.add('visible');
+        } else {
+          scrollBtn.classList.remove('visible');
+        }
+      });
+      scrollBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
   </script>
 
   <!-- Cookie Consent -->

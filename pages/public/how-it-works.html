@@ -474,8 +474,41 @@
       }
     }
   </style>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Sell Art with HiveMind AR",
+    "description": "Learn how to showcase and sell your artwork globally using HiveMind AR's true-scale augmented reality platform.",
+    "totalTime": "PT5M",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Create Your Gallery",
+        "text": "Sign up for free and upload your artwork images with dimensions.",
+        "position": 1
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Enable AR Viewing",
+        "text": "Our system automatically creates AR-ready versions of your artwork that display at true-to-life scale.",
+        "position": 2
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Share and Sell",
+        "text": "Share your unique gallery link anywhere. Collectors can view your art in their space and contact you to purchase.",
+        "position": 3
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
   <!-- Navigation -->
   <nav class="public-nav">
     <a href="/" class="logo">
@@ -494,13 +527,14 @@
   </nav>
 
   <!-- Hero -->
+  <main id="main-content">
   <section class="hero-section">
     <div class="hero-logo-bg">
       <img src="/images/brand/HMC_Logo_AR.png" alt="">
     </div>
     <div class="hero-content">
-      <h1>How HiveMind AR Works</h1>
-      <p>Whether you're an artist looking to showcase your work globally, or a collector wanting to see ARt at true scale before you buy - HiveMind AR makes it simple.</p>
+      <h1>From Upload to Sale in 3 Steps</h1>
+      <p>Artists: showcase your work to collectors worldwide. Collectors: see exactly how art looks in your space before you buy. No app required - works on any smartphone.</p>
     </div>
   </section>
 
@@ -508,7 +542,7 @@
   <section class="audience-section">
     <div class="audience-header">
       <h2>For Artists &amp; Galleries</h2>
-      <p class="subtitle">Create your AR-enabled gallery in minutes</p>
+      <p class="subtitle">Turn browsers into buyers with true-scale AR previews</p>
     </div>
 
     <div class="steps-container">
@@ -559,8 +593,8 @@
   <!-- ════════════ For Collectors ════════════ -->
   <section class="audience-section alt-bg">
     <div class="audience-header">
-      <h2>For Collectors &amp; ARt Lovers</h2>
-      <p class="subtitle">Experience ARt like never before</p>
+      <h2>For Collectors &amp; Art Lovers</h2>
+      <p class="subtitle">Buy with confidence - see exactly how art looks in your space</p>
     </div>
 
     <div class="steps-container">
@@ -628,7 +662,7 @@
         </ul>
       </div>
       <div class="ar-showcase-image">
-        <img src="/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR Viewing">
+        <img src="/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR Viewing" loading="lazy" decoding="async">
       </div>
     </div>
   </section>
@@ -734,28 +768,83 @@
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="cta-section">
-    <h2>Ready to Transform How You Sell ARt?</h2>
-    <p>Join artists worldwide who are using AR technology to connect with collectors and sell their work.</p>
-    <div class="cta-buttons">
-      <a href="/pages/auth/signup.html" class="btn btn-dark">Get Started Free</a>
-      <a href="/pages/public/contact.html" class="btn btn-outline">Have Questions?</a>
+  <!-- Email Capture - Not Ready Yet -->
+  <section style="padding: 3rem 2rem; background: linear-gradient(135deg, #f8f7f4 0%, #f0ede6 100%); border-top: 1px solid rgba(220, 200, 170, 0.3); border-bottom: 1px solid rgba(220, 200, 170, 0.3);">
+    <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+      <h2 style="font-size: 1.5rem; font-weight: 400; color: #1a1a1a; margin-bottom: 0.5rem;">Not Ready to Start Yet?</h2>
+      <p style="color: #666; margin-bottom: 1.5rem;">Get our free guide: "5 Ways AR Increases Art Sales" plus tips from successful artists.</p>
+
+      <form id="newsletterForm" style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;" onsubmit="handleNewsletter(event)">
+        <input type="email" id="newsletterEmail" placeholder="Enter your email" required
+          style="flex: 1; min-width: 250px; padding: 0.875rem 1rem; border: 1px solid rgba(220, 200, 170, 0.5); border-radius: 8px; font-size: 1rem; background: white;"
+          aria-label="Email address for newsletter">
+        <button type="submit" id="newsletterBtn"
+          style="padding: 0.875rem 1.5rem; background: linear-gradient(135deg, rgba(220, 200, 170, 0.95) 0%, rgba(200, 180, 140, 0.95) 100%); color: #1a1a1a; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+          Send My Free Guide
+        </button>
+      </form>
+      <div id="newsletterSuccess" style="display: none; margin-top: 1rem; color: #10b981; font-weight: 500;">
+        Check your inbox! Your guide is on its way.
+      </div>
+      <p style="font-size: 0.75rem; color: #999; margin-top: 1rem;">No spam, ever. Unsubscribe anytime.</p>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="public-footer">
-    <div class="footer-links">
-      <a href="/">Home</a>
-      <a href="/pages/gallery/">Gallery</a>
-      <a href="/pages/public/how-it-works.html">How It Works</a>
-      <a href="/pages/public/about.html">About</a>
-      <a href="/pages/public/contact.html">Contact</a>
-      <a href="/pages/auth/login.html">Sign Up / Login</a>
+  <script>
+    function handleNewsletter(event) {
+      event.preventDefault();
+      const email = document.getElementById('newsletterEmail').value;
+      const btn = document.getElementById('newsletterBtn');
+      const form = document.getElementById('newsletterForm');
+      const success = document.getElementById('newsletterSuccess');
+
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      // Simulate API call (replace with actual Supabase integration)
+      setTimeout(() => {
+        form.style.display = 'none';
+        success.style.display = 'block';
+        // In production: save to Supabase newsletter_subscribers table
+      }, 1000);
+    }
+  </script>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Ready to Transform How You Sell ARt?</h2>
+    <p>Join 500+ artists worldwide who are using AR technology to connect with collectors in 45+ countries.</p>
+    <div class="cta-buttons">
+      <a href="/pages/auth/signup.html" class="btn btn-dark">Create Your Free Gallery</a>
+      <a href="/pages/public/contact.html" class="btn btn-outline">Have Questions?</a>
     </div>
-    <p class="copyright">&copy; 2026 HiveMind AR.</p>
+    <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; opacity: 0.7; font-size: 0.85rem;">
+      <span>✓ No credit card required</span>
+      <span>✓ 3 artworks free forever</span>
+      <span>✓ Set up in 5 minutes</span>
+    </div>
+  </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="public-footer" style="padding: 2rem;">
+    <div style="max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+      <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+        <a href="/">Home</a>
+        <a href="/pages/gallery/">Gallery</a>
+        <a href="/pages/public/pricing.html">Pricing</a>
+        <a href="/pages/public/about.html">About</a>
+        <a href="/pages/public/contact.html">Contact</a>
+        <a href="/pages/public/privacy.html">Privacy</a>
+      </div>
+      <p class="copyright" style="margin: 0;">&copy; 2026 HiveMind AR</p>
+    </div>
   </footer>
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+    <svg viewBox="0 0 24 24"><polyline points="18,15 12,9 6,15"/></svg>
+  </button>
 
   <script>
     function toggleMobileNav() {
@@ -763,6 +852,17 @@
       const toggle = document.querySelector('.nav-toggle');
       const isExpanded = navLinks.classList.toggle('active');
       toggle.setAttribute('aria-expanded', isExpanded);
+    }
+
+    // Scroll to top
+    const scrollBtn = document.getElementById('scrollToTop');
+    if (scrollBtn) {
+      window.addEventListener('scroll', () => {
+        scrollBtn.classList.toggle('visible', window.pageYOffset > 300);
+      });
+      scrollBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
     }
   </script>
 
