@@ -18,6 +18,7 @@ export default defineConfig({
     rollupOptions: {
  input: {
  main: resolve(__dirname, 'index.html'),
+        'onepager': resolve(__dirname, 'onepager.html'),
  'super-admin-dashboard': resolve(__dirname, 'pages/super-admin/dashboard.html'),
  'super-admin-users': resolve(__dirname, 'pages/super-admin/users.html'),
  'super-admin-analytics': resolve(__dirname, 'pages/super-admin/analytics.html'),
