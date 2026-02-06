@@ -229,6 +229,18 @@
       <p>Use augmented reality to see how artwork looks on your walls before you buy. Tap the AR button on mobile to try it.</p>
     </div>
 
+    <!-- Dynamic dimensions banner (shown when coming from onepager) -->
+    <div id="dimensionBanner" class="demo-note" style="display: none; background: #f0fdf4; border-color: #86efac;">
+      <h4 style="color: #166534;">Custom Dimensions Set</h4>
+      <p style="color: #15803d;">You're previewing artwork at <strong id="customDimensionText">24" × 36"</strong>. The AR view will display at this exact size.</p>
+    </div>
+
+    <!-- Camera permission status -->
+    <div id="cameraStatus" class="demo-note" style="display: none;">
+      <h4 id="cameraStatusTitle">Checking Camera Access...</h4>
+      <p id="cameraStatusText"></p>
+    </div>
+
     <div class="demo-note">
       <h4>AR Demo - True Scale Artwork</h4>
       <p>The first two artworks are 2D images converted to true-scale 3D planes. On mobile devices:</p>
@@ -372,18 +384,99 @@
       toggle.setAttribute('aria-expanded', isExpanded);
     }
 
-    // Detect iOS
+    // ===== QUERY PARAMETER HANDLING =====
+    const urlParams = new URLSearchParams(window.location.search);
+    const customWidth = urlParams.get('w');
+    const customHeight = urlParams.get('h');
+    const customUnit = urlParams.get('unit') || 'in';
+
+    // Show custom dimensions banner if params are present
+    if (customWidth && customHeight) {
+      const banner = document.getElementById('dimensionBanner');
+      const text = document.getElementById('customDimensionText');
+      if (banner && text) {
+        const unitLabel = customUnit === 'in' ? '"' : ' ' + customUnit;
+        text.textContent = `${customWidth}${unitLabel} × ${customHeight}${unitLabel}`;
+        banner.style.display = 'block';
+      }
+    }
+
+    // ===== DEVICE DETECTION =====
     function isIOS() {
       return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     }
 
-    // Detect Android
     function isAndroid() {
       return /Android/.test(navigator.userAgent);
     }
 
-    // Launch AR - tries multiple methods
+    function isMobile() {
+      return isIOS() || isAndroid() || /webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    // ===== CAMERA PERMISSION CHECK =====
+    async function checkCameraPermission() {
+      const statusEl = document.getElementById('cameraStatus');
+      const titleEl = document.getElementById('cameraStatusTitle');
+      const textEl = document.getElementById('cameraStatusText');
+
+      // Only show status on mobile
+      if (!isMobile()) {
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.style.background = '#fff7ed';
+          statusEl.style.borderColor = '#fed7aa';
+          titleEl.textContent = 'Desktop Detected';
+          titleEl.style.color = '#c2410c';
+          textEl.textContent = 'Full AR experience requires a mobile device. You can preview the 3D models here, then scan the QR code on the one-pager to open on your phone.';
+          textEl.style.color = '#ea580c';
+        }
+        return;
+      }
+
+      // Check if mediaDevices is available
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.style.background = '#fef2f2';
+          statusEl.style.borderColor = '#fecaca';
+          titleEl.textContent = 'Camera Not Available';
+          titleEl.style.color = '#b91c1c';
+          textEl.textContent = 'Your browser doesn\'t support camera access. Try opening this page in Safari (iOS) or Chrome (Android).';
+          textEl.style.color = '#dc2626';
+        }
+        return;
+      }
+
+      // Check permission status if available
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const result = await navigator.permissions.query({ name: 'camera' });
+          if (result.state === 'denied') {
+            if (statusEl) {
+              statusEl.style.display = 'block';
+              statusEl.style.background = '#fef2f2';
+              statusEl.style.borderColor = '#fecaca';
+              titleEl.textContent = 'Camera Permission Denied';
+              titleEl.style.color = '#b91c1c';
+              textEl.textContent = 'Camera access was previously denied. Please enable camera permissions in your browser settings to use AR.';
+              textEl.style.color = '#dc2626';
+            }
+          } else if (result.state === 'granted') {
+            // Camera ready - don't show anything, let them try AR
+          }
+          // If 'prompt', we'll ask on AR button click
+        } catch (e) {
+          // Some browsers don't support camera permission query, that's okay
+        }
+      }
+    }
+
+    // Check camera on page load
+    checkCameraPermission();
+
+    // ===== AR LAUNCH =====
     function launchAR() {
       const modelViewer = document.getElementById('astronaut-model');
 
@@ -417,6 +510,27 @@
       }
 
       alert('AR requires a mobile device. Please open this page on your iPhone or Android phone.');
+    }
+
+    // ===== AR LAUNCH WITH CAMERA REQUEST =====
+    async function launchARWithPermission(modelViewerId) {
+      const modelViewer = document.getElementById(modelViewerId);
+
+      // On mobile, model-viewer handles the AR experience
+      if (isMobile() && modelViewer) {
+        try {
+          // Model-viewer will request camera permission when AR is activated
+          if (typeof modelViewer.activateAR === 'function') {
+            modelViewer.activateAR();
+          }
+        } catch (e) {
+          console.error('AR launch error:', e);
+          // Fall back to the standard launchAR method
+          launchAR();
+        }
+      } else if (!isMobile()) {
+        alert('AR requires a mobile device. Please scan the QR code on the one-pager to open this demo on your phone.');
+      }
     }
   </script>
 
