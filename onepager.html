@@ -25,7 +25,7 @@
             'charcoal-warm': '#141210',
             'galvanized': '#9A9A9A',
             'gallery-silver': '#C8C8C8',
-            'warm-stone': '#8A857D',
+            'warm-stone': '#9E9890',
             'gallery-amber': '#D4A574',
             'amber-glow': '#E8C9A0',
             'canvas-white': '#F5F3EF',
@@ -59,7 +59,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 1000;
+      z-index: 60;
       opacity: 0.06;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
     }
@@ -94,15 +94,6 @@
 
     .glass-pane-hover {
       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .glass-pane-hover:hover {
-      transform: perspective(1000px) rotateX(1deg) rotateY(-1deg) translateY(-4px);
-      border-color: rgba(212, 165, 116, 0.2);
-      box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.6),
-        0 0 60px rgba(212, 165, 116, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     /* Shimmer text - warm silver */
@@ -318,12 +309,6 @@
       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .studio-plate:hover {
-      transform: perspective(1000px) rotateX(1deg) rotateY(-0.5deg) translateY(-6px);
-      border-color: rgba(212, 165, 116, 0.2);
-      background: rgba(12, 11, 10, 0.6);
-    }
-
     /* Artwork frame - BRIGHTEST element */
     .artwork-frame {
       box-shadow:
@@ -379,7 +364,7 @@
     /* Gallery label style */
     .gallery-label {
       font-family: 'Space Grotesk', monospace;
-      font-size: 9px;
+      font-size: 11px;
       letter-spacing: 0.2em;
       color: rgba(212, 165, 116, 0.7);
       text-transform: uppercase;
@@ -476,15 +461,6 @@
     .card-3d-hover {
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       transform-style: preserve-3d;
-    }
-
-    .card-3d-hover:hover {
-      transform: perspective(1000px) rotateX(4deg) rotateY(-3deg) translateY(-8px) scale(1.02);
-      border-color: rgba(212, 165, 116, 0.25);
-      box-shadow:
-        0 50px 100px rgba(0, 0, 0, 0.7),
-        0 0 80px rgba(212, 165, 116, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     /* Interactive dimension input styling */
@@ -734,10 +710,10 @@
 
     .qr-modal-close {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 32px;
-      height: 32px;
+      top: 12px;
+      right: 12px;
+      width: 44px;
+      height: 44px;
       border-radius: 8px;
       background: rgba(154, 154, 154, 0.1);
       border: none;
@@ -846,6 +822,94 @@
       .mobile-only { display: block; }
       .desktop-only { display: none; }
     }
+
+    /* ===== JOURNEY MOBILE FIX ===== */
+    @media (max-width: 1023px) {
+      #journey-container {
+        height: auto !important;
+      }
+      #journey-sticky {
+        position: relative;
+        height: auto;
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+      }
+    }
+
+    /* ===== HOVER TRANSFORMS (hover-capable devices only) ===== */
+    @media (hover: hover) {
+      .glass-pane-hover:hover {
+        transform: perspective(1000px) rotateX(1deg) rotateY(-1deg) translateY(-4px);
+        border-color: rgba(212, 165, 116, 0.2);
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.6),
+          0 0 60px rgba(212, 165, 116, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      }
+
+      .studio-plate:hover {
+        transform: perspective(1000px) rotateX(1deg) rotateY(-0.5deg) translateY(-6px);
+        border-color: rgba(212, 165, 116, 0.2);
+        background: rgba(12, 11, 10, 0.6);
+      }
+
+      .card-3d-hover:hover {
+        transform: perspective(1000px) rotateX(4deg) rotateY(-3deg) translateY(-8px) scale(1.02);
+        border-color: rgba(212, 165, 116, 0.25);
+        box-shadow:
+          0 50px 100px rgba(0, 0, 0, 0.7),
+          0 0 80px rgba(212, 165, 116, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    /* ===== HIDE STAGS ON MOBILE ===== */
+    @media (max-width: 1023px) {
+      .stag-forged {
+        display: none;
+      }
+    }
+
+    /* ===== REDUCED MOTION ===== */
+    @media (prefers-reduced-motion: reduce) {
+      .shimmer-text,
+      .stag-forged,
+      .stag-amber,
+      .stag-silver,
+      .stag-purple,
+      .stag-cyan,
+      .stag-gold,
+      .float-3d {
+        animation: none;
+      }
+      .soft-reveal,
+      .journey-card {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* ===== FOCUS VISIBLE ===== */
+    :focus-visible {
+      outline: 2px solid rgba(212, 165, 116, 0.8);
+      outline-offset: 2px;
+    }
+
+    .dimension-input:focus-visible,
+    .demo-select:focus-visible,
+    .qr-link-input:focus-visible {
+      outline: none;
+    }
+
+    /* ===== FOOTER TOUCH TARGETS ===== */
+    .gallery-footer ul a {
+      display: inline-block;
+      padding: 4px 0;
+    }
   </style>
 </head>
 <body class="font-body bg-obsidian text-galvanized antialiased overflow-x-hidden">
@@ -854,7 +918,7 @@
   <div class="grain"></div>
 
   <!-- Navigation -->
-  <nav class="fixed top-0 left-0 right-0 z-50 glass-pane border-b border-white/5">
+  <nav class="fixed top-0 left-0 right-0 z-50 glass-pane border-b border-white/5" aria-label="Main navigation">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
       <a href="#hero" class="flex items-center gap-3 group">
         <div class="w-10 h-10 relative">
@@ -867,11 +931,43 @@
         <a href="#craft" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500">THE CRAFT</a>
         <a href="#exhibition" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500">EXHIBITION</a>
       </div>
-      <a href="/pages/auth/signup.html" class="group relative px-6 py-2.5 glass-pane border-gallery-amber/30 hover:border-gallery-amber/60 text-gallery-amber font-display font-medium text-sm tracking-gallery transition-all duration-500 hover:shadow-[0_0_50px_rgba(212,165,116,0.15)]">
-        <span class="relative z-10">Open Gallery</span>
-      </a>
+      <div class="flex items-center gap-3">
+        <button id="mobileMenuBtn" class="md:hidden flex items-center justify-center w-11 h-11 rounded-gallery glass-pane" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <svg class="w-5 h-5 text-gallery-silver" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <a href="/pages/auth/signup.html" class="group relative px-6 py-2.5 glass-pane border-gallery-amber/30 hover:border-gallery-amber/60 text-gallery-amber font-display font-medium text-sm tracking-gallery transition-all duration-500 hover:shadow-[0_0_50px_rgba(212,165,116,0.15)]">
+          <span class="relative z-10">Open Gallery</span>
+        </a>
+      </div>
     </div>
   </nav>
+
+  <!-- Mobile menu overlay -->
+  <div id="mobileMenuOverlay" class="fixed inset-0 bg-obsidian/80 backdrop-blur-sm z-40 opacity-0 invisible transition-all duration-300" aria-hidden="true"></div>
+
+  <!-- Mobile slide-out menu -->
+  <div id="mobileMenu" class="fixed top-0 right-0 h-full w-72 z-50 glass-pane border-l border-white/5 transform translate-x-full transition-transform duration-300 ease-out" aria-hidden="true" role="dialog" aria-label="Mobile navigation">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-white/5">
+      <span class="font-display font-medium text-gallery-silver tracking-gallery text-sm">MENU</span>
+      <button id="mobileMenuClose" class="flex items-center justify-center w-11 h-11 rounded-gallery glass-pane" aria-label="Close menu">
+        <svg class="w-5 h-5 text-gallery-silver" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="px-6 py-8 space-y-2" aria-label="Mobile navigation">
+      <a href="#journey" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">CURATION</a>
+      <a href="#craft" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">THE CRAFT</a>
+      <a href="#exhibition" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">EXHIBITION</a>
+    </nav>
+    <div class="px-6 pt-4">
+      <a href="/pages/auth/signup.html" class="block text-center px-6 py-3 glass-pane border-gallery-amber/30 text-gallery-amber font-display font-medium text-sm tracking-gallery transition-all duration-300 hover:border-gallery-amber/60">
+        Open Gallery
+      </a>
+    </div>
+  </div>
 
   <!-- Hero Section -->
   <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -1797,6 +1893,7 @@
 
     function updateJourneyProgress() {
       if (!journeyContainer || !fiberPath) return;
+      if (window.innerWidth < 1024) return;
 
       const rect = journeyContainer.getBoundingClientRect();
       const containerHeight = rect.height;
@@ -1870,6 +1967,56 @@
     }, { threshold: 0.5 });
 
     proofNumbers.forEach(el => proofObserver.observe(el));
+
+    // ===== MOBILE MENU =====
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+
+    function openMobileMenu() {
+      mobileMenu.classList.remove('translate-x-full');
+      mobileMenu.classList.add('translate-x-0');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      mobileMenuOverlay.classList.remove('opacity-0', 'invisible');
+      mobileMenuOverlay.classList.add('opacity-100', 'visible');
+      mobileMenuOverlay.setAttribute('aria-hidden', 'false');
+      mobileMenuBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      mobileMenuClose.focus();
+    }
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('translate-x-0');
+      mobileMenu.classList.add('translate-x-full');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      mobileMenuOverlay.classList.remove('opacity-100', 'visible');
+      mobileMenuOverlay.classList.add('opacity-0', 'invisible');
+      mobileMenuOverlay.setAttribute('aria-hidden', 'true');
+      mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      mobileMenuBtn.focus();
+    }
+
+    if (mobileMenuBtn) {
+      mobileMenuBtn.addEventListener('click', openMobileMenu);
+    }
+    if (mobileMenuClose) {
+      mobileMenuClose.addEventListener('click', closeMobileMenu);
+    }
+    if (mobileMenuOverlay) {
+      mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+    }
+    mobileMenuLinks.forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu && !mobileMenu.classList.contains('translate-x-full')) {
+        closeMobileMenu();
+      }
+    });
   </script>
 
 </body>
