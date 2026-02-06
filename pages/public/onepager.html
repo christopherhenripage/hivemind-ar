@@ -8,7 +8,7 @@
 
   <!-- Preconnect -->
   <link rel="preconnect" href="https://media.hivemindar.com">
-  <link rel="icon" type="image/png" href="/images/brand/HMC_Logo_AR.png">
+  <link rel="icon" type="image/png" href="/public/images/brand/HMC_Logo_AR.png">
 
   <style>
     /* ========== RESET & BASE ========== */
@@ -120,6 +120,34 @@
       color: var(--hm-white);
       font-size: 1.5rem;
       cursor: pointer;
+      padding: 0.5rem;
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    /* Mobile menu styles */
+    .nav-links.mobile-open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(10, 10, 10, 0.98);
+      backdrop-filter: blur(20px);
+      padding: 1.5rem 2rem;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+    }
+
+    .nav-links.mobile-open a {
+      padding: 0.75rem 0;
+      font-size: 1rem;
+    }
+
+    .nav-links.mobile-open .nav-cta {
+      text-align: center;
+      margin-top: 0.5rem;
     }
 
     /* ========== SECTIONS BASE ========== */
@@ -516,6 +544,14 @@
       line-height: 1.6;
     }
 
+    .feature-card:not(:has(img)) {
+      padding-top: 1.5rem;
+    }
+
+    .feature-card:not(:has(img)) h3 {
+      font-size: 1.15rem;
+    }
+
     /* ========== ABOUT ========== */
     #about {
       background: var(--hm-dark);
@@ -673,6 +709,7 @@
       transition: all 0.2s ease;
       border: none;
       font-size: 1rem;
+      min-height: 48px; /* Touch-friendly */
     }
 
     .pricing-cta-primary {
@@ -728,6 +765,7 @@
       font-weight: 600;
       color: var(--hm-white);
       transition: background 0.2s ease;
+      min-height: 56px; /* Touch-friendly */
     }
 
     .faq-question:hover {
@@ -765,8 +803,8 @@
     /* ========== FINAL CTA ========== */
     #final-cta {
       text-align: center;
-      padding: 100px 2rem;
-      background: var(--hm-dark);
+      padding: 120px 2rem;
+      background: linear-gradient(180deg, #0d0d0d 0%, var(--hm-dark) 50%, #0a0808 100%);
       color: var(--hm-text);
       position: relative;
       overflow: hidden;
@@ -904,6 +942,24 @@
 
       .hero-content h1 {
         font-size: 2.25rem;
+      }
+
+      /* Features grid single column on mobile */
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      /* Footer mobile layout */
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
       }
 
       .journey-wrapper {
@@ -1473,12 +1529,30 @@
         order: 1;
       }
 
+      /* Center the HiveMind AR logo+text on mobile */
+      .hero-text > div:first-child {
+        justify-content: center;
+      }
+
       .hero-demo {
         order: 2;
       }
 
       .hero-text h1 {
         font-size: 2.5rem;
+      }
+
+      /* Challenge section mobile */
+      #challenge {
+        padding: 60px 1.5rem !important;
+      }
+
+      #challenge h2 {
+        font-size: 1.5rem !important;
+      }
+
+      #challenge p {
+        font-size: 1rem !important;
       }
 
       .phone-mockup {
@@ -1600,6 +1674,22 @@
         --section-padding: 60px;
       }
 
+      /* HiveMind AR logo+text smaller on mobile */
+      .hero-text > div:first-child {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .hero-text > div:first-child img {
+        height: 40px !important;
+        width: 40px !important;
+      }
+
+      .hero-text > div:first-child span {
+        font-size: 1.25rem !important;
+      }
+
       .hero-text h1 {
         font-size: 1.75rem;
       }
@@ -1664,12 +1754,16 @@
   <!-- Hero -->
   <section id="hero" class="section-dark">
     <div class="stag-bg stag-gold">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+      <img src="/public/images/brand/HMC_Logo_AR.png" alt="">
     </div>
     <div class="hero-split">
       <div class="hero-text">
-        <h1 class="fade-in-up">Buyers See Your Art <span class="highlight">On Their Wall</span> Before They Buy</h1>
-        <p class="fade-in-up">Send a link. They point their phone at any wall. Your artwork appears at true scale in their space. No app download needed.</p>
+        <div class="fade-in-up" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+          <img src="/public/images/brand/HMC_Logo_AR.png" alt="HiveMind AR" style="height: 48px; width: 48px; object-fit: contain;">
+          <span style="font-size: 1.5rem; font-weight: 600; color: var(--hm-white); letter-spacing: 0.5px;">HiveMind AR</span>
+        </div>
+        <h1 class="fade-in-up">Let Collectors See Your Art <span class="highlight">In Their Space</span></h1>
+        <p class="fade-in-up">One link. Any wall. True scale. No app required.</p>
         <div class="hero-ctas fade-in-up">
           <a href="/pages/auth/signup.html" class="btn-primary">Start Free - Upload 3 Artworks</a>
           <a href="#live-demo" class="btn-secondary">Try the Demo</a>
@@ -1731,21 +1825,35 @@
     </div>
   </section>
 
+  <!-- The Challenge -->
+  <section id="challenge" class="section-dark" style="padding: 80px 2rem; background: linear-gradient(180deg, var(--hm-dark) 0%, #0d0d0d 100%);">
+    <div class="container" style="max-width: 800px; text-align: center;">
+      <h2 class="fade-in-up" style="font-size: 2rem; font-weight: 600; color: var(--hm-white); margin-bottom: 1.5rem;">The Problem with Selling Art Online</h2>
+      <p class="fade-in-up" style="font-size: 1.15rem; color: var(--hm-text-muted); line-height: 1.8; margin-bottom: 1rem;">
+        Collectors hesitate. They can't tell if a piece will fit their wall, match their room, or feel right at that size.
+        Photos flatten everything. Dimensions on a listing mean nothing until you see them in context.
+      </p>
+      <p class="fade-in-up" style="font-size: 1.15rem; color: var(--hm-text); line-height: 1.8;">
+        <strong>The result:</strong> abandoned carts, endless questions, and sales that never close.
+      </p>
+    </div>
+  </section>
+
   <!-- How It Works - Scroll Pinned -->
   <div id="how-it-works-container">
     <section id="how-it-works" class="section-dark">
       <div class="stag-bg stag-emerald">
-        <img src="/images/brand/HMC_Logo_AR.png" alt="">
+        <img src="/public/images/brand/HMC_Logo_AR.png" alt="">
       </div>
       <div class="journey-wrapper">
         <div class="journey-path">
           <div class="journey-line" id="journeyLine"></div>
           <div class="journey-stag" id="journeyStag">
-            <img src="/images/brand/HMC_Logo_AR.png" alt="">
+            <img src="/public/images/brand/HMC_Logo_AR.png" alt="">
           </div>
         </div>
         <div class="journey-steps">
-          <h2 style="font-size: 2rem; margin-bottom: 2rem; color: var(--hm-white);">Three Steps to Global Sales</h2>
+          <h2 style="font-size: 2rem; margin-bottom: 2rem; color: var(--hm-white); text-shadow: 0 2px 20px rgba(0,0,0,0.8);">Three Steps to Global Sales</h2>
           <div class="journey-step" data-step="1">
             <div class="journey-step-number">1</div>
             <h3>Upload Your Artwork</h3>
@@ -1770,24 +1878,40 @@
   <section id="features" class="section-light">
     <div class="container">
       <div class="section-header">
-        <h2 class="fade-in-up">Why Artists Choose HiveMind AR</h2>
-        <p class="fade-in-up">Remove the guesswork from buying art online</p>
+        <h2 class="fade-in-up">Built for Artists Who Sell</h2>
+        <p class="fade-in-up">Remove the guesswork. Close more sales.</p>
       </div>
       <div class="features-grid stagger-children">
         <div class="feature-card fade-in-up">
-          <img src="/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR">
-          <h3>True-to-Life Scale</h3>
-          <p>Your 24"×36" painting appears exactly 24"×36" on their wall. Not "approximately" - <strong>exactly</strong>. Buyers see the real size before purchasing.</p>
+          <img src="/public/images/illustrations/03_true_scale_ar.svg" alt="True Scale AR">
+          <h3>True-Scale Accuracy</h3>
+          <p>Your 24"×36" painting appears exactly 24"×36" on their wall. Not "approximately" — <strong>exactly</strong>. Buyers see the real size before purchasing.</p>
         </div>
         <div class="feature-card fade-in-up">
-          <img src="/images/illustrations/05_analytics.svg" alt="Analytics Dashboard">
-          <h3>Zero Friction for Buyers</h3>
-          <p>No app to download. No account to create. Buyers click your link and view AR instantly in their browser. Every extra step loses customers - we eliminated them all.</p>
+          <img src="/public/images/illustrations/09_about_philosophy.svg" alt="No App Required">
+          <h3>No App Required</h3>
+          <p>Buyers click your link and view AR instantly in their browser. No app store, no account creation, no friction. Works on any modern smartphone.</p>
         </div>
         <div class="feature-card fade-in-up">
-          <img src="/images/illustrations/09_about_philosophy.svg" alt="Sell Anywhere">
-          <h3>Sell Anywhere in the World</h3>
-          <p>A collector in Tokyo can see your painting on their wall at 3am their time. Share one link - sell globally.</p>
+          <img src="/public/images/illustrations/05_analytics.svg" alt="No Commission Fees">
+          <h3>Zero Commission Fees</h3>
+          <p>You keep what you earn. We charge a simple monthly subscription — never a percentage of your sales. Your success is yours.</p>
+        </div>
+      </div>
+
+      <!-- Secondary Features Row -->
+      <div class="features-grid stagger-children" style="margin-top: 2rem;">
+        <div class="feature-card fade-in-up">
+          <h3 style="margin-top: 1rem;">Global Reach</h3>
+          <p>A collector in Tokyo can see your painting on their wall at 3am their time. One link reaches the whole world.</p>
+        </div>
+        <div class="feature-card fade-in-up">
+          <h3 style="margin-top: 1rem;">Direct Messaging</h3>
+          <p>Interested buyers contact you directly through your gallery. No middleman, no delays — just you and your collector.</p>
+        </div>
+        <div class="feature-card fade-in-up">
+          <h3 style="margin-top: 1rem;">Analytics Dashboard</h3>
+          <p>See which pieces get the most views, which trigger AR sessions, and where your collectors are located.</p>
         </div>
       </div>
     </div>
@@ -1796,7 +1920,7 @@
   <!-- Live Demo -->
   <section id="live-demo" class="section-dark">
     <div class="stag-bg stag-silver">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+      <img src="/public/images/brand/HMC_Logo_AR.png" alt="">
     </div>
     <div class="container">
       <div class="section-header">
@@ -1851,33 +1975,33 @@
   <section id="pricing" class="section-light">
     <div class="container">
       <div class="section-header">
-        <h2 class="fade-in-up">Start Free, Upgrade When Ready</h2>
-        <p class="fade-in-up">No credit card required. Full AR functionality on every plan.</p>
+        <h2 class="fade-in-up">Simple Pricing. Zero Commission.</h2>
+        <p class="fade-in-up">Full AR functionality on every plan. No credit card required to start.</p>
       </div>
       <div class="pricing-grid stagger-children">
         <!-- Free -->
         <div class="pricing-card fade-in-up">
           <h3>Free</h3>
-          <div class="tagline">Perfect for getting started</div>
+          <div class="tagline">Try it. No commitment.</div>
           <div class="price">$0<span>/mo</span></div>
           <div class="artwork-limit">3 Artworks</div>
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> AR viewing for collectors</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Basic gallery URL</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> "Powered by HiveMind" badge</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Full AR functionality</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Direct buyer messaging</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Shareable gallery link</li>
           </ul>
-          <button class="pricing-cta pricing-cta-secondary">Get Started</button>
+          <button class="pricing-cta pricing-cta-secondary">Get Started Free</button>
         </div>
         <!-- Artist -->
         <div class="pricing-card fade-in-up">
           <h3>Artist</h3>
-          <div class="tagline">For growing artists</div>
+          <div class="tagline">Your own branded gallery</div>
           <div class="price">$12<span>/mo</span></div>
           <div class="artwork-limit">10 Artworks</div>
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Everything in Free</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Custom URL slug</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Remove HiveMind badge</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Custom gallery URL</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> No HiveMind branding</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Professional presentation</li>
           </ul>
           <button class="pricing-cta pricing-cta-secondary">Choose Artist</button>
         </div>
@@ -1885,12 +2009,12 @@
         <div class="pricing-card popular fade-in-up">
           <div class="pricing-popular-badge">Most Popular</div>
           <h3>Established</h3>
-          <div class="tagline">Best value for serious artists</div>
+          <div class="tagline">Grow with data</div>
           <div class="price">$19<span>/mo</span></div>
           <div class="artwork-limit">25 Artworks</div>
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Everything in Artist</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Analytics dashboard</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> See what collectors view</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Priority support</li>
           </ul>
           <button class="pricing-cta pricing-cta-primary">Choose Established</button>
@@ -1898,11 +2022,11 @@
         <!-- Professional -->
         <div class="pricing-card fade-in-up">
           <h3>Professional</h3>
-          <div class="tagline">For galleries & power sellers</div>
+          <div class="tagline">For serious sellers</div>
           <div class="price">$29<span>/mo</span></div>
           <div class="artwork-limit">75 Artworks</div>
           <ul class="pricing-features">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Everything in Established</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Full catalog capacity</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Advanced analytics</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg> Featured placement</li>
           </ul>
@@ -1915,7 +2039,7 @@
   <!-- FAQ -->
   <section id="faq" class="section-dark">
     <div class="stag-bg stag-amethyst">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+      <img src="/public/images/brand/HMC_Logo_AR.png" alt="">
     </div>
     <div class="container">
       <div class="section-header">
@@ -1975,12 +2099,12 @@
   <!-- Final CTA -->
   <section id="final-cta" class="section-dark">
     <div class="stag-bg stag-ruby">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="">
+      <img src="/public/images/brand/HMC_Logo_AR.png" alt="">
     </div>
     <div class="final-cta-content">
-      <h2 class="fade-in-up">Your Art Deserves to Be Seen in Context</h2>
-      <p class="fade-in-up">Upload your first 3 pieces free. Give buyers the confidence to purchase without seeing it in person.</p>
-      <a href="/pages/auth/signup.html" class="btn-primary fade-in-up">Create Your Free Gallery</a>
+      <h2 class="fade-in-up">Ready to Sell with Confidence?</h2>
+      <p class="fade-in-up">Give collectors the clarity they need to buy. Start free — upgrade when you're ready.</p>
+      <a href="/pages/auth/signup.html" class="btn-primary fade-in-up" style="font-size: 1.15rem; padding: 1.1rem 2.5rem;">Create Your Free Gallery</a>
       <div class="final-cta-badges fade-in-up">
         <div class="final-cta-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
@@ -1988,11 +2112,11 @@
         </div>
         <div class="final-cta-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
-          <span>Free tier available forever</span>
+          <span>Zero commission, ever</span>
         </div>
         <div class="final-cta-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg>
-          <span>Upgrade or cancel anytime</span>
+          <span>Cancel anytime</span>
         </div>
       </div>
     </div>
@@ -2025,6 +2149,23 @@
       } else {
         nav.classList.remove('scrolled');
       }
+    });
+
+    // ========== MOBILE MENU TOGGLE ==========
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('mobile-open');
+      navToggle.textContent = navLinks.classList.contains('mobile-open') ? '✕' : '☰';
+    });
+
+    // Close mobile menu when clicking a link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('mobile-open');
+        navToggle.textContent = '☰';
+      });
     });
 
     // ========== FAQ ACCORDION ==========
