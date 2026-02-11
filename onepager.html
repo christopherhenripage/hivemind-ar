@@ -244,7 +244,7 @@
     }
 
     .faq-item.open .faq-content {
-      max-height: 300px;
+      max-height: 500px;
       padding: 0 24px 20px;
     }
 
@@ -434,10 +434,169 @@
       position: relative;
     }
 
+    /* ===== PHONE AR MOCKUP (Hero Panel) ===== */
+    .phone-notch {
+      width: 80px;
+      height: 22px;
+      background: #0a0908;
+      border-radius: 0 0 14px 14px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .phone-ar-scene {
+      position: relative;
+      height: 340px;
+      overflow: hidden;
+    }
+
+    .phone-wall {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 68%;
+      background: linear-gradient(180deg, #e8dcc8 0%, #d8ccb4 100%);
+    }
+
+    .phone-floor {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 32%;
+      background: linear-gradient(180deg, #b8a88c 0%, #9a8a70 100%);
+      background-image: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 20px,
+        rgba(0,0,0,0.05) 20px,
+        rgba(0,0,0,0.05) 21px
+      );
+    }
+
+    /* Wall-floor shadow line */
+    .phone-floor::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 12px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 100%);
+    }
+
+    .phone-artwork-wrap {
+      position: absolute;
+      top: 42%;
+      left: 50%;
+      transform: translate(-50%, -55%);
+      z-index: 1;
+    }
+
+    .phone-golden-frame {
+      padding: 5px;
+      background: linear-gradient(145deg, #c4a050 0%, #d4b868 30%, #a08030 55%, #c4a050 80%, #d4b868 100%);
+      border-radius: 2px;
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.35),
+        0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .phone-artwork-canvas {
+      width: 100px;
+      height: 130px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f1a2e 50%, #1a0f1a 100%);
+      position: relative;
+      overflow: hidden;
+      border-radius: 1px;
+    }
+
+    /* AR corner brackets */
+    .phone-ar-bracket {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      z-index: 2;
+    }
+
+    .phone-ar-bracket.tl { top: -10px; left: -10px; border-top: 2px solid #c4a050; border-left: 2px solid #c4a050; }
+    .phone-ar-bracket.tr { top: -10px; right: -10px; border-top: 2px solid #c4a050; border-right: 2px solid #c4a050; }
+    .phone-ar-bracket.bl { bottom: -10px; left: -10px; border-bottom: 2px solid #c4a050; border-left: 2px solid #c4a050; }
+    .phone-ar-bracket.br { bottom: -10px; right: -10px; border-bottom: 2px solid #c4a050; border-right: 2px solid #c4a050; }
+
+    /* Actual size badge */
+    .phone-size-badge {
+      position: absolute;
+      bottom: -6px;
+      right: -16px;
+      background: rgba(10, 9, 8, 0.92);
+      border: 1px solid rgba(196, 160, 80, 0.4);
+      border-radius: 6px;
+      padding: 4px 8px;
+      z-index: 3;
+      text-align: center;
+    }
+
+    .phone-size-badge .badge-label {
+      display: block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 7px;
+      color: rgba(200, 200, 200, 0.7);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .phone-size-badge .badge-value {
+      display: block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      color: #c4a050;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    /* Action bar at bottom of phone screen */
+    .phone-action-bar {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 3;
+    }
+
+    .phone-action-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #F5F3EF;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .phone-action-btn.btn-gold {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(145deg, #c4a050 0%, #d4b868 100%);
+    }
+
+    .phone-action-btn svg {
+      width: 18px;
+      height: 18px;
+      color: #1a1a1a;
+    }
+
+    .phone-action-btn.btn-gold svg {
+      width: 22px;
+      height: 22px;
+      color: #1a1816;
+    }
+
     /* Gallery label style */
     .gallery-label {
       font-family: 'Space Grotesk', monospace;
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 0.2em;
       color: rgba(212, 165, 116, 0.7);
       text-transform: uppercase;
@@ -733,7 +892,7 @@
 
     /* Compatibility note */
     .compat-note {
-      font-size: 11px;
+      font-size: 12px;
       color: rgba(138, 133, 125, 0.7);
       text-align: center;
       margin-top: 12px;
@@ -896,6 +1055,23 @@
       .desktop-only { display: none; }
     }
 
+    /* ===== MOBILE PERFORMANCE ===== */
+    @media (max-width: 768px) {
+      .spotlight {
+        filter: blur(80px);
+        opacity: 0.12;
+      }
+      .glass-pane,
+      .studio-plate,
+      .faq-trigger {
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      .grain {
+        opacity: 0.03;
+      }
+    }
+
     /* ===== JOURNEY MOBILE FIX ===== */
     @media (max-width: 1023px) {
       #journey-container {
@@ -947,13 +1123,20 @@
       .stag-gold,
       .stag-rose,
       .stag-emerald,
-      .float-3d {
+      .float-3d,
+      .animate-pulse,
+      .proof-number.animate {
         animation: none;
       }
       .soft-reveal,
       .journey-card {
         opacity: 1;
         transform: none;
+        transition: none;
+      }
+      .fiber-path,
+      .fiber-path::before,
+      .fiber-path::after {
         transition: none;
       }
       html {
@@ -976,11 +1159,15 @@
     /* ===== FOOTER TOUCH TARGETS ===== */
     .gallery-footer ul a {
       display: inline-block;
-      padding: 4px 0;
+      padding: 12px 0;
+      min-height: 44px;
     }
   </style>
 </head>
 <body class="font-body bg-obsidian text-galvanized antialiased overflow-x-hidden">
+
+  <!-- Skip to content (accessibility) -->
+  <a href="#hero" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-gallery-amber focus:text-obsidian focus:rounded-gallery focus:font-display focus:font-medium focus:text-sm">Skip to content</a>
 
   <!-- Film grain overlay -->
   <div class="grain"></div>
@@ -1006,7 +1193,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
         </button>
-        <a href="/pages/auth/signup.html" class="group relative px-6 py-2.5 glass-pane border-gallery-amber/30 hover:border-gallery-amber/60 text-gallery-amber font-display font-medium text-sm tracking-gallery transition-all duration-500 hover:shadow-[0_0_50px_rgba(212,165,116,0.15)]">
+        <a href="/pages/auth/signup.html" class="group relative px-6 py-3 glass-pane border-gallery-amber/30 hover:border-gallery-amber/60 text-gallery-amber font-display font-medium text-sm tracking-gallery transition-all duration-500 hover:shadow-[0_0_50px_rgba(212,165,116,0.15)] min-h-[44px] inline-flex items-center">
           <span class="relative z-10">Open Gallery</span>
         </a>
       </div>
@@ -1063,7 +1250,7 @@
             <span class="text-xs text-warm-stone tracking-exhibition">NO APP REQUIRED</span>
           </div>
 
-          <h1 class="font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight soft-reveal soft-reveal-delay-1">
+          <h1 class="font-display font-bold text-3xl sm:text-4xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight soft-reveal soft-reveal-delay-1">
             <span class="text-canvas-white">Your art.</span><br>
             <span class="shimmer-text">Their wall.</span><br>
             <span class="text-gallery-amber">60 seconds.</span>
@@ -1086,7 +1273,7 @@
           </div>
 
           <!-- Stats -->
-          <div class="flex items-center gap-10 pt-8 soft-reveal soft-reveal-delay-3">
+          <div class="flex items-center gap-4 sm:gap-10 pt-8 soft-reveal soft-reveal-delay-3">
             <div class="text-center">
               <p class="font-display font-bold text-3xl text-canvas-white">1:1</p>
               <p class="gallery-label mt-2">True Scale</p>
@@ -1124,82 +1311,89 @@
         <!-- Right: Try It Instantly Demo Panel -->
         <div class="relative flex justify-center lg:justify-end soft-reveal soft-reveal-delay-2">
           <div class="demo-panel w-full max-w-[420px]">
-            <!-- Room Preview Area -->
-            <div class="room-preview" id="roomPreview" data-room="gallery">
-              <!-- Desktop preview label -->
+            <!-- Phone AR Mockup -->
+            <div class="relative p-8 pb-5 flex justify-center">
+              <!-- PREVIEW MODE label (image 3 design element) -->
               <div class="desktop-preview-label desktop-only" id="desktopPreviewLabel">
                 PREVIEW MODE
               </div>
 
-              <!-- Artwork Preview -->
-              <div class="preview-artwork" id="previewArtwork">
-                <div class="preview-artwork-inner" id="previewArtworkInner" style="width: 140px; height: 180px;">
-                  <!-- Abstract artwork visualization -->
-                  <div class="w-full h-full relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#0f1a2e] to-[#1a0f1a]"></div>
-                    <div class="absolute top-1/4 left-1/4 w-16 h-16 bg-amber-glow/40 rounded-full blur-xl"></div>
-                    <div class="absolute bottom-1/3 right-1/4 w-12 h-12 bg-gallery-amber/35 rounded-full blur-lg"></div>
-                    <div class="absolute top-1/2 left-1/2 w-8 h-8 bg-canvas-white/25 rounded-full blur-md"></div>
+              <!-- Phone Frame -->
+              <div class="gallery-phone w-[240px] float-3d">
+                <div class="gallery-screen">
+                  <!-- Phone notch -->
+                  <div class="phone-notch"></div>
+
+                  <!-- AR Scene -->
+                  <div class="phone-ar-scene">
+                    <!-- Wall -->
+                    <div class="phone-wall"></div>
+                    <!-- Floor with planks -->
+                    <div class="phone-floor"></div>
+
+                    <!-- Artwork with golden frame + AR brackets -->
+                    <div class="phone-artwork-wrap">
+                      <!-- AR corner brackets -->
+                      <div class="phone-ar-bracket tl"></div>
+                      <div class="phone-ar-bracket tr"></div>
+                      <div class="phone-ar-bracket bl"></div>
+                      <div class="phone-ar-bracket br"></div>
+
+                      <!-- Golden frame -->
+                      <div class="phone-golden-frame">
+                        <div class="phone-artwork-canvas">
+                          <!-- Abstract artwork (matches existing orbs) -->
+                          <div class="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#0f1a2e] to-[#1a0f1a]"></div>
+                          <div class="absolute" style="top:22%;left:28%;width:36px;height:36px;background:rgba(212,165,116,0.5);border-radius:50%;filter:blur(12px)"></div>
+                          <div class="absolute" style="top:40%;left:55%;width:24px;height:24px;background:rgba(80,200,170,0.4);border-radius:50%;filter:blur(10px)"></div>
+                          <div class="absolute" style="bottom:25%;right:25%;width:40px;height:40px;background:rgba(140,80,200,0.45);border-radius:50%;filter:blur(14px)"></div>
+                          <div class="absolute" style="top:50%;left:40%;width:14px;height:14px;background:rgba(245,243,239,0.3);border-radius:50%;filter:blur(6px)"></div>
+                        </div>
+                      </div>
+
+                      <!-- Actual Size badge -->
+                      <div class="phone-size-badge">
+                        <span class="badge-label">Actual size</span>
+                        <span class="badge-value">24" × 36"</span>
+                      </div>
+                    </div>
+
+                    <!-- Action bar at bottom -->
+                    <div class="phone-action-bar">
+                      <!-- Frame picker -->
+                      <div class="phone-action-btn" aria-label="Change frame">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4z"/></svg>
+                      </div>
+                      <!-- Confirm / Place -->
+                      <div class="phone-action-btn btn-gold" aria-label="Confirm placement">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                      </div>
+                      <!-- Message artist -->
+                      <div class="phone-action-btn" aria-label="Message artist">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <!-- AR corner markers -->
-                <div class="absolute -inset-3 pointer-events-none opacity-50">
-                  <div class="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-gallery-amber/60"></div>
-                  <div class="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-gallery-amber/60"></div>
-                  <div class="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-gallery-amber/60"></div>
-                  <div class="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-gallery-amber/60"></div>
-                </div>
-              </div>
-
-              <!-- Dimension badge -->
-              <div class="preview-dimension-badge" id="previewDimensionBadge">
-                24" × 36" • 1:1 SCALE
               </div>
             </div>
 
-            <!-- Demo Controls -->
+            <!-- Bottom CTA strip -->
             <div class="demo-controls p-5">
-              <!-- Dimension & Room Controls -->
-              <div class="flex flex-wrap items-center gap-3 mb-5">
-                <div class="flex items-center gap-2">
-                  <label for="demoWidth" class="gallery-label">W</label>
-                  <input type="number" id="demoWidth" class="dimension-input w-16" value="24" min="4" max="120" aria-label="Width in inches">
-                </div>
-                <span class="text-warm-stone">×</span>
-                <div class="flex items-center gap-2">
-                  <label for="demoHeight" class="gallery-label">H</label>
-                  <input type="number" id="demoHeight" class="dimension-input w-16" value="36" min="4" max="120" aria-label="Height in inches">
-                </div>
-                <span class="text-warm-stone text-xs">in</span>
-
-                <div class="ml-auto">
-                  <select id="roomSelect" class="demo-select" aria-label="Room style">
-                    <option value="gallery">Gallery</option>
-                    <option value="bright">Bright Wall</option>
-                    <option value="warm">Warm Wall</option>
-                  </select>
-                </div>
-              </div>
-
               <!-- Device-aware CTAs -->
               <div class="flex flex-col sm:flex-row gap-3" id="demoCTAContainer">
-                <!-- Primary CTA (changes based on device) -->
                 <button id="demoPrimaryCTA" class="demo-cta-primary flex-1" type="button">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                   <span id="demoPrimaryCTAText">View in Your Space</span>
                 </button>
-
-                <!-- Secondary CTA -->
                 <button id="demoSecondaryCTA" class="demo-cta-secondary" type="button">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                   <span>Desktop Preview</span>
                 </button>
               </div>
-
-              <!-- Compatibility note -->
               <p class="compat-note">
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                True-scale AR works on iPhone Safari and Android Chrome. Desktop shows preview.
+                No app required. Works in iPhone Safari and Android Chrome.
               </p>
             </div>
           </div>
@@ -1239,7 +1433,7 @@
 
         <div class="relative z-10 max-w-6xl mx-auto px-6 w-full">
           <!-- Header -->
-          <div class="text-center mb-20">
+          <div class="text-center mb-10 md:mb-20">
             <p class="gallery-label mb-4">The Curation</p>
             <h2 class="font-display font-bold text-4xl md:text-5xl tracking-tight">
               <span class="text-canvas-white">Curate.</span>
@@ -1345,7 +1539,7 @@
   </section>
 
   <!-- Features -->
-  <section id="features" class="py-32 px-6 relative overflow-hidden">
+  <section id="features" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden">
     <div class="spotlight spotlight-silver w-[500px] h-[500px] top-0 right-0 opacity-10"></div>
 
     <!-- Pulsing Stag Background - CYAN -->
@@ -1354,7 +1548,7 @@
     </div>
 
     <div class="max-w-6xl mx-auto relative z-10">
-      <div class="text-center mb-20 soft-reveal">
+      <div class="text-center mb-10 md:mb-20 soft-reveal">
         <p class="gallery-label mb-4">The Platform</p>
         <h2 class="font-display font-bold text-4xl md:text-5xl text-canvas-white tracking-tight">
           Why Artists Choose <span class="shimmer-text">HiveMind AR</span>
@@ -1439,7 +1633,7 @@
   </section>
 
   <!-- Testimonials -->
-  <section id="testimonials" class="py-32 px-6 relative overflow-hidden">
+  <section id="testimonials" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden">
     <div class="spotlight spotlight-amber w-[600px] h-[600px] top-1/3 right-1/4 opacity-10"></div>
 
     <!-- Pulsing Stag Background - ROSE -->
@@ -1448,7 +1642,7 @@
     </div>
 
     <div class="max-w-5xl mx-auto relative z-10">
-      <div class="text-center mb-20 soft-reveal">
+      <div class="text-center mb-10 md:mb-20 soft-reveal">
         <p class="gallery-label mb-4">Real Results</p>
         <h2 class="font-display font-bold text-4xl md:text-5xl text-canvas-white tracking-tight">
           Artists Are <span class="shimmer-text">Selling More</span>
@@ -1530,7 +1724,7 @@
   </section>
 
   <!-- Exhibition Tiers -->
-  <section id="exhibition" class="py-32 px-6 relative overflow-hidden">
+  <section id="exhibition" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden">
     <div class="spotlight spotlight-amber w-[600px] h-[600px] bottom-0 left-1/4 opacity-10"></div>
 
     <!-- Pulsing Stag Background - SILVER -->
@@ -1539,7 +1733,7 @@
     </div>
 
     <div class="max-w-6xl mx-auto relative z-10">
-      <div class="text-center mb-20 soft-reveal">
+      <div class="text-center mb-10 md:mb-20 soft-reveal">
         <p class="gallery-label mb-4">Exhibition Tiers</p>
         <h2 class="font-display font-bold text-4xl md:text-5xl text-canvas-white tracking-tight mb-4">
           Start Free. <span class="shimmer-text">Grow Freely.</span>
@@ -1617,7 +1811,7 @@
         </div>
 
         <!-- Established - Featured -->
-        <div class="relative glass-pane p-7 border-gallery-amber/20 shadow-[0_0_100px_rgba(212,165,116,0.08)] card-3d-hover soft-reveal soft-reveal-delay-2">
+        <div class="relative glass-pane p-7 pt-9 mt-4 sm:mt-0 border-gallery-amber/20 shadow-[0_0_100px_rgba(212,165,116,0.08)] card-3d-hover soft-reveal soft-reveal-delay-2">
           <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gallery-amber text-obsidian text-xs font-display font-semibold rounded-gallery tracking-wide whitespace-nowrap">
             MOST POPULAR
           </div>
@@ -1696,7 +1890,7 @@
   </section>
 
   <!-- FAQ -->
-  <section id="faq" class="py-32 px-6 relative overflow-hidden">
+  <section id="faq" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden">
     <div class="spotlight spotlight-silver w-[500px] h-[500px] top-1/4 left-1/4 opacity-10"></div>
 
     <!-- Pulsing Stag Background - EMERALD -->
@@ -1715,55 +1909,55 @@
       <div class="space-y-3 soft-reveal">
         <!-- FAQ 1 -->
         <div class="faq-item">
-          <button class="faq-trigger" onclick="toggleFaq(this)">
+          <button class="faq-trigger" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq1">
             <span class="font-display font-medium text-canvas-white text-sm pr-4">Do my buyers need to download an app?</span>
             <svg class="faq-chevron w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div class="faq-content">
+          <div class="faq-content" id="faq1" role="region" aria-hidden="true">
             <p class="text-warm-stone text-sm leading-relaxed">No. This is our biggest advantage. Buyers click your link and the AR opens directly in their phone's browser. No app store, no account creation, no friction. Works on iPhone, iPad, and Android.</p>
           </div>
         </div>
 
         <!-- FAQ 2 -->
         <div class="faq-item">
-          <button class="faq-trigger" onclick="toggleFaq(this)">
+          <button class="faq-trigger" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq2">
             <span class="font-display font-medium text-canvas-white text-sm pr-4">How accurate is the sizing?</span>
             <svg class="faq-chevron w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div class="faq-content">
+          <div class="faq-content" id="faq2" role="region" aria-hidden="true">
             <p class="text-warm-stone text-sm leading-relaxed">Extremely accurate. You enter your artwork's exact dimensions (e.g., 24" x 36"), and that's exactly how it appears on the buyer's wall. This is true-scale AR, not a rough approximation. It's why our artists report significantly fewer "it's not what I expected" returns.</p>
           </div>
         </div>
 
         <!-- FAQ 3 -->
         <div class="faq-item">
-          <button class="faq-trigger" onclick="toggleFaq(this)">
+          <button class="faq-trigger" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq3">
             <span class="font-display font-medium text-canvas-white text-sm pr-4">What devices does this work on?</span>
             <svg class="faq-chevron w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div class="faq-content">
+          <div class="faq-content" id="faq3" role="region" aria-hidden="true">
             <p class="text-warm-stone text-sm leading-relaxed">Any modern smartphone or tablet with a camera. iPhone (6S and newer), iPad, and most Android devices from the past 4-5 years. Uses WebXR technology built into browsers — no special hardware required.</p>
           </div>
         </div>
 
         <!-- FAQ 4 -->
         <div class="faq-item">
-          <button class="faq-trigger" onclick="toggleFaq(this)">
+          <button class="faq-trigger" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq4">
             <span class="font-display font-medium text-canvas-white text-sm pr-4">Can I try it before signing up?</span>
             <svg class="faq-chevron w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div class="faq-content">
+          <div class="faq-content" id="faq4" role="region" aria-hidden="true">
             <p class="text-warm-stone text-sm leading-relaxed">Yes! Use the demo panel at the top of this page or visit our <a href="/pages/public/ar-demo.html" class="text-gallery-amber hover:text-amber-glow transition-colors">AR demo page</a> — no signup needed. Point your phone at any wall and see how it works.</p>
           </div>
         </div>
 
         <!-- FAQ 5 -->
         <div class="faq-item">
-          <button class="faq-trigger" onclick="toggleFaq(this)">
+          <button class="faq-trigger" onclick="toggleFaq(this)" aria-expanded="false" aria-controls="faq5">
             <span class="font-display font-medium text-canvas-white text-sm pr-4">What's the catch with the free plan?</span>
             <svg class="faq-chevron w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div class="faq-content">
+          <div class="faq-content" id="faq5" role="region" aria-hidden="true">
             <p class="text-warm-stone text-sm leading-relaxed">No catch. Free plan includes 3 artworks with full AR functionality. The only difference is a small "Powered by HiveMind" badge on your gallery. Upgrade when you need more artworks or want the badge removed. No credit card required to start.</p>
           </div>
         </div>
@@ -1772,7 +1966,7 @@
   </section>
 
   <!-- Final CTA -->
-  <section class="py-32 px-6 relative overflow-hidden">
+  <section class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden">
     <div class="spotlight spotlight-amber w-[900px] h-[900px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-15"></div>
 
     <!-- Forged Stag Background - GOLD (enlarged + boosted) -->
@@ -2271,6 +2465,17 @@
       if (e.key === 'Escape' && mobileMenu && !mobileMenu.classList.contains('translate-x-full')) {
         closeMobileMenu();
       }
+      // Focus trap for mobile menu
+      if (e.key === 'Tab' && mobileMenu && !mobileMenu.classList.contains('translate-x-full')) {
+        const focusable = mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
     });
 
     // ===== FAQ ACCORDION =====
@@ -2278,12 +2483,18 @@
       const item = btn.parentElement;
       const isOpen = item.classList.contains('open');
 
-      // Close all items
-      document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('open'));
+      // Close all items and reset aria
+      document.querySelectorAll('.faq-item').forEach(el => {
+        el.classList.remove('open');
+        el.querySelector('.faq-trigger').setAttribute('aria-expanded', 'false');
+        el.querySelector('.faq-content').setAttribute('aria-hidden', 'true');
+      });
 
       // Open clicked item (if it wasn't already open)
       if (!isOpen) {
         item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        item.querySelector('.faq-content').setAttribute('aria-hidden', 'false');
       }
     }
   </script>
