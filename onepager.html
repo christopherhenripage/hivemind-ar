@@ -849,7 +849,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 14px 24px;
+      padding: 15px 24px;
       background: #F5F3EF;
       color: #050505;
       font-family: 'Space Grotesk', sans-serif;
@@ -893,7 +893,7 @@
     /* Compatibility note */
     .compat-note {
       font-size: 12px;
-      color: rgba(138, 133, 125, 0.7);
+      color: rgba(138, 133, 125, 0.85);
       text-align: center;
       margin-top: 12px;
     }
@@ -1064,11 +1064,12 @@
       .glass-pane,
       .studio-plate,
       .faq-trigger {
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(15, 14, 13, 0.85);
       }
       .grain {
-        opacity: 0.03;
+        display: none;
       }
     }
 
@@ -1123,6 +1124,8 @@
       .stag-gold,
       .stag-rose,
       .stag-emerald,
+      .stag-teal,
+      .stag-indigo,
       .float-3d,
       .animate-pulse,
       .proof-number.animate {
@@ -1153,7 +1156,8 @@
     .dimension-input:focus-visible,
     .demo-select:focus-visible,
     .qr-link-input:focus-visible {
-      outline: none;
+      outline: 2px solid rgba(212, 165, 116, 0.8);
+      outline-offset: 2px;
     }
 
     /* ===== FOOTER TOUCH TARGETS ===== */
@@ -1161,6 +1165,197 @@
       display: inline-block;
       padding: 12px 0;
       min-height: 44px;
+    }
+
+    /* ===== HEXAGONAL GRID BACKGROUND ===== */
+    .hex-grid-bg {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 34L0 84V50l28-16 28 16v34L28 100z' fill='none' stroke='rgba(212,165,116,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
+      background-size: 56px 100px;
+    }
+
+    /* Hexagonal step indicator */
+    .hex-step {
+      width: 64px;
+      height: 64px;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      background: linear-gradient(145deg, rgba(212, 165, 116, 0.15), rgba(212, 165, 116, 0.05));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .hex-step-inner {
+      width: 58px;
+      height: 58px;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      background: rgba(15, 14, 13, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Vision section cards */
+    .vision-step-card {
+      background: rgba(12, 11, 10, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(200, 200, 200, 0.08);
+      border-radius: 8px;
+      padding: 32px;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .vision-step-card:hover {
+      border-color: rgba(212, 165, 116, 0.2);
+    }
+
+    /* Horizontal connector line between vision steps (desktop) */
+    .vision-connector {
+      height: 2px;
+      background: linear-gradient(90deg, rgba(212, 165, 116, 0.5), rgba(212, 165, 116, 0.1));
+      flex-grow: 1;
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .vision-connector { display: block; }
+    }
+
+    /* Technology cards */
+    .tech-feature-card {
+      background: rgba(12, 11, 10, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(200, 200, 200, 0.08);
+      border-radius: 8px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tech-feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.6), transparent);
+      transform: scaleX(0);
+      transition: transform 0.6s ease;
+    }
+
+    .tech-feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .tech-feature-card:hover {
+      border-color: rgba(212, 165, 116, 0.15);
+    }
+
+    /* Gallery artwork cards */
+    .gallery-artwork-card {
+      background: rgba(12, 11, 10, 0.6);
+      border: 1px solid rgba(200, 200, 200, 0.06);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gallery-artwork-card:hover {
+      border-color: rgba(212, 165, 116, 0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .gallery-artwork-thumb {
+      aspect-ratio: 3 / 4;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ar-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(10, 9, 8, 0.85);
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px;
+      color: #D4A574;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* Launch Hive button */
+    .launch-hive-btn {
+      background: linear-gradient(145deg, #D4A574, #c49564);
+      color: #050505;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .launch-hive-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .launch-hive-btn:hover::after {
+      left: 100%;
+    }
+
+    .launch-hive-btn:hover {
+      box-shadow: 0 0 40px rgba(212, 165, 116, 0.3);
+    }
+
+    /* Teal stag for Vision section */
+    .stag-teal {
+      animation: stagBreatheTeal 5s ease-in-out infinite;
+    }
+
+    @keyframes stagBreatheTeal {
+      0%, 100% { opacity: 0.30; filter: brightness(1.3) hue-rotate(140deg) saturate(1.3); }
+      50% { opacity: 0.50; filter: brightness(2) hue-rotate(140deg) saturate(1.7); }
+    }
+
+    /* Indigo stag for Gallery section */
+    .stag-indigo {
+      animation: stagBreatheIndigo 5s ease-in-out infinite;
+    }
+
+    @keyframes stagBreatheIndigo {
+      0%, 100% { opacity: 0.30; filter: brightness(1.3) hue-rotate(200deg) saturate(1.2); }
+      50% { opacity: 0.50; filter: brightness(2) hue-rotate(200deg) saturate(1.6); }
+    }
+
+    /* ===== MOBILE PERF: New sections ===== */
+    @media (max-width: 768px) {
+      .vision-step-card,
+      .tech-feature-card {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(15, 14, 13, 0.85);
+      }
     }
   </style>
 </head>
@@ -1182,10 +1377,10 @@
         <span class="font-display font-medium text-gallery-silver tracking-gallery hidden sm:inline">HIVEMIND</span>
       </a>
       <div class="hidden md:flex items-center gap-10">
-        <a href="#journey" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500">CURATION</a>
-        <a href="#features" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500">FEATURES</a>
-        <a href="#exhibition" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500">EXHIBITION</a>
-        <a href="#faq" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500">FAQ</a>
+        <a href="#vision" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500 py-2">VISION</a>
+        <a href="#technology" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500 py-2">TECHNOLOGY</a>
+        <a href="#gallery-showcase" class="text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-500 py-2">GALLERY</a>
+        <a href="/pages/auth/login.html" class="launch-hive-btn min-h-[44px] inline-flex items-center">LAUNCH HIVE</a>
       </div>
       <div class="flex items-center gap-3">
         <button id="mobileMenuBtn" class="md:hidden flex items-center justify-center w-11 h-11 rounded-gallery glass-pane" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
@@ -1193,8 +1388,8 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
         </button>
-        <a href="/pages/auth/signup.html" class="group relative px-6 py-3 glass-pane border-gallery-amber/30 hover:border-gallery-amber/60 text-gallery-amber font-display font-medium text-sm tracking-gallery transition-all duration-500 hover:shadow-[0_0_50px_rgba(212,165,116,0.15)] min-h-[44px] inline-flex items-center">
-          <span class="relative z-10">Open Gallery</span>
+        <a href="/pages/auth/login.html" class="group relative px-6 py-3 glass-pane border-gallery-amber/30 hover:border-gallery-amber/60 text-gallery-amber font-display font-medium text-sm tracking-gallery transition-all duration-500 hover:shadow-[0_0_50px_rgba(212,165,116,0.15)] min-h-[44px] inline-flex items-center md:hidden">
+          <span class="relative z-10">Sign In</span>
         </a>
       </div>
     </div>
@@ -1214,14 +1409,14 @@
       </button>
     </div>
     <nav class="px-6 py-8 space-y-2" aria-label="Mobile navigation">
-      <a href="#journey" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">CURATION</a>
-      <a href="#features" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">FEATURES</a>
-      <a href="#exhibition" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">EXHIBITION</a>
-      <a href="#faq" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">FAQ</a>
+      <a href="#vision" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">VISION</a>
+      <a href="#technology" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">TECHNOLOGY</a>
+      <a href="#gallery-showcase" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">GALLERY</a>
+      <a href="#exhibition" class="mobile-menu-link block px-4 py-3 text-warm-stone hover:text-gallery-silver text-sm tracking-gallery transition-colors duration-300 rounded-gallery hover:bg-white/5">PRICING</a>
     </nav>
     <div class="px-6 pt-4">
-      <a href="/pages/auth/signup.html" class="block text-center px-6 py-3 glass-pane border-gallery-amber/30 text-gallery-amber font-display font-medium text-sm tracking-gallery transition-all duration-300 hover:border-gallery-amber/60">
-        Open Gallery
+      <a href="/pages/auth/login.html" class="min-h-[44px] flex items-center justify-center px-6 py-3 launch-hive-btn font-display font-medium text-sm tracking-gallery">
+        LAUNCH HIVE
       </a>
     </div>
   </div>
@@ -1257,13 +1452,13 @@
           </h1>
 
           <p class="text-lg text-warm-stone max-w-md leading-relaxed tracking-wide soft-reveal soft-reveal-delay-2">
-            True-scale augmented reality that lets collectors experience exactly how your artwork lives in their space. Browser-native. Zero friction.
+            True-scale augmented reality that lets collectors experience exactly how your paintings, prints, and photographs live in their space. Built for artists and gallerists. Browser-native. Zero friction.
           </p>
 
           <!-- CTA Buttons -->
           <div class="flex flex-col sm:flex-row gap-4 pt-2 soft-reveal soft-reveal-delay-3">
             <a href="/pages/auth/signup.html" class="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-canvas-white text-obsidian font-display font-semibold tracking-gallery rounded-gallery overflow-hidden transition-all duration-500 hover:shadow-[0_0_80px_rgba(245,243,239,0.2)]">
-              <span>Begin Curation</span>
+              <span>Begin Your Exhibition</span>
               <svg class="w-5 h-5 transition-transform duration-500 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
             <a href="/pages/public/ar-demo.html" class="inline-flex items-center justify-center gap-3 px-8 py-4 glass-pane text-gallery-silver font-display font-medium tracking-gallery transition-all duration-500 hover:border-galvanized/20">
@@ -1295,15 +1490,15 @@
             <span class="flex items-center gap-2">
               <span class="proof-number font-display text-gallery-silver" data-count="12400">12,400+</span> artworks visualized
             </span>
-            <span class="text-galvanized/30">•</span>
+            <span class="text-galvanized/30 hidden sm:inline">•</span>
             <span class="flex items-center gap-2">
               <span class="proof-number font-display text-gallery-silver" data-count="340">340+</span> artists
             </span>
-            <span class="text-galvanized/30">•</span>
+            <span class="text-galvanized/30 hidden sm:inline">•</span>
             <span class="flex items-center gap-2">
               <span class="proof-number font-display text-gallery-silver" data-count="28">28</span> countries
             </span>
-            <span class="text-galvanized/30">•</span>
+            <span class="text-galvanized/30 hidden sm:inline">•</span>
             <span>Since 2025</span>
           </div>
         </div>
@@ -1361,15 +1556,15 @@
                     <!-- Action bar at bottom -->
                     <div class="phone-action-bar">
                       <!-- Frame picker -->
-                      <div class="phone-action-btn" aria-label="Change frame">
+                      <div class="phone-action-btn" role="img" aria-label="Frame picker icon">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4z"/></svg>
                       </div>
                       <!-- Confirm / Place -->
-                      <div class="phone-action-btn btn-gold" aria-label="Confirm placement">
+                      <div class="phone-action-btn btn-gold" role="img" aria-label="Confirm placement icon">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                       </div>
                       <!-- Message artist -->
-                      <div class="phone-action-btn" aria-label="Message artist">
+                      <div class="phone-action-btn" role="img" aria-label="Message artist icon">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                       </div>
                     </div>
@@ -1413,9 +1608,92 @@
     </div>
 
     <!-- Scroll indicator -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-warm-stone/40">
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-3 text-warm-stone/40">
       <span class="text-xs tracking-exhibition uppercase">Explore</span>
       <div class="w-px h-10 bg-gradient-to-b from-warm-stone/30 to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- From Thought to Reality -->
+  <section id="vision" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden hex-grid-bg">
+    <div class="spotlight spotlight-amber w-[700px] h-[700px] top-1/3 left-1/3 opacity-15"></div>
+
+    <!-- Pulsing Stag Background - TEAL -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[600px] h-[600px] object-contain stag-forged stag-teal" loading="lazy">
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-10 md:mb-20 soft-reveal">
+        <p class="gallery-label mb-4">The Process</p>
+        <h2 class="font-display font-bold text-3xl md:text-5xl text-canvas-white tracking-tight">
+          From Thought to <span class="shimmer-text">Reality</span>
+        </h2>
+        <p class="text-warm-stone mt-4 max-w-2xl mx-auto">Three steps between your studio and a collector's wall. Upload your paintings, prints, or photographs — and watch them come alive in any room on earth.</p>
+      </div>
+
+      <!-- 3-step flow -->
+      <div class="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-0">
+
+        <!-- Step 1: The Spark -->
+        <div class="flex-1 soft-reveal soft-reveal-delay-1">
+          <div class="vision-step-card h-full text-center">
+            <div class="flex justify-center mb-6">
+              <div class="hex-step">
+                <div class="hex-step-inner">
+                  <span class="font-display font-bold text-gallery-amber text-lg">1</span>
+                </div>
+              </div>
+            </div>
+            <h3 class="font-display font-semibold text-xl text-canvas-white mb-3 tracking-tight">The Spark</h3>
+            <p class="gallery-label mb-4">Input</p>
+            <p class="text-warm-stone text-sm leading-relaxed">Upload your paintings, prints, or photographs. Enter the exact physical dimensions. Your artwork enters the hive — preserved in gallery-grade fidelity, ready for exhibition.</p>
+          </div>
+        </div>
+
+        <!-- Connector -->
+        <div class="hidden lg:flex items-center px-2">
+          <div class="vision-connector"></div>
+        </div>
+
+        <!-- Step 2: The Swarm -->
+        <div class="flex-1 soft-reveal soft-reveal-delay-2">
+          <div class="vision-step-card h-full text-center">
+            <div class="flex justify-center mb-6">
+              <div class="hex-step">
+                <div class="hex-step-inner">
+                  <span class="font-display font-bold text-gallery-amber text-lg">2</span>
+                </div>
+              </div>
+            </div>
+            <h3 class="font-display font-semibold text-xl text-canvas-white mb-3 tracking-tight">The Swarm</h3>
+            <p class="gallery-label mb-4">AI Expert Refinement</p>
+            <p class="text-warm-stone text-sm leading-relaxed">Intelligent calibration maps every millimetre. Color profiles are locked. True-scale coordinates are set. The collective intelligence prepares your work for dimensional certainty.</p>
+          </div>
+        </div>
+
+        <!-- Connector -->
+        <div class="hidden lg:flex items-center px-2">
+          <div class="vision-connector"></div>
+        </div>
+
+        <!-- Step 3: The Manifestation -->
+        <div class="flex-1 soft-reveal soft-reveal-delay-3">
+          <div class="vision-step-card h-full text-center">
+            <div class="flex justify-center mb-6">
+              <div class="hex-step">
+                <div class="hex-step-inner">
+                  <span class="font-display font-bold text-gallery-amber text-lg">3</span>
+                </div>
+              </div>
+            </div>
+            <h3 class="font-display font-semibold text-xl text-canvas-white mb-3 tracking-tight">The Manifestation</h3>
+            <p class="gallery-label mb-4">Instant True-Scale AR</p>
+            <p class="text-warm-stone text-sm leading-relaxed">A collector taps your link. No app, no download. Your 24"&times;36" canvas appears at exactly 24"&times;36" on their wall — anywhere in the world, in seconds.</p>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -1428,14 +1706,14 @@
 
         <!-- Pulsing Stag Background - PURPLE -->
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-          <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[600px] h-[600px] object-contain stag-forged stag-purple">
+          <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[600px] h-[600px] object-contain stag-forged stag-purple" loading="lazy">
         </div>
 
         <div class="relative z-10 max-w-6xl mx-auto px-6 w-full">
           <!-- Header -->
           <div class="text-center mb-10 md:mb-20">
             <p class="gallery-label mb-4">The Curation</p>
-            <h2 class="font-display font-bold text-4xl md:text-5xl tracking-tight">
+            <h2 class="font-display font-bold text-3xl md:text-5xl tracking-tight">
               <span class="text-canvas-white">Curate.</span>
               <span class="shimmer-text">Calibrate.</span>
               <span class="text-gallery-amber">Exhibit.</span>
@@ -1538,22 +1816,109 @@
     </div>
   </section>
 
+  <!-- Technology -->
+  <section id="technology" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden hex-grid-bg">
+    <div class="spotlight spotlight-amber w-[600px] h-[600px] top-0 left-1/3 opacity-12"></div>
+    <div class="spotlight spotlight-silver w-[500px] h-[500px] bottom-0 right-1/4 opacity-10"></div>
+
+    <!-- Pulsing Stag Background - PURPLE (reused) -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[600px] h-[600px] object-contain stag-forged stag-purple" loading="lazy">
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-10 md:mb-20 soft-reveal">
+        <p class="gallery-label mb-4">The Architecture</p>
+        <h2 class="font-display font-bold text-3xl md:text-5xl text-canvas-white tracking-tight">
+          Built for <span class="shimmer-text">Artists & Gallerists</span>
+        </h2>
+        <p class="text-warm-stone mt-4 max-w-2xl mx-auto">Technology that vanishes so your art can appear. Engineered for those who create and curate physical work.</p>
+      </div>
+
+      <!-- Two hero feature cards -->
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <!-- Browser-Native Intelligence -->
+        <div class="tech-feature-card soft-reveal soft-reveal-delay-1">
+          <div class="w-14 h-14 rounded-gallery bg-gradient-to-br from-galvanized/10 to-galvanized/5 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+          </div>
+          <p class="gallery-label mb-3">Zero-Friction Architecture</p>
+          <h3 class="font-display font-semibold text-2xl text-canvas-white mb-4 tracking-tight">Browser-Native Intelligence</h3>
+          <p class="text-warm-stone leading-relaxed">No app download. No account creation. No barrier between a collector and your art. A single link opens true-scale augmented reality directly in Safari or Chrome — the browser becomes the gallery. Every step we removed is a sale you keep.</p>
+          <div class="mt-6 pt-6 border-t border-galvanized/10 flex items-center gap-4">
+            <span class="text-gallery-amber font-display font-bold text-2xl">0</span>
+            <span class="text-warm-stone text-sm">downloads required — ever</span>
+          </div>
+        </div>
+
+        <!-- True-Scale Precision -->
+        <div class="tech-feature-card soft-reveal soft-reveal-delay-2">
+          <div class="w-14 h-14 rounded-gallery bg-gradient-to-br from-galvanized/10 to-galvanized/5 flex items-center justify-center mb-6">
+            <svg class="w-7 h-7 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+          </div>
+          <p class="gallery-label mb-3">Dimensional Certainty</p>
+          <h3 class="font-display font-semibold text-2xl text-canvas-white mb-4 tracking-tight">True-Scale Precision</h3>
+          <p class="text-warm-stone leading-relaxed">When you enter 24"&times;36", your collector sees exactly 24"&times;36" on their wall. Not an approximation — a dimensional promise. Our spatial engine maps physical reality so buyers never wonder "will it fit?" again. Size-related returns drop to near zero.</p>
+          <div class="mt-6 pt-6 border-t border-galvanized/10 flex items-center gap-4">
+            <span class="text-gallery-amber font-display font-bold text-2xl">1:1</span>
+            <span class="text-warm-stone text-sm">millimetre-accurate mapping</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 smaller tech cards -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="tech-feature-card soft-reveal soft-reveal-delay-1">
+          <div class="w-10 h-10 rounded-gallery bg-galvanized/5 flex items-center justify-center mb-4 border border-galvanized/10">
+            <svg class="w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <h4 class="font-display font-medium text-canvas-white text-sm mb-2">Gallery-Grade Security</h4>
+          <p class="text-warm-stone text-xs leading-relaxed">End-to-end encryption protects your high-resolution originals. Watermarked previews. You control who sees what.</p>
+        </div>
+
+        <div class="tech-feature-card soft-reveal soft-reveal-delay-2">
+          <div class="w-10 h-10 rounded-gallery bg-galvanized/5 flex items-center justify-center mb-4 border border-galvanized/10">
+            <svg class="w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h4 class="font-display font-medium text-canvas-white text-sm mb-2">Instant Load</h4>
+          <p class="text-warm-stone text-xs leading-relaxed">Edge-cached globally. Your gallery loads in under 2 seconds from Tokyo to Toronto. Speed sells.</p>
+        </div>
+
+        <div class="tech-feature-card soft-reveal soft-reveal-delay-2">
+          <div class="w-10 h-10 rounded-gallery bg-galvanized/5 flex items-center justify-center mb-4 border border-galvanized/10">
+            <svg class="w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h4 class="font-display font-medium text-canvas-white text-sm mb-2">Global Reach</h4>
+          <p class="text-warm-stone text-xs leading-relaxed">28 countries and counting. Your physical art, virtually accessible to collectors worldwide.</p>
+        </div>
+
+        <div class="tech-feature-card soft-reveal soft-reveal-delay-3">
+          <div class="w-10 h-10 rounded-gallery bg-galvanized/5 flex items-center justify-center mb-4 border border-galvanized/10">
+            <svg class="w-5 h-5 text-gallery-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+          </div>
+          <h4 class="font-display font-medium text-canvas-white text-sm mb-2">Color Fidelity</h4>
+          <p class="text-warm-stone text-xs leading-relaxed">sRGB color management preserves the nuance of your palette from studio to screen to wall.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Features -->
   <section id="features" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden">
     <div class="spotlight spotlight-silver w-[500px] h-[500px] top-0 right-0 opacity-10"></div>
 
     <!-- Pulsing Stag Background - CYAN -->
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[700px] h-[700px] object-contain stag-forged stag-cyan">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[700px] h-[700px] object-contain stag-forged stag-cyan" loading="lazy">
     </div>
 
     <div class="max-w-6xl mx-auto relative z-10">
       <div class="text-center mb-10 md:mb-20 soft-reveal">
         <p class="gallery-label mb-4">The Platform</p>
-        <h2 class="font-display font-bold text-4xl md:text-5xl text-canvas-white tracking-tight">
+        <h2 class="font-display font-bold text-3xl md:text-5xl text-canvas-white tracking-tight">
           Why Artists Choose <span class="shimmer-text">HiveMind AR</span>
         </h2>
-        <p class="text-warm-stone mt-4 max-w-2xl mx-auto">Remove the guesswork from buying art online. Give collectors confidence and close more sales.</p>
+        <p class="text-warm-stone mt-4 max-w-2xl mx-auto">From studio to gallery to collector's wall — remove the guesswork from buying art online. Give buyers confidence and close more sales.</p>
       </div>
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1638,13 +2003,13 @@
 
     <!-- Pulsing Stag Background - ROSE -->
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[700px] h-[700px] object-contain stag-forged stag-rose">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[700px] h-[700px] object-contain stag-forged stag-rose" loading="lazy">
     </div>
 
     <div class="max-w-5xl mx-auto relative z-10">
       <div class="text-center mb-10 md:mb-20 soft-reveal">
         <p class="gallery-label mb-4">Real Results</p>
-        <h2 class="font-display font-bold text-4xl md:text-5xl text-canvas-white tracking-tight">
+        <h2 class="font-display font-bold text-3xl md:text-5xl text-canvas-white tracking-tight">
           Artists Are <span class="shimmer-text">Selling More</span>
         </h2>
       </div>
@@ -1658,7 +2023,7 @@
             </div>
             <div>
               <p class="font-display font-medium text-canvas-white">Sarah T.</p>
-              <p class="text-warm-stone text-xs">Mixed Media Artist, NYC</p>
+              <p class="text-warm-stone text-xs">Mixed Media Artist &amp; Gallery Exhibitor, NYC</p>
             </div>
             <div class="ml-auto flex gap-1">
               <svg class="w-4 h-4 text-gallery-amber" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
@@ -1723,19 +2088,167 @@
     </div>
   </section>
 
+  <!-- Vision Gallery -->
+  <section id="gallery-showcase" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden hex-grid-bg">
+    <div class="spotlight spotlight-amber w-[600px] h-[600px] top-1/4 right-1/3 opacity-12"></div>
+    <div class="spotlight spotlight-silver w-[500px] h-[500px] bottom-1/4 left-1/4 opacity-10"></div>
+
+    <!-- Pulsing Stag Background - INDIGO -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[700px] h-[700px] object-contain stag-forged stag-indigo" loading="lazy">
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+      <div class="text-center mb-10 md:mb-20 soft-reveal">
+        <p class="gallery-label mb-4">The Exhibition</p>
+        <h2 class="font-display font-bold text-3xl md:text-5xl text-canvas-white tracking-tight">
+          Vision <span class="shimmer-text">Gallery</span>
+        </h2>
+        <p class="text-warm-stone mt-4 max-w-2xl mx-auto">Every artwork below is AR-ready. Tap to place it on your wall — no app, no download. This is what your collectors will experience.</p>
+      </div>
+
+      <!-- 6-card gallery grid -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+
+        <!-- Artwork 1 -->
+        <div class="gallery-artwork-card soft-reveal soft-reveal-delay-1">
+          <div class="gallery-artwork-thumb">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#1a1a3e] via-[#2a1a3e] to-[#0f1a2e]"></div>
+            <div class="absolute" style="top:20%;left:30%;width:60px;height:60px;background:rgba(212,165,116,0.4);border-radius:50%;filter:blur(20px)"></div>
+            <div class="absolute" style="top:50%;left:60%;width:40px;height:40px;background:rgba(100,180,220,0.35);border-radius:50%;filter:blur(16px)"></div>
+            <div class="absolute" style="bottom:20%;left:40%;width:50px;height:50px;background:rgba(245,243,239,0.15);border-radius:50%;filter:blur(18px)"></div>
+            <div class="ar-badge">AR Ready</div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-display font-medium text-canvas-white text-sm mb-1">Celestial Drift</h4>
+            <p class="text-warm-stone text-xs mb-3">Elena Vasquez</p>
+            <div class="flex items-center justify-between text-xs text-warm-stone/60">
+              <span>36" &times; 48" &middot; Oil on Canvas</span>
+              <span class="text-gallery-amber font-display font-medium">$4,200</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Artwork 2 -->
+        <div class="gallery-artwork-card soft-reveal soft-reveal-delay-2">
+          <div class="gallery-artwork-thumb">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#2e1a0f] via-[#1a0f0a] to-[#0f0a05]"></div>
+            <div class="absolute" style="top:30%;left:25%;width:70px;height:70px;background:rgba(230,120,50,0.45);border-radius:50%;filter:blur(22px)"></div>
+            <div class="absolute" style="top:55%;left:55%;width:45px;height:45px;background:rgba(200,60,40,0.4);border-radius:50%;filter:blur(18px)"></div>
+            <div class="absolute" style="bottom:15%;right:25%;width:30px;height:30px;background:rgba(255,200,100,0.3);border-radius:50%;filter:blur(12px)"></div>
+            <div class="ar-badge">AR Ready</div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-display font-medium text-canvas-white text-sm mb-1">Ember & Ash</h4>
+            <p class="text-warm-stone text-xs mb-3">James Okonkwo</p>
+            <div class="flex items-center justify-between text-xs text-warm-stone/60">
+              <span>24" &times; 30" &middot; Acrylic</span>
+              <span class="text-gallery-amber font-display font-medium">$2,800</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Artwork 3 -->
+        <div class="gallery-artwork-card soft-reveal soft-reveal-delay-3">
+          <div class="gallery-artwork-thumb">
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0a0a1a] via-[#0f0f2a] to-[#05051a]"></div>
+            <div class="absolute" style="top:40%;left:45%;width:80px;height:80px;background:rgba(80,80,180,0.3);border-radius:50%;filter:blur(24px)"></div>
+            <div class="absolute" style="top:25%;left:60%;width:30px;height:30px;background:rgba(200,200,220,0.2);border-radius:50%;filter:blur(10px)"></div>
+            <div class="absolute" style="bottom:30%;left:30%;width:50px;height:50px;background:rgba(40,40,100,0.4);border-radius:50%;filter:blur(16px)"></div>
+            <div class="ar-badge">AR Ready</div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-display font-medium text-canvas-white text-sm mb-1">Depth Study No. 7</h4>
+            <p class="text-warm-stone text-xs mb-3">Maren Holt</p>
+            <div class="flex items-center justify-between text-xs text-warm-stone/60">
+              <span>20" &times; 24" &middot; Mixed Media</span>
+              <span class="text-gallery-amber font-display font-medium">$1,950</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Artwork 4 -->
+        <div class="gallery-artwork-card soft-reveal soft-reveal-delay-1">
+          <div class="gallery-artwork-thumb">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#2e2a1a] via-[#1a180f] to-[#0f0e08]"></div>
+            <div class="absolute" style="top:20%;left:50%;width:90px;height:90px;background:rgba(230,190,100,0.35);border-radius:50%;filter:blur(28px)"></div>
+            <div class="absolute" style="top:60%;left:30%;width:40px;height:40px;background:rgba(180,120,60,0.4);border-radius:50%;filter:blur(14px)"></div>
+            <div class="absolute" style="bottom:20%;right:30%;width:35px;height:35px;background:rgba(255,220,150,0.25);border-radius:50%;filter:blur(12px)"></div>
+            <div class="ar-badge">AR Ready</div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-display font-medium text-canvas-white text-sm mb-1">Golden Hour Marrakech</h4>
+            <p class="text-warm-stone text-xs mb-3">Sofia Amari</p>
+            <div class="flex items-center justify-between text-xs text-warm-stone/60">
+              <span>30" &times; 40" &middot; Photography</span>
+              <span class="text-gallery-amber font-display font-medium">$3,400</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Artwork 5 -->
+        <div class="gallery-artwork-card soft-reveal soft-reveal-delay-2">
+          <div class="gallery-artwork-thumb">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0a1a0f] via-[#0f2a1a] to-[#051a0a]"></div>
+            <div class="absolute" style="top:35%;left:40%;width:70px;height:70px;background:rgba(60,180,100,0.35);border-radius:50%;filter:blur(22px)"></div>
+            <div class="absolute" style="top:20%;left:65%;width:45px;height:45px;background:rgba(100,220,140,0.3);border-radius:50%;filter:blur(16px)"></div>
+            <div class="absolute" style="bottom:25%;left:25%;width:55px;height:55px;background:rgba(40,120,80,0.4);border-radius:50%;filter:blur(18px)"></div>
+            <div class="ar-badge">AR Ready</div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-display font-medium text-canvas-white text-sm mb-1">Verdant Passage</h4>
+            <p class="text-warm-stone text-xs mb-3">Liam Chen</p>
+            <div class="flex items-center justify-between text-xs text-warm-stone/60">
+              <span>18" &times; 24" &middot; Watercolour</span>
+              <span class="text-gallery-amber font-display font-medium">$1,600</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Artwork 6 -->
+        <div class="gallery-artwork-card soft-reveal soft-reveal-delay-3">
+          <div class="gallery-artwork-thumb">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#2a2020] to-[#0f0a0a]"></div>
+            <div class="absolute" style="top:30%;left:35%;width:60px;height:60px;background:rgba(200,180,160,0.3);border-radius:50%;filter:blur(20px)"></div>
+            <div class="absolute" style="top:50%;left:60%;width:50px;height:50px;background:rgba(140,100,80,0.35);border-radius:50%;filter:blur(16px)"></div>
+            <div class="absolute" style="bottom:20%;left:45%;width:40px;height:40px;background:rgba(80,60,50,0.4);border-radius:50%;filter:blur(14px)"></div>
+            <div class="ar-badge">AR Ready</div>
+          </div>
+          <div class="p-5">
+            <h4 class="font-display font-medium text-canvas-white text-sm mb-1">Threshold</h4>
+            <p class="text-warm-stone text-xs mb-3">Anya Petrova</p>
+            <div class="flex items-center justify-between text-xs text-warm-stone/60">
+              <span>40" &times; 60" &middot; Giclée Print</span>
+              <span class="text-gallery-amber font-display font-medium">$5,800</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CTA -->
+      <div class="text-center soft-reveal">
+        <a href="/pages/auth/signup.html" class="inline-flex items-center gap-3 px-8 py-4 bg-canvas-white text-obsidian font-display font-semibold tracking-gallery rounded-gallery overflow-hidden transition-all duration-500 hover:shadow-[0_0_80px_rgba(245,243,239,0.2)]">
+          <span>Start Exhibiting Your Work</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- Exhibition Tiers -->
   <section id="exhibition" class="py-16 md:py-24 lg:py-32 px-6 relative overflow-hidden">
     <div class="spotlight spotlight-amber w-[600px] h-[600px] bottom-0 left-1/4 opacity-10"></div>
 
     <!-- Pulsing Stag Background - SILVER -->
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[600px] h-[600px] object-contain stag-forged stag-silver">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[600px] h-[600px] object-contain stag-forged stag-silver" loading="lazy">
     </div>
 
     <div class="max-w-6xl mx-auto relative z-10">
       <div class="text-center mb-10 md:mb-20 soft-reveal">
         <p class="gallery-label mb-4">Exhibition Tiers</p>
-        <h2 class="font-display font-bold text-4xl md:text-5xl text-canvas-white tracking-tight mb-4">
+        <h2 class="font-display font-bold text-3xl md:text-5xl text-canvas-white tracking-tight mb-4">
           Start Free. <span class="shimmer-text">Grow Freely.</span>
         </h2>
         <p class="text-warm-stone">Full AR on every tier. No credit card required. No commission on sales.</p>
@@ -1771,7 +2284,7 @@
               HiveMind branding shown
             </li>
           </ul>
-          <a href="/pages/auth/signup.html" class="block w-full text-center py-3 rounded-gallery border border-galvanized/20 text-gallery-silver font-display font-medium text-sm hover:bg-galvanized/5 transition-all duration-500">
+          <a href="/pages/auth/signup.html" class="w-full min-h-[44px] flex items-center justify-center py-3 rounded-gallery border border-galvanized/20 text-gallery-silver font-display font-medium text-sm hover:bg-galvanized/5 transition-all duration-500">
             Get Started Free
           </a>
         </div>
@@ -1805,13 +2318,13 @@
               Verified badge + socials
             </li>
           </ul>
-          <a href="/pages/auth/signup.html" class="block w-full text-center py-3 rounded-gallery border border-galvanized/20 text-gallery-silver font-display font-medium text-sm hover:bg-galvanized/5 transition-all duration-500">
+          <a href="/pages/auth/signup.html" class="w-full min-h-[44px] flex items-center justify-center py-3 rounded-gallery border border-galvanized/20 text-gallery-silver font-display font-medium text-sm hover:bg-galvanized/5 transition-all duration-500">
             Start with Artist
           </a>
         </div>
 
         <!-- Established - Featured -->
-        <div class="relative glass-pane p-7 pt-9 mt-4 sm:mt-0 border-gallery-amber/20 shadow-[0_0_100px_rgba(212,165,116,0.08)] card-3d-hover soft-reveal soft-reveal-delay-2">
+        <div class="relative glass-pane p-7 pt-9 mt-4 lg:mt-0 border-gallery-amber/20 shadow-[0_0_100px_rgba(212,165,116,0.08)] card-3d-hover soft-reveal soft-reveal-delay-2">
           <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-gallery-amber text-obsidian text-xs font-display font-semibold rounded-gallery tracking-wide whitespace-nowrap">
             MOST POPULAR
           </div>
@@ -1842,7 +2355,7 @@
               Banner effects
             </li>
           </ul>
-          <a href="/pages/auth/signup.html" class="block w-full text-center py-3 rounded-gallery bg-gallery-amber text-obsidian font-display font-semibold text-sm hover:shadow-[0_0_50px_rgba(212,165,116,0.25)] transition-all duration-500">
+          <a href="/pages/auth/signup.html" class="w-full min-h-[44px] flex items-center justify-center py-3 rounded-gallery bg-gallery-amber text-obsidian font-display font-semibold text-sm hover:shadow-[0_0_50px_rgba(212,165,116,0.25)] transition-all duration-500">
             Start with Established
           </a>
         </div>
@@ -1876,7 +2389,7 @@
               Priority support (4-8hr)
             </li>
           </ul>
-          <a href="/pages/auth/signup.html" class="block w-full text-center py-3 rounded-gallery border border-galvanized/20 text-gallery-silver font-display font-medium text-sm hover:bg-galvanized/5 transition-all duration-500">
+          <a href="/pages/auth/signup.html" class="w-full min-h-[44px] flex items-center justify-center py-3 rounded-gallery border border-galvanized/20 text-gallery-silver font-display font-medium text-sm hover:bg-galvanized/5 transition-all duration-500">
             Start with Professional
           </a>
         </div>
@@ -1895,13 +2408,13 @@
 
     <!-- Pulsing Stag Background - EMERALD -->
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[500px] h-[500px] object-contain stag-forged stag-emerald">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[500px] h-[500px] object-contain stag-forged stag-emerald" loading="lazy">
     </div>
 
     <div class="max-w-3xl mx-auto relative z-10">
       <div class="text-center mb-16 soft-reveal">
         <p class="gallery-label mb-4">Common Questions</p>
-        <h2 class="font-display font-bold text-4xl md:text-5xl text-canvas-white tracking-tight">
+        <h2 class="font-display font-bold text-3xl md:text-5xl text-canvas-white tracking-tight">
           Frequently <span class="shimmer-text">Asked</span>
         </h2>
       </div>
@@ -1971,16 +2484,16 @@
 
     <!-- Forged Stag Background - GOLD (enlarged + boosted) -->
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[900px] h-[900px] object-contain stag-forged stag-gold">
+      <img src="/images/brand/HMC_Logo_AR.png" alt="" class="w-[900px] h-[900px] object-contain stag-forged stag-gold" loading="lazy">
     </div>
 
     <div class="max-w-3xl mx-auto text-center relative z-10 soft-reveal">
-      <h2 class="font-display font-bold text-4xl md:text-5xl tracking-tight mb-6">
+      <h2 class="font-display font-bold text-3xl md:text-5xl tracking-tight mb-6">
         <span class="text-canvas-white">Your art deserves to be</span><br>
         <span class="text-gallery-amber">experienced</span><span class="text-canvas-white">, not just seen.</span>
       </h2>
       <p class="text-lg text-warm-stone mb-12 max-w-xl mx-auto leading-relaxed">
-        Join artists worldwide using true-scale AR to create meaningful connections with collectors. Begin your exhibition today.
+        Join artists and gallerists worldwide using true-scale AR to bring physical artwork to life in any collector's space. Begin your exhibition today.
       </p>
       <a href="/pages/auth/signup.html" class="inline-flex items-center gap-3 px-10 py-5 bg-canvas-white text-obsidian font-display font-semibold text-lg rounded-gallery hover:shadow-[0_0_100px_rgba(245,243,239,0.15)] transition-all duration-700">
         Open Your Gallery
@@ -2038,24 +2551,24 @@
     <div class="max-w-6xl mx-auto">
       <div class="accent-line mb-12"></div>
 
-      <div class="grid md:grid-cols-4 gap-12 mb-12">
+      <div class="grid md:grid-cols-4 gap-8 md:gap-12 mb-12">
         <!-- Brand -->
         <div class="md:col-span-1">
           <div class="flex items-center gap-3 mb-4">
             <img src="/images/brand/HMC_Logo_AR.png" alt="HiveMind AR" class="w-8 h-8 object-contain opacity-60">
             <span class="font-display font-medium text-galvanized tracking-gallery">HIVEMIND</span>
           </div>
-          <p class="text-warm-stone/50 text-sm leading-relaxed">Gallery-grade AR for artists and collectors worldwide.</p>
+          <p class="text-warm-stone/70 text-sm leading-relaxed">Gallery-grade AR for artists, gallerists, and collectors of physical artwork worldwide.</p>
         </div>
 
         <!-- Exhibition -->
         <div>
           <p class="gallery-label mb-4">Exhibition</p>
           <ul class="space-y-3">
-            <li><a href="#journey" class="text-warm-stone/50 hover:text-warm-stone text-sm transition-colors duration-500">Curation</a></li>
-            <li><a href="#features" class="text-warm-stone/50 hover:text-warm-stone text-sm transition-colors duration-500">Features</a></li>
-            <li><a href="#exhibition" class="text-warm-stone/50 hover:text-warm-stone text-sm transition-colors duration-500">Pricing</a></li>
-            <li><a href="#faq" class="text-warm-stone/50 hover:text-warm-stone text-sm transition-colors duration-500">FAQ</a></li>
+            <li><a href="#vision" class="text-warm-stone/70 hover:text-warm-stone text-sm transition-colors duration-500">Vision</a></li>
+            <li><a href="#technology" class="text-warm-stone/70 hover:text-warm-stone text-sm transition-colors duration-500">Technology</a></li>
+            <li><a href="#gallery-showcase" class="text-warm-stone/70 hover:text-warm-stone text-sm transition-colors duration-500">Gallery</a></li>
+            <li><a href="#exhibition" class="text-warm-stone/70 hover:text-warm-stone text-sm transition-colors duration-500">Pricing</a></li>
           </ul>
         </div>
 
@@ -2063,8 +2576,8 @@
         <div>
           <p class="gallery-label mb-4">Legal</p>
           <ul class="space-y-3">
-            <li><a href="/pages/public/privacy.html" class="text-warm-stone/50 hover:text-warm-stone text-sm transition-colors duration-500">Privacy</a></li>
-            <li><a href="/pages/public/terms.html" class="text-warm-stone/50 hover:text-warm-stone text-sm transition-colors duration-500">Terms</a></li>
+            <li><a href="/pages/public/privacy.html" class="text-warm-stone/70 hover:text-warm-stone text-sm transition-colors duration-500">Privacy</a></li>
+            <li><a href="/pages/public/terms.html" class="text-warm-stone/70 hover:text-warm-stone text-sm transition-colors duration-500">Terms</a></li>
           </ul>
         </div>
 
@@ -2072,8 +2585,8 @@
         <div>
           <p class="gallery-label mb-4">Connect</p>
           <ul class="space-y-3">
-            <li><a href="/pages/public/contact.html" class="text-warm-stone/50 hover:text-warm-stone text-sm transition-colors duration-500">Contact</a></li>
-            <li><a href="/pages/public/about.html" class="text-warm-stone/50 hover:text-warm-stone text-sm transition-colors duration-500">About</a></li>
+            <li><a href="/pages/public/contact.html" class="text-warm-stone/70 hover:text-warm-stone text-sm transition-colors duration-500">Contact</a></li>
+            <li><a href="/pages/public/about.html" class="text-warm-stone/70 hover:text-warm-stone text-sm transition-colors duration-500">About</a></li>
           </ul>
         </div>
       </div>
@@ -2133,12 +2646,6 @@
     const deviceState = DeviceDetector.detect();
 
     // ===== DEMO PANEL ELEMENTS =====
-    const demoWidthInput = document.getElementById('demoWidth');
-    const demoHeightInput = document.getElementById('demoHeight');
-    const roomSelect = document.getElementById('roomSelect');
-    const roomPreview = document.getElementById('roomPreview');
-    const previewArtworkInner = document.getElementById('previewArtworkInner');
-    const previewDimensionBadge = document.getElementById('previewDimensionBadge');
     const desktopPreviewLabel = document.getElementById('desktopPreviewLabel');
     const demoPrimaryCTA = document.getElementById('demoPrimaryCTA');
     const demoPrimaryCTAText = document.getElementById('demoPrimaryCTAText');
@@ -2155,47 +2662,10 @@
     let qrLibLoaded = false;
     let qrInstance = null;
 
-    // ===== UPDATE DEMO PREVIEW =====
-    function updateDemoPreview() {
-      const width = Math.max(4, Math.min(120, parseInt(demoWidthInput.value) || 24));
-      const height = Math.max(4, Math.min(120, parseInt(demoHeightInput.value) || 36));
-
-      // Calculate pixel size (base: 24x36 = 140x180px)
-      const baseWidth = 24;
-      const baseHeight = 36;
-      const basePxWidth = 140;
-      const basePxHeight = 180;
-
-      const widthRatio = width / baseWidth;
-      const heightRatio = height / baseHeight;
-
-      // Scale with bounds for the preview area
-      const newPxWidth = Math.min(260, Math.max(60, basePxWidth * widthRatio));
-      const newPxHeight = Math.min(260, Math.max(80, basePxHeight * heightRatio));
-
-      if (previewArtworkInner) {
-        previewArtworkInner.style.width = `${newPxWidth}px`;
-        previewArtworkInner.style.height = `${newPxHeight}px`;
-      }
-
-      if (previewDimensionBadge) {
-        previewDimensionBadge.textContent = `${width}" × ${height}" • 1:1 SCALE`;
-      }
-    }
-
-    // ===== ROOM BACKGROUND =====
-    function updateRoomBackground() {
-      if (roomPreview && roomSelect) {
-        roomPreview.dataset.room = roomSelect.value;
-      }
-    }
-
     // ===== BUILD AR DEMO URL =====
     function buildDemoUrl() {
-      const width = parseInt(demoWidthInput.value) || 24;
-      const height = parseInt(demoHeightInput.value) || 36;
       const baseUrl = window.location.origin + '/pages/public/ar-demo.html';
-      return `${baseUrl}?w=${width}&h=${height}&unit=in`;
+      return `${baseUrl}?w=24&h=36&unit=in`;
     }
 
     // ===== DEVICE-AWARE CTA SETUP =====
@@ -2264,20 +2734,25 @@
       });
     }
 
+    let qrModalTrigger = null;
+
     function openQRModal() {
+      qrModalTrigger = document.activeElement;
       const demoUrl = buildDemoUrl();
       qrLinkInput.value = demoUrl;
       generateQRCode(demoUrl);
       qrModal.classList.add('open');
       document.body.style.overflow = 'hidden';
-
-      // Focus trap
       qrModalClose.focus();
     }
 
     function closeQRModal() {
       qrModal.classList.remove('open');
       document.body.style.overflow = '';
+      if (qrModalTrigger) {
+        qrModalTrigger.focus();
+        qrModalTrigger = null;
+      }
     }
 
     function copyDemoLink() {
@@ -2297,18 +2772,6 @@
 
     // ===== EVENT LISTENERS =====
 
-    // Demo panel inputs
-    if (demoWidthInput && demoHeightInput) {
-      demoWidthInput.addEventListener('input', updateDemoPreview);
-      demoHeightInput.addEventListener('input', updateDemoPreview);
-      demoWidthInput.addEventListener('change', updateDemoPreview);
-      demoHeightInput.addEventListener('change', updateDemoPreview);
-    }
-
-    if (roomSelect) {
-      roomSelect.addEventListener('change', updateRoomBackground);
-    }
-
     // QR Modal
     if (qrModalClose) {
       qrModalClose.addEventListener('click', closeQRModal);
@@ -2326,8 +2789,19 @@
 
     // Keyboard accessibility for modal
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && qrModal.classList.contains('open')) {
+      if (e.key === 'Escape' && qrModal && qrModal.classList.contains('open')) {
         closeQRModal();
+      }
+      // Focus trap for QR modal
+      if (e.key === 'Tab' && qrModal && qrModal.classList.contains('open')) {
+        const focusable = qrModal.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])');
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
       }
     });
 
@@ -2401,6 +2875,8 @@
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          target.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
         }
       });
     });
